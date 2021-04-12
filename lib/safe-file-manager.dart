@@ -27,6 +27,7 @@ class SafeFileManager{
 
   String get safeDirectory => _safeDirName;
 
+  int get safeFilesCount => _safeFiles.length;
 
   set user(MyOlderUser user) {
     _user = user;
@@ -66,6 +67,7 @@ class SafeFileManager{
         _safeFiles.last.savePath = filePath;
         // Use it as file encrypt password
         var crypt = AesCrypt(password);
+        crypt.setOverwriteMode(AesCryptOwMode.on);
 
         // Path to the safe zone file
         print('Added new safe file into the safe directory at the path: $filePath');
@@ -141,6 +143,7 @@ class SafeFileManager{
     });
 
   }
+
   /// Starts the operations to configure the new safe file
   Future<void> configureSafeFile(SafeFile file) async{
     // Create a new file into the safe directory

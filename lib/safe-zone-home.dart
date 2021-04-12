@@ -1,14 +1,10 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'widgets/safe-file-widget.dart';
 import 'safe-file.dart';
 import 'safe-file-manager.dart';
 import 'pages/login-page.dart';
-import 'dart:io';
-import 'package:path/path.dart';
 import 'myolder-user.dart';
-import 'package:file_picker/file_picker.dart';
 
 class SafeZoneHome extends StatefulWidget {
   // Logged User informations
@@ -96,18 +92,18 @@ class _SafeZoneHome extends State<SafeZoneHome> {
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             borderSide:
                                 BorderSide(color: Colors.black, width: 1))))),
-            Center(
                 // TODO: Implement listview to show loaded files
-                child: SafeFileWidget(
-                    SafeFile(
-                        name: 'New.jpg',
-                        savePath: '/home/gabriele',
-                        color: Colors.black,
-                        description:
-                            'New long description for the given file and not it should display it right. ',
-                        addedDateTime: DateTime.now(),
-                        tags: ['primo', 'secondo']),
-                    (String tag) {}))
+                Expanded(
+                  child: ListView.builder(itemCount: _fileManager.safeFilesCount,
+                  itemBuilder: (context, index){
+                    return SafeFileWidget(
+                      _fileManager.safeFiles[index],
+                        (String tg){
+                          // TODO: Implement call search by tag
+                        }
+                    );
+                  })
+                )
           ],
         ),
         backgroundColor: Theme.of(context).backgroundColor,
@@ -138,10 +134,14 @@ class _SafeZoneHome extends State<SafeZoneHome> {
       var safe = SafeFile(
           name: object.name,
           savePath: '',
-          addedDateTime: DateTime.now());
+          addedDateTime: DateTime.now(),
+          color: Colors.blue,
+      );
 
       // Add the file and encrypt it
-      _fileManager.addSafeFile(safe, object.bytes);
+      await _fileManager.addSafeFile(safe, object.bytes);
+      // Add the new widget
+
     }
   }
 

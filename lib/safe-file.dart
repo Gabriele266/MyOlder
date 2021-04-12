@@ -174,16 +174,29 @@ class SafeFile {
         builder.text(DateTimeFormatter.complete(_addedDateTime).format());
       });
       builder.element('description', nest: (){
-        builder.text(_description);
+        try{
+          builder.text(_description);
+        }on NoSuchMethodError catch (exception){
+          // Nothing
+          print('No description given for the safefile $_name');
+        }
       });
       builder.element('color', nest: () {
         builder.attribute('format', 'rgb');
-        builder.text(RgbColorFormatter.fromColor(_color).formatString());
+        try {
+          builder.text(RgbColorFormatter.fromColor(_color).formatString());
+        }on NoSuchMethodError catch (exception){
+          print('No color given for the safefile $_name');
+        }
       });
       builder.element('tags', nest: (){
         for(var tag in _tags){
           builder.element('tag', nest: (){
-            builder.text(tag);
+            try{
+              builder.text(tag);
+            }on NoSuchMethodError catch(exception){
+              print('No tags given for the safefile $_name');
+            }
           });
         }
       });
