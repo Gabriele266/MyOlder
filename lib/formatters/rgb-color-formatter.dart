@@ -24,6 +24,10 @@ class RgbColorFormatter{
     _separator = separator;
   }
 
+  RgbColorFormatter.empty() {
+    _separator = ',';
+  }
+
   /// Formats the string representing this color
   String formatString() =>
     '$_red$_separator$_blue$_separator$_green';

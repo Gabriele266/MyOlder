@@ -41,6 +41,8 @@ class DateTimeFormatter {
   set pattern(String pattern) => _pattern = pattern;
   set dateTime(DateTime dateTime) => _dateTime = dateTime;
 
+  String get pattern => _pattern;
+
   /// Gets the pattern element at the given index
   ///
   /// ** requires that [_pattern] has been set **

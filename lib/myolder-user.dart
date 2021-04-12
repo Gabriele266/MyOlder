@@ -16,6 +16,11 @@ class MyOlderUser{
     _password = password;
   }
 
+  MyOlderUser.fromXmlElement(XmlElement element){
+    _name = element.findElements('name').first.text;
+    _password = element.findElements('password').first.text;
+  }
+
   /// Returns the name of the user
   String get name => _name;
 

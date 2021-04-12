@@ -198,7 +198,8 @@ class _RootCreatePageState extends State<RootCreatePage> {
               // Configure the safe directory and the configuration file
               var configurator = SafeFileManager(user: _user, dirName: 'safe-dir');
               configurator.configureSafeDirectory();
-              configurator.configureSafeConfigFile(AesCryptOwMode.on);
+              // Save all the informations
+              configurator.saveInformations();
             },
           )
         ],

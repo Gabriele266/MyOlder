@@ -1,3 +1,4 @@
+import 'exceptions/element-not-found-exception.dart';
 import 'exceptions/null-data-exception.dart';
 import 'package:flutter/material.dart';
 import 'safe-file.dart';
@@ -11,6 +12,7 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:xml/xml.dart';
 import 'exceptions/manager-add-list-exception.dart';
+import 'formatters/date-time-formatter.dart';
 
 /// Represents a manager for safe files
 class SafeFileManager{
@@ -20,6 +22,8 @@ class SafeFileManager{
   String _safeDirName = '';
   // Related user
   MyOlderUser _user;
+  // Date this safefilemanager was created
+  DateTime _creationDateTime;
 
   MyOlderUser get user => _user;
 
@@ -29,12 +33,18 @@ class SafeFileManager{
 
   int get safeFilesCount => _safeFiles.length;
 
+  DateTime get creationInformations => _creationDateTime;
+
   set user(MyOlderUser user) {
     _user = user;
   }
 
   set safeFiles(List<SafeFile> files) {
     _safeFiles = files;
+  }
+
+  set creationInformations (DateTime dateTime){
+    _creationDateTime = dateTime;
   }
 
   /// Initializes a new instance of a safefilemanager
@@ -74,8 +84,7 @@ class SafeFileManager{
         // Start file encrypt
         crypt.encryptDataToFile(data, filePath);
         // Save
-        // saveInformations();
-        // TODO: Add saveInformations call and resolve NoSuchMethodError while executing this function
+        saveInformations();
       }
       else{
         throw ManagerAddToListException(file);
@@ -91,6 +100,17 @@ class SafeFileManager{
     _safeFiles.removeAt(index);
   }
 
+  int searchSafeFile(SafeFile file){
+    for(int x = 0; x < _safeFiles.length; x++){
+      if(file.isEqual(_safeFiles[x])){
+        return x;
+      }
+    }
+
+    // Throw a precise exception
+    throw ElementNotFoundException(file.toString(), 'SafeFile', 'SafeFileManager._safeFiles');
+  }
+
   /// Configures a directory to be used for the safe zone of the application
   ///
   /// The directory will be used for saving file and for saving the information file about all
@@ -102,27 +122,10 @@ class SafeFileManager{
     dir.create();
   }
 
-  /// Configures the configuration file to save a list of the safe files of the safe area
-  ///
-  /// The name of the safe file is the same of the safe directory name
-  /// The [overwrite] parameter indicates if this configuration should overwrite any pre-existing file
-  /// ** requires that the method [configureSafeDirectory] has already been executed. **
-  Future<void> configureSafeConfigFile(AesCryptOwMode overwrite) async{
-    // TODO: Implementare algoritmo generazione password
-    var config = AesCrypt('rc&MEuFiMoZBB8Ru*Sa8');
-    // Set overwrite mode for this file
-    config.setOverwriteMode(overwrite);
-
-    // Original informations buffer
-    String fileBuffer = '# safezone configuration file\n# the buffer of this file is very restricted. it is encrypted'
-        'with the aes alogithm. GG if you can open this file. \n'
-        'created: ${DateTime.now().toString()}\n'
-        'allowed_user_name:${_user.name}\n'
-        'allowed_user_password:${_user.password}\n'
-        'safe_files:[]\n'
-        '# end safezone configuration file\n';
-    // Start encrypt
-    config.encryptTextToFileSync(fileBuffer, '${(await getApplicationDocumentsDirectory()).path}/$_safeDirName/$_safeDirName.cfg');
+  /// Opens a file, decrypts his contents and returns the decrypted file name
+  Future<String> unlockFile(SafeFile file){
+    // Search the safefile index into this object
+    // TODO: Implement unlocking file
   }
 
   /// Starts the process for saving all the safe files informations into the encrypted file.
@@ -132,15 +135,36 @@ class SafeFileManager{
 
     // Create the xml document
     var builder = XmlBuilder();
-    builder.processing('xml', 'version="1.1"');
-    builder.element('allowed-user', nest: (){
-      builder.xml(_user.toXmlString());
+    builder.processing('xml', 'version="1.0"');
+    builder.element('configure-file', nest: (){
+      builder.element('created-on', nest: (){
+        var formatter = DateTimeFormatter.complete(DateTime.now());
+        builder.text(formatter.format());
+        builder.attribute('pattern', formatter.pattern);
+      });
+      builder.element('allowed-user', nest: (){
+        builder.xml(_user.toXmlString());
+      });
+      builder.element('safe-files', nest: (){
+        for(var file in _safeFiles){
+          builder.xml(file.toXmlString());
+        }
+      });
     });
-    builder.element('safe-files', nest: (){
-      for(var file in _safeFiles){
-        builder.xml(file.toXmlString());
-      }
-    });
+
+    try{
+      // Write all in the file
+      var crt = AesCrypt('rc&MEuFiMoZBB8Ru*Sa8');
+      crt.setOverwriteMode(AesCryptOwMode.on);
+
+      var content = builder.buildDocument().toXmlString();
+
+      crt.encryptTextToFile(content, filePath);
+      print(content);
+    }
+    catch (exception){
+      print('Exception during configuring the configurationFile. ');
+    }
   }
 
   /// Starts the operations to configure the new safe file
@@ -169,27 +193,32 @@ class SafeFileManager{
         var crt = AesCrypt(password);
         // Mangager instance
         var manager = SafeFileManager(user: null);
-        var user = MyOlderUser();
 
         // Read data and decrypt it
         fileBuffer = await crt.decryptTextFromFile(filePath);
-        // print('Decripted file content: $fileBuffer');
+        print('$fileBuffer');
 
-        // Separete file into his lines
-        var lines = fileBuffer.split('\n');
+        // Create the document object and parse from the text file
+        var document = XmlDocument.parse(fileBuffer);
+        // Get the root element
+        var root = document.rootElement;
 
-        // Pass all his lines
-        for(var line in lines){
-          if(line.startsWith('allowed_user_name')) {
-            user.name = line.split(':').last;
-          } else if(line.startsWith('allowed_user_password')){
-            user.password = line.split(':').last;
-          }else if(line.startsWith('safe_files')){
-            // TODO: Implement loading files into application
-          }
-        }
+        // Get child elements
+        var al_user = root.findElements('allowed-user').first;
+        // var safe_files_list = root.findElements('safe-files').first.findAllElements('safe-file');
+
+        // Creation datetime informations
+        var creationDateTimeElement = root.findElements('created-on').first;
+        String dateTimePattern = creationDateTimeElement.getAttribute('pattern');
+
+        // Load use informations
+        var user = MyOlderUser.fromXmlElement(al_user.findElements('user').first);
+
         // Save user informations
         manager.user = user;
+        // Get the datetime this folder was created
+        manager.creationInformations = DateTimeFormatter(pattern: dateTimePattern).fromString(creationDateTimeElement.text);
+        print('This safedirectory was created on ${manager.creationInformations.toString()}');
         return manager;
       }
     }

@@ -112,51 +112,6 @@ class SafeFile {
   /// returns true if there are almost one tag, false otherwise
   bool hasTags() => _tags != null;
 
-  /// Formats a name that is displayable in low-space widgets with a centertext applied.
-  ///
-  /// Divides the name in sections on [blockSize] characters and puts some spaces between all the sections
-  /// returns the new displayable name
-  String formatVisibleName(int blockSize) {
-    int size = _name.length;
-    if (size > blockSize) {
-      print('Start divide string of $size elements. ');
-      String newName = '';
-      // Number of used characters in name
-      int elapsedChars = 0;
-      // Number of blocks divided
-      int blocks = 0;
-
-      for (int x = 0; x < size / blockSize; x++) {
-        // Get the starting point of the substring
-        var start = blockSize * x;
-        // Get the number of characters that haven't been used
-        int others = size - elapsedChars;
-        // Check blocks
-        if (others > blockSize && blocks < 2) {
-          newName += _name.substring(start, start + blockSize);
-          newName += ' ';
-          elapsedChars += blockSize;
-          blocks++;
-        } else {
-          break;
-        }
-      }
-
-      if (blocks < 2) {
-        if (_name.length > elapsedChars) {
-          // Put the remaining part
-          newName += _name.substring(elapsedChars - 1);
-        }
-      } else {
-        newName += '...';
-      }
-
-      print('Name has been divided: $newName|');
-      return newName;
-    }
-    return _name;
-  }
-
   /// Converts the informations of this safe file into a save-able string
   /// to be used into text files. It is composed of a series of property-value lines
   /// separated by a :.
@@ -189,6 +144,9 @@ class SafeFile {
           print('No color given for the safefile $_name');
         }
       });
+      builder.element('password', nest: (){
+        builder.text(_password);
+      });
       builder.element('tags', nest: (){
         for(var tag in _tags){
           builder.element('tag', nest: (){
@@ -212,58 +170,52 @@ class SafeFile {
   /// taken from a text file) and assigns all the information to a new instance of
   /// this class.
   ///
-  /// The parameter [sourceStr] is mandatory and represents the string to use for
+  /// The parameter [sourceStr] is mandatory and represents the element to use for
   /// reading the informations. It should follow the [toSaveString] format
-  static SafeFile fromSaveString(String sourceStr) {
-    // TODO: Impelemnt use of xml instead of raw string
-    // // File instance
-    // var file = SafeFile.empty();
-    // // Divide the string into lines
-    // var lines = sourceStr.split('\n');
-    // // Determinate if we are into a block
-    // bool block = false;
-    //
-    // // Iterate all the lines
-    // for (var line in lines) {
-    //   // Check if line contains something
-    //   if (line != '') {
-    //     if (line == 'safe-file') {
-    //       block = true;
-    //     } else if (line == 'end-safe-file')
-    //       block = false;
-    //     else {
-    //       try {
-    //         // calculate parameter name and value
-    //         var paramName = line.split(':')[0];
-    //         var paramValue = line.split(':')[1];
-    //
-    //         if (paramName == 'name')
-    //           file.name = paramValue;
-    //         else if (paramName == 'source')
-    //           file.originalPath = paramValue;
-    //         else if (paramName == 'description')
-    //           file.description = paramValue;
-    //         else if (paramName == 'added_on') {
-    //           // Create formatter
-    //           var formatter = DateTimeFormatter.completePattern();
-    //           file.addedDateTime = formatter.fromString(paramValue);
-    //         }
-    //         else if (paramName == 'color') {
-    //           // Create a formatter
-    //           var formatter = RgbColorFormatter(0, 0, 0);
-    //           file.color = formatter.fromString(paramValue);
-    //         }
-    //       } on IndexError {
-    //         print('Errore nella divisione della riga $line');
-    //       }
-    //     }
-    //   }
-    // }
-    // return file;
+  static SafeFile fromXmlElement(XmlElement source) {
+    var file = SafeFile.empty();
+
+    try {
+      file.name = source
+          .findElements('display-name')
+          .first
+          .text;
+      file.password = source
+          .findElements('password')
+          .first
+          .text;
+      file.savePath = source
+          .findElements('safe-path')
+          .first
+          .text;
+      file.addedDateTime = DateTimeFormatter.completePattern().fromString(source
+          .findElements('added-on')
+          .first
+          .text);
+      file.description = source
+          .findElements('description')
+          .first
+          .text;
+      file.color = RgbColorFormatter.empty().fromString(source
+          .findElements('color')
+          .first
+          .text);
+    }on NoSuchMethodError catch (i){
+      print('Exception during requesting informations from an XmlString. ');
+      print(i);
+      print(i.stackTrace);
+    }
+
+    return file;
   }
 
   @override
   String toString() =>
       'SafeFile $_name. Created on: $_addedDateTime. Optional description: $_description. Original file path: $_savePath. '
       ' Label color: $_color';
+
+  /// Checks if this file is equal to another
+  bool isEqual(SafeFile file){
+    return (_name == file.name && _savePath == file.savePath && _addedDateTime == file.addedDateTime);
+  }
 }
