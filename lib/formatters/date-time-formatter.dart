@@ -24,6 +24,11 @@ class DateTimeFormatter {
     _pattern = 'dd/mm/yy-hh:MM:ss:ms';
   }
 
+  DateTimeFormatter.onlyDate(DateTime dateTime){
+    _pattern = 'dd/mm/yy';
+    _dateTime = dateTime;
+  }
+
   /// Creates a new instance of a datetimeformatter with a complete pattern and no datetime set
   DateTimeFormatter.completePattern(){
     _pattern = 'dd/mm/yy-hh:MM:ss:ms';

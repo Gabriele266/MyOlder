@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
+
 import '../pages/safe-file-info-page.dart';
 import 'package:flutter/material.dart';
 import '../safe-file.dart';
 import 'tag-widget.dart';
+import 'package:myolder/formatters/date-time-formatter.dart';
 
 class SafeFileWidget extends StatefulWidget {
   // The file to show widget for
@@ -50,7 +53,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
     }
 
     return Padding(
-      padding: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(top: 20, left: 20, right: 20),
       child: Container(
         width: 360,
         height: 120,
@@ -75,17 +78,26 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
-                          width: 220,
+                          width: 200,
                           child: Text(
-                            _safeFile.formatVisibleName(18),
+                            _safeFile.name,
+                            overflow: TextOverflow.clip,
                             style: Theme.of(context).textTheme.headline3,
+                            maxLines: 2,
                             textAlign: TextAlign.center,
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 10),
-                          child: Text(_safeFile.savePath,
-                              style: Theme.of(context).textTheme.headline4),
+                          child: Container(
+                            width: 200,
+                            child: Center(
+                              child: Text(DateTimeFormatter.onlyDate(_safeFile.addedDateTime).format(),
+                                  overflow: TextOverflow.clip,
+                                  maxLines: 2,
+                                  style: Theme.of(context).textTheme.headline4),
+                            ),
+                            )
                         ),
                         Container(
                             padding: EdgeInsets.only(top: 18),

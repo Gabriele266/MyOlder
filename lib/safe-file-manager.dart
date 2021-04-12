@@ -73,9 +73,9 @@ class SafeFileManager{
         print('Added new safe file into the safe directory at the path: $filePath');
         // Start file encrypt
         crypt.encryptDataToFile(data, filePath);
-
         // Save
-        saveInformations();
+        // saveInformations();
+        // TODO: Add saveInformations call and resolve NoSuchMethodError while executing this function
       }
       else{
         throw ManagerAddToListException(file);
@@ -141,7 +141,6 @@ class SafeFileManager{
         builder.xml(file.toXmlString());
       }
     });
-
   }
 
   /// Starts the operations to configure the new safe file

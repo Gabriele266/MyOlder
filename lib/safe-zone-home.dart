@@ -22,7 +22,6 @@ class SafeZoneHome extends StatefulWidget {
 class _SafeZoneHome extends State<SafeZoneHome> {
   // Logged user informations
   final MyOlderUser _user;
-
   var _searchController = TextEditingController();
 
   // SafeFileManager
@@ -92,18 +91,13 @@ class _SafeZoneHome extends State<SafeZoneHome> {
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             borderSide:
                                 BorderSide(color: Colors.black, width: 1))))),
-                // TODO: Implement listview to show loaded files
-                Expanded(
-                  child: ListView.builder(itemCount: _fileManager.safeFilesCount,
-                  itemBuilder: (context, index){
-                    return SafeFileWidget(
-                      _fileManager.safeFiles[index],
-                        (String tg){
-                          // TODO: Implement call search by tag
-                        }
-                    );
-                  })
-                )
+            Expanded(
+                child: ListView.builder(
+                    itemCount: _fileManager.safeFilesCount,
+                    itemBuilder: (context, index) {
+                      return SafeFileWidget(
+                          _fileManager.safeFiles[index], (String tag) {});
+                    }))
           ],
         ),
         backgroundColor: Theme.of(context).backgroundColor,
@@ -125,23 +119,24 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   /// Adds a new file to the safe zone
   Future<void> addNewFile(BuildContext context) async {
     // Get a file from the default file-picker
-    FilePickerResult file = await FilePicker.platform.pickFiles(withData: true, withReadStream: true);
+    FilePickerResult file = await FilePicker.platform
+        .pickFiles(withData: true, withReadStream: true);
 
-    if(file != null){
+    if (file != null) {
       // The the single file to add
       PlatformFile object = file.files.first;
       // Create the safefile object
       var safe = SafeFile(
-          name: object.name,
-          savePath: '',
-          addedDateTime: DateTime.now(),
-          color: Colors.blue,
+        name: object.name,
+        savePath: '',
+        addedDateTime: DateTime.now(),
+        color: Colors.blue,
       );
 
       // Add the file and encrypt it
-      await _fileManager.addSafeFile(safe, object.bytes);
-      // Add the new widget
-
+      _fileManager.addSafeFile(safe, object.bytes);
+      // Set the new state
+      setState(() {});
     }
   }
 
