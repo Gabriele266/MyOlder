@@ -67,7 +67,7 @@ class MyOlderApp extends StatelessWidget{
           ),
           bodyText1: TextStyle(
             color: Colors.yellow[800],
-            fontSize: 17,
+            fontSize: 20,
             letterSpacing: 1,
             fontWeight: FontWeight.w600
           )
