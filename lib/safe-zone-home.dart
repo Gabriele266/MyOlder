@@ -280,7 +280,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
           TextButton(
             child: Text('Yes i am shure. '),
             onPressed: (){
-              _manager.clearAllFiles();
+              _manager.clearAllSafeFiles();
               Navigator.pop(context);
               Navigator.pop(context);
               setState(() {

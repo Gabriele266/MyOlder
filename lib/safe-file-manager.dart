@@ -101,6 +101,15 @@ class SafeFileManager{
 
   /// Removes the given file index from the list
   void removeSafeFile(int index){
+    try{
+      // Delete the file from the disk
+      var file = File(_safeFiles[index].savePath);
+      file.deleteSync();
+    }on IOException catch(exc){
+      print('Unable to delete the safefile at index $index. \nSafeFile informations: ${_safeFiles[index]}\n');
+      print('The file to delete was: $exc');
+    }
+    // Remove the object
     _safeFiles.removeAt(index);
   }
 
@@ -127,7 +136,7 @@ class SafeFileManager{
   }
 
   /// Opens a file, decrypts his contents and returns the decrypted file name
-  Future<String> unlockFile(SafeFile file){
+  Future<String> unlockFile(SafeFile file) async{
     // Search the safefile index into this object
     // TODO: Implement unlocking file
   }
@@ -175,6 +184,20 @@ class SafeFileManager{
   /// Adds a new safefile to the memory
   void appendSafeFile(SafeFile file){
     _safeFiles.add(file);
+  }
+
+  /// Removes all the safe files from the safe zone
+  ///
+  Future<void> clearAllSafeFiles() async{
+    if(_safeFiles.length > 0){
+      for(int x = 0; x < _safeFiles.length; x++){
+        // Remove the file
+        removeSafeFile(x);
+      }
+
+      // Save the informations again
+      saveInformations();
+    }
   }
 
   /// Reads the configuration file into his path and returns a safefilemanager object
