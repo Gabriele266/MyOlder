@@ -32,6 +32,12 @@ class _SafeFileInfoPageState extends State<StatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    String description;
+    if(_file.description != null)
+      description = _file.description;
+    else
+      description = "";
+
     if (_file != null) {
       return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
@@ -77,7 +83,7 @@ class _SafeFileInfoPageState extends State<StatefulWidget> {
                               // InfoPropertyLine('Added time', _file.addedDateTime())
                               InfoPropertyLineAction(
                                 name: 'Info',
-                                value: _file.description,
+                                value: description,
                                 actionIcon: Icon(
                                     Icons.edit,
                                     size: Theme.of(context).iconTheme.size

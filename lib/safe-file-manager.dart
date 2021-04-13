@@ -196,7 +196,6 @@ class SafeFileManager{
 
         // Read data and decrypt it
         fileBuffer = await crt.decryptTextFromFile(filePath);
-        print('$fileBuffer');
 
         // Create the document object and parse from the text file
         var document = XmlDocument.parse(fileBuffer);
@@ -204,15 +203,15 @@ class SafeFileManager{
         var root = document.rootElement;
 
         // Get child elements
-        var al_user = root.findElements('allowed-user').first;
-        var safe_files_list = root.findElements('safe-files').first.findAllElements('safe-file');
+        var al_user = root.findAllElements('allowed-user').single;
+        var safe_files_list = root.findAllElements('safe-files').single.findAllElements('safe-file');
 
         // Creation datetime informations
-        var creationDateTimeElement = root.findElements('created-on').first;
+        var creationDateTimeElement = root.findElements('created-on').single;
         String dateTimePattern = creationDateTimeElement.getAttribute('pattern');
 
         // Load use informations
-        var user = MyOlderUser.fromXmlElement(al_user.findElements('user').first);
+        var user = MyOlderUser.fromXmlElement(al_user.findElements('user').single);
 
         // Save user informations
         manager.user = user;

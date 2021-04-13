@@ -178,27 +178,27 @@ class SafeFile {
     try {
       file.name = source
           .findElements('display-name')
-          .first
+          .single
           .text;
       file.password = source
           .findElements('password')
-          .first
+          .single
           .text;
       file.savePath = source
-          .findElements('safe-path')
-          .first
+          .findElements('save-path')
+          .single
           .text;
       file.addedDateTime = DateTimeFormatter.completePattern().fromString(source
           .findElements('added-on')
-          .first
+          .single
           .text);
       file.description = source
           .findElements('description')
-          .first
+          .single
           .text;
       file.color = RgbColorFormatter.empty().fromString(source
           .findElements('color')
-          .first
+          .single
           .text);
     }on NoSuchMethodError catch (i){
       print('Exception during requesting informations from an XmlString. ');
