@@ -92,19 +92,22 @@ class DateTimeFormatter {
   /// Formats the given datetime to the string using the pattern
   ///
   /// ** Requires that the [_dateTime] has been set **
-  String format() {
+  String format(){
     String result = _pattern;
+    try{
+      // Replace pattern elements
+      result = result.replaceAll('dd', _dateTime.day.toString());
+      result = result.replaceAll('mm', _dateTime.month.toString());
+      result = result.replaceAll('yy', _dateTime.year.toString());
 
-    // Replace pattern elements
-    result = result.replaceAll('dd', _dateTime.day.toString());
-    result = result.replaceAll('mm', _dateTime.month.toString());
-    result = result.replaceAll('yy', _dateTime.year.toString());
-
-    result = result.replaceAll('hh', _dateTime.hour.toString());
-    result = result.replaceAll('MM', _dateTime.minute.toString());
-    result = result.replaceAll('ss', _dateTime.second.toString());
-    result = result.replaceAll('ms', _dateTime.microsecond.toString());
-    return result;
+      result = result.replaceAll('hh', _dateTime.hour.toString());
+      result = result.replaceAll('MM', _dateTime.minute.toString());
+      result = result.replaceAll('ss', _dateTime.second.toString());
+      result = result.replaceAll('ms', _dateTime.microsecond.toString());
+      return result;
+    }catch(exception){
+      print('Exception during formatting a DateTime using DateTimeFormatter. StackTrace: ${exception}');
+    }
   }
 
   /// Reads the informations about a date from the given string applying the pattern

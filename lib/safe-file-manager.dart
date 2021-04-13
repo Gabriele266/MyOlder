@@ -146,8 +146,10 @@ class SafeFileManager{
         builder.xml(_user.toXmlString());
       });
       builder.element('safe-files', nest: (){
-        for(var file in _safeFiles){
-          builder.xml(file.toXmlString());
+        if(_safeFiles.length > 0){
+          for(var file in _safeFiles){
+            builder.xml(file.toXmlString());
+          }
         }
       });
     });
@@ -160,23 +162,21 @@ class SafeFileManager{
       var content = builder.buildDocument().toXmlString();
 
       crt.encryptTextToFile(content, filePath);
-      print(content);
     }
     catch (exception){
       print('Exception during configuring the configurationFile. ');
     }
   }
 
-  /// Starts the operations to configure the new safe file
-  Future<void> configureSafeFile(SafeFile file) async{
-    // Create a new file into the safe directory
+  /// Adds a new safefile to the memory
+  void appendSafeFile(SafeFile file){
+    _safeFiles.add(file);
   }
 
   /// Reads the configuration file into his path and returns a safefilemanager object
   ///
   /// [older_name] is the name given to the directory and the file (must be equal for each)
   static Future<SafeFileManager> readConfigurationFile(String name, String password) async{
-    // TODO: Implement use of xml instead of simple text
     // Get the directory path
     String dirPath = '${(await getApplicationDocumentsDirectory()).path}/$name';
     // print('Start loading from the directory $dirPath');
@@ -205,7 +205,7 @@ class SafeFileManager{
 
         // Get child elements
         var al_user = root.findElements('allowed-user').first;
-        // var safe_files_list = root.findElements('safe-files').first.findAllElements('safe-file');
+        var safe_files_list = root.findElements('safe-files').first.findAllElements('safe-file');
 
         // Creation datetime informations
         var creationDateTimeElement = root.findElements('created-on').first;
@@ -218,6 +218,12 @@ class SafeFileManager{
         manager.user = user;
         // Get the datetime this folder was created
         manager.creationInformations = DateTimeFormatter(pattern: dateTimePattern).fromString(creationDateTimeElement.text);
+
+        // Get all the safefiles
+        for(var obj in safe_files_list){
+          manager.appendSafeFile(SafeFile.fromXmlElement(obj));
+        }
+
         print('This safedirectory was created on ${manager.creationInformations.toString()}');
         return manager;
       }

@@ -148,14 +148,14 @@ class SafeFile {
         builder.text(_password);
       });
       builder.element('tags', nest: (){
-        for(var tag in _tags){
-          builder.element('tag', nest: (){
-            try{
+        try{
+          for(var tag in _tags){
+            builder.element('tag', nest: (){
               builder.text(tag);
-            }on NoSuchMethodError catch(exception){
-              print('No tags given for the safefile $_name');
-            }
-          });
+            });
+          }
+        }on NoSuchMethodError catch (i){
+          print('Exception while formatting the tag elements for the safefile: $this');
         }
       });
     });
