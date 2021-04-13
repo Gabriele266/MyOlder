@@ -9,13 +9,14 @@ import 'myolder-user.dart';
 class SafeZoneHome extends StatefulWidget {
   // Logged User informations
   final MyOlderUser _user;
+  final SafeFileManager _manager;
 
   /// Creates a new instance of a safezonehome page with a logged user.
-  SafeZoneHome(this._user);
+  SafeZoneHome(this._user, this._manager);
 
   @override
   State<StatefulWidget> createState() {
-    return _SafeZoneHome(_user);
+    return _SafeZoneHome(_user, _manager);
   }
 }
 
@@ -23,11 +24,9 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   // Logged user informations
   final MyOlderUser _user;
   var _searchController = TextEditingController();
+  final SafeFileManager _manager;
 
-  // SafeFileManager
-  SafeFileManager _fileManager;
-
-  _SafeZoneHome(this._user);
+  _SafeZoneHome(this._user, this._manager);
 
   /// Initializes the state of the page
   @override
@@ -35,8 +34,11 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     // Add an empty listenter
     _searchController.addListener(() {});
     // Init user state informations
-    _fileManager = SafeFileManager(user: _user, dirName: 'safe-dir');
     super.initState();
+
+    setState(() {
+      // Load widgets
+    });
   }
 
   /// Carica la lista dei file da mostrare e gestire nella safe zone
@@ -93,10 +95,10 @@ class _SafeZoneHome extends State<SafeZoneHome> {
                                 BorderSide(color: Colors.black, width: 1))))),
             Expanded(
                 child: ListView.builder(
-                    itemCount: _fileManager.safeFilesCount,
+                    itemCount: _manager.safeFilesCount,
                     itemBuilder: (context, index) {
                       return SafeFileWidget(
-                          _fileManager.safeFiles[index], (String tag) {});
+                          _manager.safeFiles[index], (String tag) {});
                     }))
           ],
         ),
@@ -134,7 +136,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
       );
 
       // Add the file and encrypt it
-      _fileManager.addSafeFile(safe, object.bytes);
+      _manager.addSafeFile(safe, object.bytes);
       // Set the new state
       setState(() {});
     }

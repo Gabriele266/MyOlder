@@ -39,6 +39,10 @@ class SafeFileManager{
     _user = user;
   }
 
+  set safeDirectory(String directory){
+    _safeDirName = directory;
+  }
+
   set safeFiles(List<SafeFile> files) {
     _safeFiles = files;
   }
@@ -217,7 +221,7 @@ class SafeFileManager{
         manager.user = user;
         // Get the datetime this folder was created
         manager.creationInformations = DateTimeFormatter(pattern: dateTimePattern).fromString(creationDateTimeElement.text);
-
+        manager.safeDirectory = name;
         // Get all the safefiles
         for(var obj in safe_files_list){
           manager.appendSafeFile(SafeFile.fromXmlElement(obj));

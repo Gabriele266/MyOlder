@@ -250,7 +250,7 @@ class _LoginNormalState extends State<LoginPage> {
           // Start the login
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) {
-                return SafeZoneHome(usr);
+                return SafeZoneHome(usr, man);
               }
           ));
         });
