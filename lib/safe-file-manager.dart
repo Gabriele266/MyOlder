@@ -90,13 +90,9 @@ class SafeFileManager{
         // Save
         saveInformations();
       }
-      else{
-        throw ManagerAddToListException(file);
-      }
+      else throw ManagerAddToListException(file, 'SafeFileManager::_safeFiles');
     }
-    else{
-      throw NullDataException('addSafeFile', ' Adding a new SafeFile to the safe zone. ');
-    }
+    else throw NullDataException('addSafeFile', ' Adding a new SafeFile to the safe zone. ');
   }
 
   /// Removes the given file index from the list
