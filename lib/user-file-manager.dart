@@ -70,19 +70,11 @@ class UserFileManager {
     return dir.existsSync();
   }
 
-  /// Checks if there are some hacks into the file system of the appication
-  Future<bool> checkHacks() async{
-    if(!await checkRootExists() && await checkConfigurationExists('safe-dir')){
-      return true;
-    }
-    else if(! await checkConfigurationExists('safe-dir') && await checkRootExists()){
-      return true;
-    }
-    else{
-      return false;
-    }
+  Future<void> removeConfigurationFolder(String name) async{
+    // Get directory path
+    var dir = Directory('${(await getApplicationDocumentsDirectory()).path}/$name');
+    dir.delete(recursive: true);
   }
-
   /// Checks if the user credentials are allowed to access the application or not
   ///
   /// Needs that the internal member _file is set.
@@ -124,6 +116,16 @@ class UserFileManager {
     }else{
       throw FileNotDefinedException('writeFile() async');
     }
+  }
+
+  /// Removes the configuration file
+  Future<void> removeFile() async{
+    String path = (await getApplicationDocumentsDirectory()).path;
+    String filePath = '$path/$_file';
+
+    var file = File(filePath);
+    if(file.existsSync())
+      file.deleteSync();
   }
 }
 

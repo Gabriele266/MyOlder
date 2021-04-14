@@ -1,8 +1,11 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import '../user-file-manager.dart';
 import '../myolder-user.dart';
+import 'package:myolder/safe-file-manager.dart';
+import 'package:myolder/widgets/double-action-alert.dart';
 
 class SplashPage extends StatefulWidget{
   String _message = ' ';
@@ -35,26 +38,56 @@ class _SplashPageState extends State<SplashPage>{
   Future<void> getMainPage(BuildContext context) async {
     // Create a user file reader
     var fileReader = UserFileManager(file: 'root.cfg', user: MyOlderUser());
+    // Check if files and folders exist or not
+    bool root = await fileReader.checkRootExists();
+    bool config = await fileReader.checkConfigurationExists('safe-dir');
 
-    if(await fileReader.checkRootExists() && !await fileReader.checkHacks()){
+    if(root && config){
+      // Allow login
       // Push the widget into the navigator
       Navigator.pushReplacementNamed(context, '/login');
       print('File esiste');
     }
-    else if(await fileReader.checkHacks()){
-      print('HACK DETECTED. ABORT APPLICATION');
-      setState(() {
-        _message = 'HACK DETECTED OR APPLICATION FATAL ERROR. SEE DOCUMENTATION. \nYOU WON\'T BE ABLE TO ACCESS YOUR DATA '
-            'OR USE THIS APPLICATION. IN CASE OF NEW USER REQUIRMENT ALL YOUR DATA WILL BE ERASED FROM DISK.\n'
-            '\n'
-            'DONT TRY TO HACK THIS APPLICATION, YOU ONLY WILL CAUSE DATA LOSS FOR THE USER. IF YOU THINK THAT THIS IS AN ERROR, SEND A '
-            'BUG REPORT TO THE DEVELOPER. DO NOT TOUCH THE APPLICATION FILES. ' ;
-      });
-    }
-    else{
+    else if(!root && !config ){
+      // No configuration for this appilcation.
+      // Create one
       Navigator.pushReplacementNamed(context, '/create');
       print('File non esiste');
     }
+    else if((root && !config) || (!root && config)){
+      // Show alert and ask if should remove the configuration file
+      Navigator.push(context, MaterialPageRoute(builder: (context){
+        return DoubleActionAlert(
+          title: 'Problems detected',
+          content: 'MyOlder has detected some file issues, resolve them by deleting all? You will lose all your data. '
+              'If you wont perform this operation, you wont be able to use them anymore. ',
+          firstAction: 'Yes, i accept',
+          firstCallback: (){
+            // Delete all configurations
+            deleteAllConfigurations(fileReader);
+          },
+          secondAction: 'No, leave all',
+          secondCallback: (){
+            Navigator.pop(context);
+            exit(0);
+          },
+        );
+      }));
+    }
+  }
+
+  /// Deletes all the configuration files from all the directories
+  Future<void> deleteAllConfigurations(UserFileManager fileReader) async{
+    // Remove all the configuration and file and re execute this login
+    fileReader.removeFile();
+    fileReader.removeConfigurationFolder('safe-dir');
+
+    print('Deleting all the application-configuring files. ');
+    print('Operation started at: ${DateTime.now().toString()}');
+
+    Navigator.pop(context);
+    // Re do the login
+    getMainPage(context);
   }
 
   @override

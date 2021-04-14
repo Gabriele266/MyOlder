@@ -78,7 +78,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
-                          width: 200,
+                          width: 150,
                           child: Text(
                             _safeFile.name,
                             overflow: TextOverflow.clip,
@@ -90,7 +90,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
                         Padding(
                           padding: EdgeInsets.only(top: 10),
                           child: Container(
-                            width: 200,
+                            width: 150,
                             child: Center(
                               child: Text(DateTimeFormatter.onlyDate(_safeFile.addedDateTime).format(),
                                   overflow: TextOverflow.clip,
@@ -108,7 +108,6 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
                             ))
                       ],
                     )),
-                Expanded(child: Text('')),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
