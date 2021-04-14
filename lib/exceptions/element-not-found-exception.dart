@@ -7,6 +7,10 @@ class ElementNotFoundException implements Exception{
     final String _container;
 
     /// Creates a new instance of an element not found exception
+    ///
+    /// [_elementName] Represents the element that wasn't found
+    /// [_elementType] Represents the type of the element that wasn't found
+    /// [_container] The place where the element should be saved
     ElementNotFoundException(this._elementName, this._elementType, this._container);
     
     @override
