@@ -7,6 +7,8 @@ import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'newuser-info-page.dart';
 import 'login-page.dart';
 import '../safe-file-manager.dart';
+import 'package:myolder/widgets/icon-text-button.dart';
+import 'package:myolder/constructs/status-text-indicator.dart';
 
 class RootCreatePage extends StatefulWidget {
   @override
@@ -18,18 +20,18 @@ class RootCreatePage extends StatefulWidget {
 class _RootCreatePageState extends State<RootCreatePage> {
   // Spazio tra i controlli attuale
   var spaceBetween = 30.0;
-
   // Determina se nascondere la password
   bool hidePassword = true;
-
   // Informazioni create
   var _user = MyOlderUser();
 
   // Controllore del nome utente
   var _userController = TextEditingController();
-
-  // Controllore della password
+  // Controller password
   var _passController = TextEditingController();
+
+  // The internal message
+  StatusTextIndicator _internalMessage;
 
   @override
   void initState() {
@@ -46,15 +48,21 @@ class _RootCreatePageState extends State<RootCreatePage> {
 
     _userController.addListener(() {
       _user.name = _userController.text;
+      checkNewUserCredentials();
     });
 
     _passController.addListener(() {
       _user.password = _passController.text;
+      checkNewUserCredentials();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+
+    // Format the internal message
+    _internalMessage = StatusTextIndicator.stateful('The user informations will be used for controlling the safe-zone access. ', StatusType.Success);
+
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
@@ -94,9 +102,10 @@ class _RootCreatePageState extends State<RootCreatePage> {
               child: Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: Text(
-                    'The user informations will be used for controlling the safe-zone access. ',
+                    // TODO: Implement use of multistate text
+                    _internalMessage.getText(),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline2,
+                    style: (_internalMessage.isSuccessMessage()) ? Theme.of(context).textTheme.headline2 : Theme.of(context).textTheme.overline,
                   )),
             ),
             Padding(
@@ -146,38 +155,75 @@ class _RootCreatePageState extends State<RootCreatePage> {
                       ),
                       labelStyle: Theme.of(context).textTheme.bodyText1,
                     ))),
-            Padding(
-                padding: EdgeInsets.only(top: spaceBetween),
-                child: Container(
-                    width: 200,
-                    height: 60,
-                    child: MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: BorderSide(
-                              color: Colors.white,
-                            )),
-                        color: Theme.of(context).appBarTheme.backgroundColor,
-                        textTheme: Theme.of(context).buttonTheme.textTheme,
-                        onPressed: saveInformations,
-                        child: Row(
-                          children: [
-                            Icon(Icons.create,
-                                size: Theme.of(context).iconTheme.size,
-                                color: Theme.of(context).iconTheme.color),
-                            Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: Text('Safe informations',
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor)))
-                          ],
-                        ))))
+
+            Center(
+              child: Container(
+                margin: EdgeInsets.only(top: 30),
+                width: 180,
+                height: 60,
+                child: IconTextButton(
+                  text: 'Create user',
+                  icon: Icon(
+                    Icons.create,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                  callback: createNewUser,
+                ),
+              )
+            )
           ],
         )));
   }
 
-  /// Performs the operations for saving the informations
-  Future<void> saveInformations() async {
+  /// Checks the new user credentials added into the boxes and shows state
+  void checkNewUserCredentials(){
+    // TODO: Implement multistate text
+    // Check username
+    // if(_userController.text != ''){
+    //   if(!_userController.text.contains(' ')){
+    //     // Username is correct
+    //     setState(() {
+    //       _internalMessage.text = null;
+    //     });
+    //   }else{
+    //     setState(() {
+    //       _internalMessage.text = 'The username must not contain spaces. ';
+    //       _internalMessage.status = StatusType.Error;
+    //       print(_internalMessage);
+    //     });
+    //   }
+    // }else{
+    //   setState(() {
+    //     _internalMessage.text = 'Please insert a valid username.';
+    //     _internalMessage.status = StatusType.Error;
+    //     print(_internalMessage);
+    //   });
+    // }
+
+    // // Check password
+    // if(_passController.text != ''){
+    //   if(!_passController.text.contains(' ')){
+    //     // Username is correct
+    //     setState(() {
+    //       _internalMessage.text = '';
+    //     });
+    //   }else{
+    //     setState(() {
+    //       _internalMessage.text = 'The username must not contain spaces. ';
+    //       _internalMessage.status = StatusType.Error;
+    //     });
+    //   }
+    // }else{
+    //   setState(() {
+    //     _internalMessage.text = 'Please insert a valid username.';
+    //     _internalMessage.status = StatusType.Error;
+    //   });
+    // }
+  }
+
+  /// Performs the operations for creating the new user
+  Future<void> createNewUser() async {
     // Show the alert dialog
     await Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) {
