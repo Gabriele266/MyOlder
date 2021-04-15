@@ -13,6 +13,7 @@ import 'dart:convert';
 import 'package:xml/xml.dart';
 import 'exceptions/manager-add-list-exception.dart';
 import 'formatters/date-time-formatter.dart';
+import 'package:open_file/open_file.dart';
 
 /// Represents a manager for safe files
 class SafeFileManager{
@@ -131,11 +132,7 @@ class SafeFileManager{
     dir.create();
   }
 
-  /// Opens a file, decrypts his contents and returns the decrypted file name
-  Future<String> unlockFile(SafeFile file) async{
-    // Search the safefile index into this object
-    // TODO: Implement unlocking file
-  }
+
 
   /// Starts the process for saving all the safe files informations into the encrypted file.
   Future<void> saveInformations() async{

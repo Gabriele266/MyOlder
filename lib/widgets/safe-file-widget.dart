@@ -134,8 +134,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
   }
 
   void onWidgetPressed() {
-    print('Required open file. FileName: ${_safeFile.name}');
-    // TODO: Implement open file and unlock it
+    _safeFile.unlockAndOpen();
   }
 
   /// Shows the informations page relative to this file

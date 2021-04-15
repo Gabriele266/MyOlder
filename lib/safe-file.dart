@@ -2,11 +2,17 @@ import 'package:xml/xml.dart';
 import 'formatters/rgb-color-formatter.dart';
 import 'package:flutter/material.dart';
 import 'formatters/date-time-formatter.dart';
+import 'package:aes_crypt/aes_crypt.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// Represents a protected file into the application
 class SafeFile {
   // File name
   String _name;
+
+  // File suffix
+  String _suffix;
 
   // File description
   String _description;
@@ -38,6 +44,7 @@ class SafeFile {
   ///
   SafeFile(
       {@required String name,
+      @required String suffix,
       @required String savePath,
       String description,
       DateTime addedDateTime,
@@ -45,6 +52,7 @@ class SafeFile {
       List<String> tags}) {
     _name = name;
     _description = description;
+    _suffix = suffix;
     _addedDateTime = addedDateTime;
     _color = color;
     _savePath = savePath;
@@ -62,6 +70,7 @@ class SafeFile {
     _savePath = '';
     _color = null;
     _tags = [];
+    _suffix = '';
   }
 
   String get name => _name;
@@ -78,6 +87,8 @@ class SafeFile {
 
   List<String> get tags => _tags;
 
+  String get suffix => _suffix;
+
   set name(String name) => _name = name;
 
   set description(String description) => _description = description;
@@ -90,7 +101,9 @@ class SafeFile {
 
   set tags(List<String> tags) => _tags = tags;
 
-  set password (String passwd) => _password = passwd;
+  set password(String passwd) => _password = passwd;
+
+  set suffix(String suffix) => _suffix = suffix;
 
   /// Returns the tag with the given index
   String getTag(int index) => _tags[index];
@@ -118,52 +131,60 @@ class SafeFile {
   String toXmlString() {
     // Create document tree
     final builder = XmlBuilder();
-    builder.element('safe-file', nest: () {
-      builder.element('display-name', nest: () {
-        builder.text(_name);
-      });
-      builder.element('save-path', nest: () {
-        builder.text(_savePath);
-      });
-      builder.element('added-on', nest: (){
-        builder.text(DateTimeFormatter.complete(_addedDateTime).format());
-      });
-      builder.element('description', nest: (){
-        try{
-          builder.text(_description);
-        }on NoSuchMethodError catch (exception){
-          // Nothing
-          print('No description given for the safefile $_name');
-        }
-      });
-      builder.element('color', nest: () {
-        builder.attribute('format', 'rgb');
-        try {
-          builder.text(RgbColorFormatter.fromColor(_color).formatString());
-        }on NoSuchMethodError catch (exception){
-          print('No color given for the safefile $_name');
-        }
-      });
-      builder.element('password', nest: (){
-        builder.text(_password);
-      });
-      builder.element('tags', nest: (){
-        try{
-          for(var tag in _tags){
-            builder.element('tag', nest: (){
-              builder.text(tag);
-            });
+    try{
+      builder.element('safe-file', nest: () {
+        builder.element('display-name', nest: () {
+          builder.text(_name);
+        });
+        builder.element('save-path', nest: () {
+          builder.text(_savePath);
+        });
+        builder.element('added-on', nest: () {
+          builder.text(DateTimeFormatter.complete(_addedDateTime).format());
+        });
+        builder.element('description', nest: () {
+          try {
+            builder.text(_description);
+          } on NoSuchMethodError catch (exception) {
+            // Nothing
+            print('No description given for the safefile $_name');
           }
-        }on NoSuchMethodError catch (i){
-          print('Exception while formatting the tag elements for the safefile: $this');
-        }
+        });
+        builder.element('suffix', nest: () {
+          builder.text(_suffix);
+        });
+        builder.element('color', nest: () {
+          builder.attribute('format', 'rgb');
+          try {
+            builder.text(RgbColorFormatter.fromColor(_color).formatString());
+          } on NoSuchMethodError catch (exception) {
+            print('No color given for the safefile $_name');
+          }
+        });
+        builder.element('password', nest: () {
+          builder.text(_password);
+        });
+        builder.element('tags', nest: () {
+          try {
+            for (var tag in _tags) {
+              builder.element('tag', nest: () {
+                builder.text(tag);
+              });
+            }
+          } on NoSuchMethodError catch (i) {
+            print(
+                'Exception while formatting the tag elements for the safefile: $this');
+          }
+        });
       });
-    });
 
-    // Build the document and return his string
-    var document = builder.buildDocument();
+      // Build the document and return his string
+      var document = builder.buildDocument();
 
-    return document.toXmlString();
+      return document.toXmlString();
+    }catch(exc){
+      print('Failed loading of a safefile. ');
+    }
   }
 
   /// Loads the information about a safe file from a string (ideologically
@@ -176,37 +197,49 @@ class SafeFile {
     var file = SafeFile.empty();
 
     try {
-      file.name = source
-          .findElements('display-name')
-          .single
-          .text;
-      file.password = source
-          .findElements('password')
-          .single
-          .text;
-      file.savePath = source
-          .findElements('save-path')
-          .single
-          .text;
-      file.addedDateTime = DateTimeFormatter.completePattern().fromString(source
-          .findElements('added-on')
-          .single
-          .text);
-      file.description = source
-          .findElements('description')
-          .single
-          .text;
-      file.color = RgbColorFormatter.empty().fromString(source
-          .findElements('color')
-          .single
-          .text);
-    }on NoSuchMethodError catch (i){
+      file.name = source.findElements('display-name').single.text;
+      file.password = source.findElements('password').single.text;
+      file.savePath = source.findElements('save-path').single.text;
+      file.addedDateTime = DateTimeFormatter.completePattern()
+          .fromString(source.findElements('added-on').single.text);
+      file.suffix = source.findElements('suffix').single.text;
+      file.description = source.findElements('description').single.text;
+      file.color = RgbColorFormatter.empty()
+          .fromString(source.findElements('color').single.text);
+    } on NoSuchMethodError catch (i) {
       print('Exception during requesting informations from an XmlString. ');
       print(i);
       print(i.stackTrace);
+    }catch(i){
+      print('Exception during loading file a file');
     }
 
     return file;
+  }
+
+  /// Opens this file, decrypts his contents and opens it with the default app
+  Future<String> unlockAndOpen() async {
+    try {
+      // Search the safefile index into this object
+      // Read the file
+      var crt = AesCrypt(_password);
+      crt.setOverwriteMode(AesCryptOwMode.on);
+      // Get the temporary path
+      String path = '${(await getExternalStorageDirectory()).path}/$_name';
+      print('Decrypted file path: $path');
+      print('Decrypted file suffix: $_suffix');
+      // Decrypt all
+      crt.decryptFile(_savePath, path);
+
+      // Launch default viewer
+      // TODO: Implement builtin-viewer for images and documents
+
+      OpenFile.open(path);
+    } catch (i) {
+      print('Exception during unlocking file $_name');
+    }
+
+    return ' ';
   }
 
   @override
@@ -215,7 +248,9 @@ class SafeFile {
       ' Label color: $_color';
 
   /// Checks if this file is equal to another
-  bool isEqual(SafeFile file){
-    return (_name == file.name && _savePath == file.savePath && _addedDateTime == file.addedDateTime);
+  bool isEqual(SafeFile file) {
+    return (_name == file.name &&
+        _savePath == file.savePath &&
+        _addedDateTime == file.addedDateTime);
   }
 }

@@ -246,9 +246,11 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     if (file != null) {
       // The the single file to add
       PlatformFile object = file.files.first;
+      print('File suffix: ${object.extension}');
       // Create the safefile object
       var safe = SafeFile(
         name: object.name,
+        suffix: object.extension,
         savePath: '',
         addedDateTime: DateTime.now(),
         color: Colors.blue,
