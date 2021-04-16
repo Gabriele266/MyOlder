@@ -227,7 +227,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
                   // Configure the safe directory and the configuration file
                   final configurator = SafeFileManager(
                     user: _user,
-                    dirName: 'safe-dir',
+                    safeDirectory: 'safe-dir',
                   );
                   configurator.configureSafeDirectory();
                   // Save all the informations
