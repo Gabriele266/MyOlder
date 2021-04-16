@@ -3,25 +3,25 @@ import 'infoproperty-line.dart';
 
 class InfoPropertyLineAction extends StatefulWidget {
   // Property name
-  String _name;
+  final String name;
 
   // Property value
-  String _value;
+  final String value;
 
   // Icon to use for the actionIcon
-  Icon _actionIcon;
+  final Icon actionIcon;
 
   // Widget to overdraw the current widget when action pressed
-  Widget _overlayWidget;
+  final Widget overlayWidget;
 
   // Icon for the overlay
-  Icon _overlayIcon;
+  final Icon overlayIcon;
 
   // Function to call when the action is performed
-  void Function(String, String) _onActionPerformed;
+  final void Function(String, String) onActionPerformed;
 
   // Function to call when the overlay returns to normal view
-  void Function(String, String) _onOverlayPerformed;
+  final void Function(String, String) onOverlayPerformed;
 
   /// Creates a new instance of a property line information with a button
   ///
@@ -29,38 +29,30 @@ class InfoPropertyLineAction extends StatefulWidget {
   /// to perform an action. <br>
   /// [name] The name of the parameter <br>
   /// [value] The value of the parameter <br>
-  /// [overlay] A widget to show when the button is pressed replacing the value widget <br>
+  /// [overlayWidget] A widget to show when the button is pressed replacing the value widget <br>
   /// [actionIcon] An icon to set for the action button after the property value <br>
   /// [overlayIcon] An icon to set during the overlay phase of the widget <br>
   /// [onActionPerformed] The function to call when the action is performed <br>
   /// [onOverlayPerformed] The function to call when the overlay widget is hidden and the value widget is shown
   InfoPropertyLineAction(
-      {String name,
-      String value,
-      Icon actionIcon,
-      Widget overlay,
-      Icon overlayIcon,
-      void Function(String, String) onActionPerformed,
-      void Function(String, String) onOverlayPerformed
-  }) {
-    _name = name;
-    _value = value;
-    _actionIcon = actionIcon;
-    _overlayWidget = overlay;
-    _overlayIcon = overlayIcon;
-    _onOverlayPerformed = onOverlayPerformed;
-    _onActionPerformed = onActionPerformed;
-  }
+      {@required this.name,
+      @required this.value,
+      this.actionIcon,
+      this.onOverlayPerformed,
+      this.onActionPerformed,
+      this.overlayIcon,
+      this.overlayWidget});
 
   @override
-  _InfoPropertyLineActionState createState() => _InfoPropertyLineActionState(
-      name: _name,
-      value: _value,
-      actionIcon: _actionIcon,
-      overlay: _overlayWidget,
-      overlayIcon: _overlayIcon,
-      onActionPerformed: _onActionPerformed,
-      onOverlayPerformed: _onOverlayPerformed);
+  State<StatefulWidget> createState() => _InfoPropertyLineActionState(
+        name: name,
+        value: value,
+        actionIcon: actionIcon,
+        overlay: overlayWidget,
+        overlayIcon: overlayIcon,
+        onActionPerformed: onActionPerformed,
+        onOverlayPerformed: onOverlayPerformed,
+      );
 }
 
 class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
@@ -111,20 +103,18 @@ class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
         _overlay = !_overlay;
 
         // Check function to call
-        if(_overlay == true) {
-          if(_onActionPerformed != null){
+        if (_overlay == true) {
+          if (_onActionPerformed != null) {
             // Call function pointer
             _onActionPerformed(_name, _value);
           }
-        }
-        else{
-          if(_onOverlayPerformed != null){
+        } else {
+          if (_onOverlayPerformed != null) {
             _onOverlayPerformed(_name, _value);
           }
         }
       });
-    }
-    else{
+    } else {
       // Call function pointer
       _onActionPerformed(_name, _value);
     }
@@ -133,47 +123,53 @@ class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(top: 10, left: 30, right: 30, bottom: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              _name,
-              style: nameStyle,
-              textAlign: TextAlign.center,
-            ),
-            _overlay == false
-                ? Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 10, right: 20),
-                      child: Text(
-                        _value,
-                        style: valueStyle,
-                        textAlign: TextAlign.center,
-                      ),
+      padding: const EdgeInsets.only(top: 10, left: 30, right: 30, bottom: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            _name,
+            style: InfoPropertyLine.nameStyle,
+            textAlign: TextAlign.center,
+          ),
+          _overlay == false
+              ? Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 20),
+                    child: Text(
+                      _value,
+                      style: InfoPropertyLine.valueStyle,
+                      textAlign: TextAlign.center,
                     ),
-                  )
-                : Expanded(
-                    child: Padding(
-                    padding:
-                        EdgeInsets.only(top: 5, left: 10, right: 10, bottom: 5),
+                  ),
+                )
+              : Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 5, left: 10, right: 10, bottom: 5),
                     child: _overlayWidget,
-                  )),
-            if (_actionIcon != null && !_overlay)
-              Container(
-                width: 40,
-                height: 30,
-                child:
-                    IconButton(icon: _actionIcon, onPressed: onActionPerformed),
-              )
-            else if (_overlayIcon != null && _overlay)
-              Container(
-                width: 40,
-                height: 30,
-                child:
-                IconButton(icon: _overlayIcon, onPressed: onActionPerformed),
-              )
-          ],
-        ));
+                  ),
+                ),
+          if (_actionIcon != null && !_overlay)
+            Container(
+              width: 40,
+              height: 30,
+              child: IconButton(
+                icon: _actionIcon,
+                onPressed: onActionPerformed,
+              ),
+            )
+          else if (_overlayIcon != null && _overlay)
+            Container(
+              width: 40,
+              height: 30,
+              child: IconButton(
+                icon: _overlayIcon,
+                onPressed: onActionPerformed,
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }

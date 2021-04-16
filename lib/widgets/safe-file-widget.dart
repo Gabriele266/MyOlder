@@ -8,146 +8,168 @@ import 'package:myolder/formatters/date-time-formatter.dart';
 
 class SafeFileWidget extends StatefulWidget {
   // The file to show widget for
-  final SafeFile _safeFile;
+  final SafeFile safeFile;
 
   // A function to show widgets by tag
-  final void Function(String) _showByTag;
+  final void Function(String) showByTag;
 
   /// Creates an instance of a new SafeFileWidget
   ///
   /// This instance represents a widget to display informations about a safe file.
-  /// Parameter safeFile It represents the file from witch it sould take all the informations.
-  SafeFileWidget(this._safeFile, this._showByTag);
+  /// [safeFile] The file to show informations on
+  SafeFileWidget({@required this.safeFile, this.showByTag});
 
   @override
-  State<StatefulWidget> createState() {
-    return _SafeFileWidgetState(file: _safeFile, showByTagFunction: _showByTag);
-  }
+  State<StatefulWidget> createState() => _SafeFileWidgetState(
+        safeFile: safeFile,
+        showByTag: showByTag,
+      );
 }
 
 class _SafeFileWidgetState extends State<SafeFileWidget> {
-  SafeFile _safeFile;
-  void Function(String) _showByTag;
+  SafeFile safeFile;
+  final void Function(String) showByTag;
 
   /// Creates a new instance of the state for the safe file widget
   ///
-  /// [file] Represents the file to show informations for. <br>
-  /// [showByTagFunction] represents a function to call to order other widgets by tag <br>
-  _SafeFileWidgetState(
-      {@required SafeFile file, void Function(String) showByTagFunction}) {
-    _safeFile = file;
-    _showByTag = showByTagFunction;
-  }
+  /// [safeFile] Represents the file to show informations for. <br>
+  /// [showByTag] represents a function to call to order other widgets by tag <br>
+  _SafeFileWidgetState({
+    @required this.safeFile,
+    this.showByTag,
+  });
 
   @override
   Widget build(BuildContext context) {
     // Load a list with the showable tags
-    List<TagWidget> tagWidgets = [];
+    const List<TagWidget> tagWidgets = [];
+
     // Check if file has tags
-    if (_safeFile.hasTags()) {
+    if (safeFile.hasTags()) {
       for (int x = 0; x < 2; x++) {
-        if (_safeFile.existsTag(x)) {
-          tagWidgets.add(TagWidget(_showByTag, _safeFile.tags[x]));
+        if (safeFile.existsTag(x)) {
+          tagWidgets.add(
+            TagWidget(
+              showByTag: showByTag,
+              tag: safeFile.tags[x],
+            ),
+          );
         }
       }
     }
 
     return Padding(
-      padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
       child: Container(
         width: 360,
         height: 120,
         child: MaterialButton(
-            onPressed: onWidgetPressed,
-            color: Colors.grey[800],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                side: BorderSide(width: 1, color: Colors.black)),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
-                  child: Icon(Icons.file_present,
-                      size: Theme.of(context).iconTheme.size * 1.5,
-                      color: Colors.tealAccent),
+          onPressed: onWidgetPressed,
+          color: Colors.grey[800],
+          shape: RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(
+              const Radius.circular(20),
+            ),
+            side: const BorderSide(width: 1, color: Colors.black),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 20),
+                child: Icon(
+                  Icons.file_present,
+                  size: Theme.of(context).iconTheme.size * 1.5,
+                  color: Colors.tealAccent,
                 ),
-                Padding(
-                    padding: EdgeInsets.only(left: 15, top: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 150,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15, top: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 150,
+                      child: Text(
+                        safeFile.name,
+                        overflow: TextOverflow.clip,
+                        style: Theme.of(context).textTheme.headline3,
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Container(
+                        width: 150,
+                        child: Center(
                           child: Text(
-                            _safeFile.name,
+                            DateTimeFormatter.onlyDate(
+                              safeFile.addedDateTime,
+                            ).format(),
                             overflow: TextOverflow.clip,
-                            style: Theme.of(context).textTheme.headline3,
                             maxLines: 2,
-                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headline4,
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Container(
-                            width: 150,
-                            child: Center(
-                              child: Text(DateTimeFormatter.onlyDate(_safeFile.addedDateTime).format(),
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 2,
-                                  style: Theme.of(context).textTheme.headline4),
-                            ),
-                            )
-                        ),
-                        Container(
-                            padding: EdgeInsets.only(top: 18),
-                            width: 200,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: tagWidgets,
-                            ))
-                      ],
-                    )),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.search,
-                          size: Theme.of(context).iconTheme.size,
-                          color: Theme.of(context).iconTheme.color),
-                      onPressed: showInfoPage,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.delete,
-                        size: Theme.of(context).iconTheme.size,
-                        color: Colors.red,
                       ),
-                      onPressed: deleteFile,
-                    )
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 18),
+                      width: 200,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: tagWidgets,
+                      ),
+                    ),
                   ],
                 ),
-              ],
-            )),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.search,
+                      size: Theme.of(context).iconTheme.size,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                    onPressed: showInfoPage,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      size: Theme.of(context).iconTheme.size,
+                      color: Colors.red,
+                    ),
+                    onPressed: deleteFile,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   void onWidgetPressed() {
-    _safeFile.unlockAndOpen();
+    safeFile.unlockAndOpen();
   }
 
   /// Shows the informations page relative to this file
-  void showInfoPage() {
-    // Show the informations page
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return SafeFileInfoPage(_safeFile);
-    }));
-  }
+  void showInfoPage() => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return SafeFileInfoPage(safeFile);
+          },
+        ),
+      );
 
   /// Deletes this file
   void deleteFile() {
-    print('Required delete file. FileName: ${_safeFile.name}');
+    print('Required delete file. FileName: ${safeFile.name}');
     // TODO: Implement delete file
   }
 }

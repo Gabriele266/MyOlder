@@ -1,33 +1,43 @@
-import 'package:flutter/cupertino.dart';
-
 /// Created by gabriele on 14/04/21
 /// Stateless widget template
+
 import 'package:flutter/material.dart';
 
-/// A button with a text and an icon
 class IconTextButton extends StatelessWidget {
-  String _text;
-  Icon _icon;
-  void Function() _callback;
-  Color _background;
-  Color _foreground;
-  Color _border;
+  // Widget text
+  final String text;
 
-  /// A button with a text and an icon
-  IconTextButton(
-      {@required String text,
-      @required Icon icon,
-      @required void Function() callback,
-      Color foreground,
-      Color background,
-      Color border}) {
-    _text = text;
-    _icon = icon;
-    _callback = callback;
-    _foreground = foreground;
-    _background = background;
-    _border = border;
-  }
+  // Widget contents
+  final Icon icon;
+
+  // Function to call when the button is pressed
+  final void Function() callback;
+
+  // Background color of this button
+  final Color background;
+
+  // Foreground color of this button
+  final Color foreground;
+
+  // Border color of this button
+  final Color border;
+
+  /// Creates a new instance of a IconTextButton widget
+  ///
+  /// [text] The text of this widget
+  /// [icon] The icon of this widget
+  /// [callback] The function to call when this button is pressed
+  /// [border] The border color of this button
+  /// [background] The background color of this button
+  /// [foreground] The foreground color of this button used for text
+  IconTextButton({
+    @required this.text,
+    @required this.icon,
+    this.callback,
+    this.border,
+    this.background,
+    this.foreground,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,28 +45,36 @@ class IconTextButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         side: BorderSide(
           width: 1.5,
-          color: (_border != null) ? _border : Theme.of(context).primaryColor
+          color: (border != null) ? border : Theme.of(context).primaryColor,
         ),
-        borderRadius: BorderRadius.all(Radius.circular(30))
+        borderRadius: const BorderRadius.all(
+          const Radius.circular(30),
+        ),
       ),
-      color: (_background != null)
-          ? _background
+      color: (background != null)
+          ? background
           : Theme.of(context).appBarTheme.color,
       child: Row(
         children: [
-          if (_icon != null)
-            Padding(padding: EdgeInsets.only(left: 20), child: _icon),
+          if (icon != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: icon,
+            ),
           Padding(
-            padding: EdgeInsets.only(left: 15),
-            child: Text(_text,
-                style: TextStyle(
-                    color: (_foreground != null)
-                        ? _foreground
-                        : Theme.of(context).primaryColor)),
-          )
+            padding: const EdgeInsets.only(left: 15),
+            child: Text(
+              text,
+              style: TextStyle(
+                color: (foreground != null)
+                    ? foreground
+                    : Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
         ],
       ),
-      onPressed: _callback,
+      onPressed: callback,
     );
   }
 }

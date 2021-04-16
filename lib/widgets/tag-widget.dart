@@ -1,35 +1,43 @@
 import 'package:flutter/material.dart';
 
-class TagWidget extends StatelessWidget{
+class TagWidget extends StatelessWidget {
   // A function to show all the files ordered by tag
-  final void Function(String) _showByTag;
-  // The tag info to show
-  final String _tag;
+  final void Function(String) showByTag;
 
-  TagWidget(this._showByTag, this._tag);
+  // The tag info to show
+  final String tag;
+
+  /// Creates a new Instance of a TagWidget widget
+  ///
+  /// This widget represents a tag with all its properties
+  /// [tag] The tag name
+  /// [showByTag] The function to call when the user wan't to sort all the files by tag
+  TagWidget({@required this.tag, this.showByTag});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 30,
       child: MaterialButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            side: BorderSide(
-              width: 1,
-              color: Colors.black,
-            ),
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(
+            const Radius.circular(10),
           ),
-          child: Center(
-              child: Text(
-                  _tag,
-                  style: Theme.of(context).textTheme.headline5
-              )
+          side: const BorderSide(
+            width: 1,
+            color: Colors.black,
           ),
-          onPressed: (){
-            _showByTag(_tag);
-          }
-      )
+        ),
+        child: Center(
+          child: Text(
+            tag,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+        ),
+        onPressed: () {
+          showByTag(tag);
+        },
+      ),
     );
   }
 }

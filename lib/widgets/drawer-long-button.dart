@@ -3,38 +3,40 @@
 import 'package:flutter/material.dart';
 
 class DrawerLongButton extends StatelessWidget {
-  String _text;
-  void Function() _callBack;
-  Icon _icon;
+  final String text;
+  final void Function() callBack;
+  final Icon icon;
 
-  DrawerLongButton({Icon icon, String text, void Function() callBack}) {
-    _text = text;
-    _callBack = callBack;
-    _icon = icon;
-  }
+  /// Creates new instance of a DrawerLongButton
+  ///
+  /// It represents a long button with some properties
+  /// [text] The text of the button
+  /// [icon] The icon of the button
+  /// [callBack] The callback of the button
+  DrawerLongButton({@required this.text, this.callBack, this.icon});
 
   @override
   Widget build(BuildContext context) {
-    return Flex(
-      direction: Axis.horizontal,
-        children: [
+    return Flex(direction: Axis.horizontal, children: [
       Expanded(
-          child: MaterialButton(
-              onPressed: _callBack,
-              color: Theme.of(context).canvasColor,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  if (_icon != null)
-                    Padding(
-                      child: _icon,
-                      padding: EdgeInsets.only(right: 20),
-                    ),
-                  Text(
-                    _text,
-                  ),
-                ],
-              ))),
+        child: MaterialButton(
+          onPressed: callBack,
+          color: Theme.of(context).canvasColor,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              if (icon != null)
+                Padding(
+                  child: icon,
+                  padding: const EdgeInsets.only(right: 20),
+                ),
+              Text(
+                text,
+              ),
+            ],
+          ),
+        ),
+      ),
     ]);
   }
 }
