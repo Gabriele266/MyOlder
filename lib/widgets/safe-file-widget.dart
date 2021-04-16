@@ -161,9 +161,9 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
   void showInfoPage() => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) {
-            return SafeFileInfoPage(safeFile);
-          },
+          builder: (context) => SafeFileInfoPage(
+            file: safeFile,
+          ),
         ),
       );
 

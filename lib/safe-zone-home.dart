@@ -1,25 +1,28 @@
-import 'widgets/drawer-long-button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
 import 'widgets/safe-file-widget.dart';
 import 'safe-file.dart';
 import 'safe-file-manager.dart';
 import 'pages/login-page.dart';
+import 'widgets/drawer-long-button.dart';
 import 'myolder-user.dart';
+
 
 class SafeZoneHome extends StatefulWidget {
   // Logged User informations
   final MyOlderUser _user;
+
+  // The safefile manager inherited from other controls
   final SafeFileManager _manager;
 
   /// Creates a new instance of a safezonehome page with a logged user.
   SafeZoneHome(this._user, this._manager);
 
+  /// Creates the state of this of
   @override
-  State<StatefulWidget> createState() {
-    return _SafeZoneHome(_user, _manager);
-  }
+  State<StatefulWidget> createState() => _SafeZoneHome(_user, _manager);
 }
 
 class _SafeZoneHome extends State<SafeZoneHome> {
@@ -32,6 +35,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   // Safe file manager
   final SafeFileManager _manager;
 
+  /// Creates a new instance of this state
   _SafeZoneHome(this._user, this._manager);
 
   /// Initializes the state of the page
@@ -97,11 +101,14 @@ class _SafeZoneHome extends State<SafeZoneHome> {
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: _manager.safeFilesCount,
-                itemBuilder: (context, index) {
-                  return SafeFileWidget(
-                      _manager.safeFiles[index], (String tag) {});
-                }),
+              itemCount: _manager.safeFilesCount,
+              itemBuilder: (context, index) {
+                return SafeFileWidget(
+                  safeFile: _manager.safeFiles[index],
+                  showByTag: (String tag) {},
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -258,6 +265,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     }
   }
 
+  /// Clears the safezone removing all the files
   Future<void> clearSafeZone() async {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return AlertDialog(
@@ -286,18 +294,22 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     }));
   }
 
+  /// Shows the application faq
   Future<void> showApplicationFAQ() async {
     // TODO: Implement application faq
   }
 
+  /// Shows the user settings page
   Future<void> showUserSettings() async {
     // TODO: Implement user settings
   }
 
+  /// Shows the application informations
   Future<void> showApplicationInformations() async {
     // TODO: Implement application informations
   }
 
+  /// Shows the application settings
   Future<void> showApplicationSettings() async {
     // TODO: Implement application settings
   }
