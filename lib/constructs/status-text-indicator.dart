@@ -1,6 +1,5 @@
 /// Created by gabriele on 14/04/21
 /// Project myolder
-import 'package:flutter/material.dart';
 
 enum StatusType{
   Success,
@@ -16,10 +15,12 @@ class StatusTextIndicator {
   // The default text
   final String _defaultText;
 
+  // ignore: unnecessary_getters_setters
   set text (String text) {
     _appliedText = text;
   }
 
+  // ignore: unnecessary_getters_setters
   String get text => _appliedText;
   String get defaultText => _defaultText;
 
@@ -54,6 +55,8 @@ class StatusTextIndicator {
         return 'Success';
       case StatusType.Warning:
         return 'Warning';
+      default:
+        return null;
     }
   }
 

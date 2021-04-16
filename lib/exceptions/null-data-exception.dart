@@ -1,7 +1,3 @@
-/// Created on 31/03/21 from gabriele
-/// Project myolder
-/// NullDataException
-import 'package:flutter/material.dart';
 
 class NullDataException implements Exception{
     final String function;

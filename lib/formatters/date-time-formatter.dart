@@ -1,8 +1,10 @@
 import 'formatting-exception.dart';
+import 'package:myolder/exceptions/null-data-exception.dart';
 
 class DateTimeFormatter {
   // DateTime to format
   DateTime _dateTime;
+
   // Pattern to use
   String _pattern;
 
@@ -24,13 +26,13 @@ class DateTimeFormatter {
     _pattern = 'dd/mm/yy-hh:MM:ss:ms';
   }
 
-  DateTimeFormatter.onlyDate(DateTime dateTime){
+  DateTimeFormatter.onlyDate(DateTime dateTime) {
     _pattern = 'dd/mm/yy';
     _dateTime = dateTime;
   }
 
   /// Creates a new instance of a datetimeformatter with a complete pattern and no datetime set
-  DateTimeFormatter.completePattern(){
+  DateTimeFormatter.completePattern() {
     _pattern = 'dd/mm/yy-hh:MM:ss:ms';
   }
 
@@ -39,6 +41,7 @@ class DateTimeFormatter {
   DateTimeFormatter.dateTime(this._dateTime);
 
   set pattern(String pattern) => _pattern = pattern;
+
   set dateTime(DateTime dateTime) => _dateTime = dateTime;
 
   String get pattern => _pattern;
@@ -75,16 +78,16 @@ class DateTimeFormatter {
   }
 
   /// Returns the time pattern taken from the [_pattern]
-  String getTimePattern(){
+  String getTimePattern() {
     var split = _pattern.split('-');
-    if(split[0].contains(':')) return split[0];
+    if (split[0].contains(':')) return split[0];
     return split[1];
   }
 
   /// Returns the time pattern element at the given index
   ///
   /// [index] The index of the element
-  String getTimePatternElement(int index){
+  String getTimePatternElement(int index) {
     var split = getTimePattern().split(':');
     return split[index];
   }
@@ -92,9 +95,9 @@ class DateTimeFormatter {
   /// Formats the given datetime to the string using the pattern
   ///
   /// ** Requires that the [_dateTime] has been set **
-  String format(){
+  String format() {
     String result = _pattern;
-    try{
+    try {
       // Replace pattern elements
       result = result.replaceAll('dd', _dateTime.day.toString());
       result = result.replaceAll('mm', _dateTime.month.toString());
@@ -105,9 +108,12 @@ class DateTimeFormatter {
       result = result.replaceAll('ss', _dateTime.second.toString());
       result = result.replaceAll('ms', _dateTime.microsecond.toString());
       return result;
-    }catch(exception){
-      print('Exception during formatting a DateTime using DateTimeFormatter. StackTrace: ${exception}');
+    } catch (exception) {
+      print(
+          'Exception during formatting a DateTime using DateTimeFormatter. StackTrace: $exception');
     }
+
+    return null;
   }
 
   /// Reads the informations about a date from the given string applying the pattern
@@ -127,10 +133,15 @@ class DateTimeFormatter {
       // get current date pattern element
       var elemType = getDatePatternElement(x);
       // Check assigning
-      if (elemType == 'dd') day = int.parse(split[x]);
-      else if (elemType == 'mm') month = int.parse(split[x]);
-      else if (elemType == 'yy') year = int.parse(split[x]);
-      else throw FormattingException(' parsing a date from the string $dateSource');
+      if (elemType == 'dd')
+        day = int.parse(split[x]);
+      else if (elemType == 'mm')
+        month = int.parse(split[x]);
+      else if (elemType == 'yy')
+        year = int.parse(split[x]);
+      else
+        throw FormattingException(
+            ' parsing a date from the string $dateSource');
     }
     // Construct a datetime object and return it
     return DateTime(year, month, day);
@@ -151,14 +162,19 @@ class DateTimeFormatter {
     int second;
     int millisecond = 0;
 
-    for(int x = 0; x < elemCount; x++){
-        var elemType = getTimePatternElement(x);
+    for (int x = 0; x < elemCount; x++) {
+      var elemType = getTimePatternElement(x);
 
-        if(elemType == 'hh') hour = int.parse(div[x]);
-        else if(elemType == 'MM') minute = int.parse(div[x]);
-        else if(elemType == 'ss') second = int.parse(div[x]);
-        else if(elemType == 'ms') millisecond = int.parse(div[x]);
-        else throw FormattingException(' parsing time from the string: $timeSource');
+      if (elemType == 'hh')
+        hour = int.parse(div[x]);
+      else if (elemType == 'MM')
+        minute = int.parse(div[x]);
+      else if (elemType == 'ss')
+        second = int.parse(div[x]);
+      else if (elemType == 'ms')
+        millisecond = int.parse(div[x]);
+      else
+        throw FormattingException(' parsing time from the string: $timeSource');
     }
     // Create a datetime object and return it
     return DateTime(0, 0, 0, hour, minute, second, millisecond);
@@ -172,7 +188,7 @@ class DateTimeFormatter {
     if (source != '') {
       if (_pattern != '') {
         // Get the two parts of the pattern
-        var div = source.split('-');
+        final div = source.split('-');
         String dateString;
         String timeString;
         // Check if first is date or time
@@ -185,12 +201,30 @@ class DateTimeFormatter {
         }
 
         // Start format
-        DateTime date = dateFromString(dateString);
-        DateTime time = timeFromString(timeString);
+        final DateTime date = dateFromString(dateString);
+        final DateTime time = timeFromString(timeString);
 
         // Create a complete datetime and return it
-        return DateTime(date.year, date.month, date.day, time.hour, time.minute, time.second, time.millisecond);
+        return DateTime(
+          date.year,
+          date.month,
+          date.day,
+          time.hour,
+          time.minute,
+          time.second,
+          time.millisecond,
+        );
+      } else {
+        throw NullDataException(
+          data: '_pattern',
+          operationDescription: 'Parsing a string to a DateTime. ',
+          function: 'DateTimeFormatter.fromString',
+        );
       }
-    }
+    }else throw NullDataException(
+      data: 'source',
+      function: 'DateTimeFormatter.fromString',
+      operationDescription: 'Parsing a string to a DateTime. ',
+    );
   }
 }

@@ -1,6 +1,3 @@
-/// Created on 31/03/21 from gabriele
-/// Project myolder
-import 'package:flutter/material.dart';
 
 class ManagerAddToListException implements Exception{
     final Object _object;
