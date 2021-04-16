@@ -169,7 +169,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
 
   /// Deletes this file
   void deleteFile() {
-    print('Required delete file. FileName: ${safeFile.name}');
     // TODO: Implement delete file
+    print('Required delete file. FileName: ${safeFile.name}');
   }
 }
