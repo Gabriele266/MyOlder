@@ -2,7 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class NewUserInfoPage extends StatelessWidget{
+class NewUserInfoPage extends StatelessWidget {
+  /// Creates a new NewUserInfoPage
+  ///
+  /// The page shows informations about the creation of a new user
+  NewUserInfoPage();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,66 +15,66 @@ class NewUserInfoPage extends StatelessWidget{
       appBar: AppBar(
         title: Text(
           'New user informations',
-          style: Theme.of(context).textTheme.headline1
-        )
+          style: Theme.of(context).textTheme.headline1,
+        ),
       ),
       body: Center(
         child: Container(
-          margin: EdgeInsets.only(left: 10, right: 10),
+          margin: const EdgeInsets.only(left: 10, right: 10),
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 30, left: 20),
+                padding: const EdgeInsets.only(top: 30, left: 20),
                 child: Text(
                   'New user creation informations',
                   style: Theme.of(context).textTheme.headline1,
                   textAlign: TextAlign.center,
-                )
+                ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.only(top: 10),
                 child: Text(
                   'To set up a safe-zone you need to create a user that can access the files. ',
                   style: Theme.of(context).textTheme.headline2,
                   textAlign: TextAlign.center,
-                )
+                ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 30),
                 child: Text(
                   'User informations',
-                  style: Theme.of(context).textTheme.headline1
-                )
+                  style: Theme.of(context).textTheme.headline1,
+                ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.only(top: 10),
                 child: Text(
                   'In order to create a new user for this safe zone, you have to provide us some informations. You should give it a '
-                      'UserName and assign a password. This two will be asked at every log-in. ',
+                  'UserName and assign a password. This two will be asked at every log-in. ',
                   style: Theme.of(context).textTheme.headline2,
                   textAlign: TextAlign.center,
-                )
+                ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 30),
                 child: Text(
                   'Rules',
                   style: Theme.of(context).textTheme.headline1,
                   textAlign: TextAlign.center,
-                )
+                ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.only(top: 10),
                 child: Text(
                   'Follow this simple rules: The username must only contain lower case characters or numbers, and the password should be longer than 6 characters. Thank you!!!',
                   style: Theme.of(context).textTheme.headline2,
                   textAlign: TextAlign.center,
-                )
-              )
+                ),
+              ),
             ],
-          )
-        )
-      )
+          ),
+        ),
+      ),
     );
   }
 }

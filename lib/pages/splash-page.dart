@@ -1,14 +1,16 @@
+import 'package:flutter/material.dart';
+
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
 import '../user-file-manager.dart';
 import '../myolder-user.dart';
 import 'package:myolder/safe-file-manager.dart';
 import 'package:myolder/widgets/double-action-alert.dart';
 
 class SplashPage extends StatefulWidget{
-  String _message = ' ';
+  // The message of this widget
+  final String message;
 
   /// Creates a new instance of a SplashPage to display during the application startup.
   ///
@@ -16,13 +18,11 @@ class SplashPage extends StatefulWidget{
   /// The page should display informations about the operation in progress,<br>
   /// and has the same color of the appBar. <br>
   /// It shows the login page or the rootcreatepage if there aren't users
-  SplashPage({String message = ' '}) : super(){
-    _message = message;
-  }
+  SplashPage({this.message = ' '}) : super();
 
   @override
   State<StatefulWidget> createState(){
-    return _SplashPageState(message: _message);
+    return _SplashPageState(message: message);
   }
 }
 
@@ -59,15 +59,15 @@ class _SplashPageState extends State<SplashPage>{
       Navigator.push(context, MaterialPageRoute(builder: (context){
         return DoubleActionAlert(
           title: 'Problems detected',
-          content: 'MyOlder has detected some file issues, resolve them by deleting all? You will lose all your data. '
+          contents: 'MyOlder has detected some file issues, resolve them by deleting all? You will lose all your data. '
               'If you wont perform this operation, you wont be able to use them anymore. ',
-          firstAction: 'Yes, i accept',
-          firstCallback: (){
+          firstActionText: 'Yes, i accept',
+          firstAction: (){
             // Delete all configurations
             deleteAllConfigurations(fileReader);
           },
-          secondAction: 'No, leave all',
-          secondCallback: (){
+          secondActionText: 'No, leave all',
+          secondAction: (){
             Navigator.pop(context);
             exit(0);
           },
