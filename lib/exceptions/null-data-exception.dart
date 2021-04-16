@@ -4,18 +4,19 @@
 import 'package:flutter/material.dart';
 
 class NullDataException implements Exception{
+    final String function;
+    final String operationDescription;
+    final String data;
 
     /// Creates a new instance of a NullDataException with a function name and
     /// an operation description.
-    NullDataException(this._function, this._operationDescription);
-
-    final String _function;
-    final String _operationDescription;
-
-    String get function => _function;
-    String get operation => _operationDescription;
+    ///
+    /// [function] The function that has been executed
+    /// [operationDescription] A description to the operation
+    /// [data] The data that was needed
+    NullDataException({this.function, this.operationDescription, this.data});
 
     @override
-    String toString() => '\nNullDataException: A null data object was passed to the function $_function during '
-        'the operation: $_operationDescription. ';
+    String toString() => '\nNullDataException: A null data object was passed to the function $function during '
+        'the operation: $operationDescription. ';
 }
