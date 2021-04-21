@@ -21,7 +21,8 @@ class LoginPage extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _LoginNormalState(initialBanner: banner);
+  State<StatefulWidget> createState() =>
+      _LoginNormalState(initialBanner: banner);
 }
 
 class _LoginNormalState extends State<LoginPage> {
@@ -169,6 +170,12 @@ class _LoginNormalState extends State<LoginPage> {
                             size: 20,
                             color: Colors.white,
                           ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Theme.of(context).accentColor,
+                              width: 2,
+                            ),
+                          ),
                           border: const OutlineInputBorder(
                             borderRadius: const BorderRadius.all(
                               const Radius.circular(10),
@@ -184,26 +191,28 @@ class _LoginNormalState extends State<LoginPage> {
                         child: TextField(
                           obscureText: _hidePassword,
                           decoration: InputDecoration(
-                            suffix: SizedBox(
-                              width: 30,
-                              height: 30,
-                              child: IconButton(
-                                icon: Icon(
-                                  _hidePassword == true
-                                      ? Icons.remove_red_eye
-                                      : Icons.clear_rounded,
-                                  size: 25,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  setState(
-                                    () {
-                                      // Invert the state of the password visibility
-                                      _hidePassword = !_hidePassword;
-                                    },
-                                  );
-                                },
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).accentColor,
+                                width: 2,
                               ),
+                            ),
+                            suffix: IconButton(
+                              icon: Icon(
+                                _hidePassword == true
+                                    ? Icons.remove_red_eye
+                                    : Icons.clear_rounded,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                setState(
+                                  () {
+                                    // Invert the state of the password visibility
+                                    _hidePassword = !_hidePassword;
+                                  },
+                                );
+                              },
                             ),
                             prefixIcon: Icon(
                               Icons.insert_link,
@@ -365,7 +374,8 @@ class _LoginNormalState extends State<LoginPage> {
       );
     }
     // Otherwise execute login
-    else performLogin();
+    else
+      performLogin();
   }
 
   @override
