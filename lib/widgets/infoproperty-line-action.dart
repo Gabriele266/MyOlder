@@ -151,22 +151,14 @@ class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
                   ),
                 ),
           if (_actionIcon != null && !_overlay)
-            Container(
-              width: 40,
-              height: 30,
-              child: IconButton(
-                icon: _actionIcon,
-                onPressed: onActionPerformed,
-              ),
+            IconButton(
+              icon: _actionIcon,
+              onPressed: onActionPerformed,
             )
           else if (_overlayIcon != null && _overlay)
-            Container(
-              width: 40,
-              height: 30,
-              child: IconButton(
-                icon: _overlayIcon,
-                onPressed: onActionPerformed,
-              ),
+            IconButton(
+              icon: _overlayIcon,
+              onPressed: onActionPerformed,
             ),
         ],
       ),
