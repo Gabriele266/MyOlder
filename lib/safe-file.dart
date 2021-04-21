@@ -131,7 +131,7 @@ class SafeFile {
   String toXmlString() {
     // Create document tree
     final builder = XmlBuilder();
-    try{
+    try {
       builder.element('safe-file', nest: () {
         builder.element('display-name', nest: () {
           builder.text(_name);
@@ -182,7 +182,7 @@ class SafeFile {
       var document = builder.buildDocument();
 
       return document.toXmlString();
-    }catch(exc){
+    } catch (exc) {
       print('Failed loading of a safefile. ');
     }
   }
@@ -210,7 +210,7 @@ class SafeFile {
       print('Exception during requesting informations from an XmlString. ');
       print(i);
       print(i.stackTrace);
-    }catch(i){
+    } catch (i) {
       print('Exception during loading file a file');
     }
 
@@ -232,8 +232,6 @@ class SafeFile {
       crt.decryptFile(_savePath, path);
 
       // Launch default viewer
-      // TODO: Implement builtin-viewer for images and documents
-
       OpenFile.open(path);
     } catch (i) {
       print('Exception during unlocking file $_name');

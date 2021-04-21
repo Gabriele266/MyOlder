@@ -13,22 +13,33 @@ class SafeFileWidget extends StatefulWidget {
   // A function to show widgets by tag
   final void Function(String) showByTag;
 
+  // Function to delete this widget
+  final void Function(SafeFile) deleteSafeFile;
+
   /// Creates an instance of a new SafeFileWidget
   ///
   /// This instance represents a widget to display informations about a safe file.
   /// [safeFile] The file to show informations on
-  SafeFileWidget({@required this.safeFile, this.showByTag});
+  /// [showByTag] The function to call for showing all the widget by their tag
+  /// [deleteSafeFile] The function to call for deleting this safefile
+  SafeFileWidget({
+    @required this.safeFile,
+    this.showByTag,
+    this.deleteSafeFile,
+  });
 
   @override
   State<StatefulWidget> createState() => _SafeFileWidgetState(
         safeFile: safeFile,
         showByTag: showByTag,
+        deleteSafeFile: deleteSafeFile,
       );
 }
 
 class _SafeFileWidgetState extends State<SafeFileWidget> {
   SafeFile safeFile;
   final void Function(String) showByTag;
+  final void Function(SafeFile) deleteSafeFile;
 
   /// Creates a new instance of the state for the safe file widget
   ///
@@ -37,6 +48,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
   _SafeFileWidgetState({
     @required this.safeFile,
     this.showByTag,
+    this.deleteSafeFile,
   });
 
   @override
@@ -169,7 +181,6 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
 
   /// Deletes this file
   void deleteFile() {
-    // TODO: Implement delete file
-    print('Required delete file. FileName: ${safeFile.name}');
+    deleteSafeFile(safeFile);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:myolder/exceptions/element-not-found-exception.dart';
 
 import 'widgets/safe-file-widget.dart';
 import 'safe-file.dart';
@@ -8,7 +9,6 @@ import 'safe-file-manager.dart';
 import 'pages/login-page.dart';
 import 'widgets/drawer-long-button.dart';
 import 'myolder-user.dart';
-
 
 class SafeZoneHome extends StatefulWidget {
   // Logged User informations
@@ -49,6 +49,23 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     setState(() {
       // Load widgets
     });
+  }
+
+  /// Deletes the safe file
+  void _deleteSafeFile(SafeFile file) {
+    try {
+      // Search for the file
+      final fileIndex = _manager.searchSafeFile(file);
+
+      // Set the new state
+      setState(() {
+        _manager.removeSafeFile(fileIndex);
+      });
+    } on ElementNotFoundException catch (exc) {
+      print(
+          'Element not found exception. Exception during removing file $file');
+      print(exc);
+    }
   }
 
   @override
@@ -106,6 +123,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
                 return SafeFileWidget(
                   safeFile: _manager.safeFiles[index],
                   showByTag: (String tag) {},
+                  deleteSafeFile: _deleteSafeFile,
                 );
               },
             ),
