@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:myolder/safe-file.dart';
-import 'package:myolder/widgets/infoproperty-line-action.dart';
-import 'package:myolder/widgets/infoproperty-line.dart';
+import '../constructs/safe-file.dart';
+import '../widgets/infoproperty-line-action.dart';
+import '../widgets/infoproperty-line.dart';
 
 class SafeFileInfoPage extends StatefulWidget {
   final SafeFile file;
@@ -65,83 +65,92 @@ class _SafeFileInfoPageState extends State<StatefulWidget> {
                   right: 30,
                 ),
                 children: [
-                  Card(
-                    elevation: 1,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(10),
-                      ),
-                    ),
-                    color: Theme.of(context).canvasColor,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: Text(
-                            'Details',
-                            style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                  Opacity(
+                    opacity: 0.8,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(width: 2),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.blue[200],
+                            Colors.tealAccent,
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 30,
-                            bottom: 30,
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Text(
+                              'Details',
+                              style: TextStyle(
+                                color: Theme.of(context).accentColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                          child: Column(
-                            children: [
-                              InfoPropertyLine(
-                                name: 'Name',
-                                value: _file.name,
-                              ),
-                              InfoPropertyLine(
-                                name: 'Path',
-                                value: _file.savePath,
-                              ),
-                              InfoPropertyLineAction(
-                                name: 'Info',
-                                value: description,
-                                actionIcon: Icon(
-                                  Icons.edit,
-                                  size: Theme.of(context).iconTheme.size,
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 30,
+                              bottom: 30,
+                            ),
+                            child: Column(
+                              children: [
+                                InfoPropertyLine(
+                                  name: 'Name',
+                                  value: _file.name,
                                 ),
-                                overlayWidget: TextField(
-                                  maxLines: 4,
-                                  controller: controller,
-                                  decoration: InputDecoration(
-                                    border: const OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                        const Radius.circular(10),
-                                      ),
-                                      borderSide: const BorderSide(
-                                        color: Colors.black,
-                                        width: 2,
+                                InfoPropertyLine(
+                                  name: 'Path',
+                                  value: _file.savePath,
+                                ),
+                                InfoPropertyLineAction(
+                                  name: 'Info',
+                                  value: description,
+                                  actionIcon: Icon(
+                                    Icons.edit,
+                                    size: Theme.of(context).iconTheme.size,
+                                  ),
+                                  overlayWidget: TextField(
+                                    maxLines: 4,
+                                    controller: controller,
+                                    decoration: InputDecoration(
+                                      border: const OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(10),
+                                        ),
+                                        borderSide: const BorderSide(
+                                          color: Colors.black,
+                                          width: 2,
+                                        ),
                                       ),
                                     ),
                                   ),
+                                  overlayIcon: Icon(
+                                    Icons.check,
+                                    size: Theme.of(context).iconTheme.size,
+                                    color: Theme.of(context).iconTheme.color,
+                                  ),
+                                  onOverlayPerformed: (name, value) {
+                                    // Give informations about the accepted text
+                                    print(
+                                        'Overlay accepted: ${controller.text}');
+                                    // Set it as new
+                                    setState(
+                                      () => _file.description = controller.text,
+                                    );
+                                  },
                                 ),
-                                overlayIcon: Icon(
-                                  Icons.check,
-                                  size: Theme.of(context).iconTheme.size,
-                                  color: Theme.of(context).iconTheme.color,
-                                ),
-                                onOverlayPerformed: (name, value) {
-                                  // Give informations about the accepted text
-                                  print('Overlay accepted: ${controller.text}');
-                                  // Set it as new
-                                  setState(
-                                    () => _file.description = controller.text,
-                                  );
-                                },
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
