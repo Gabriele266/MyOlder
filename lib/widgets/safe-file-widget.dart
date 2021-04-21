@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../pages/safe-file-info-page.dart';
 import 'package:flutter/material.dart';
-import '../safe-file.dart';
+import '../constructs/safe-file.dart';
 import 'tag-widget.dart';
 import 'package:myolder/formatters/date-time-formatter.dart';
 

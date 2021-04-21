@@ -36,11 +36,11 @@ class _LoginNormalState extends State<LoginPage> {
   int _failedLogins = 0;
 
   // Controller dell' editing delle caselle
-  var _userController = TextEditingController();
-  var _passController = TextEditingController();
+  final _userController = TextEditingController();
+  final _passController = TextEditingController();
 
   // Keyboard input controller
-  var _keyboardController = KeyboardVisibilityNotification();
+  final _keyboardController = KeyboardVisibilityNotification();
   var _onPressedHandler;
 
   // Login timer to control access times

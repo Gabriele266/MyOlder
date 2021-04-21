@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:myolder/exceptions/element-not-found-exception.dart';
 
 import 'widgets/safe-file-widget.dart';
-import 'safe-file.dart';
+import 'constructs/safe-file.dart';
 import 'safe-file-manager.dart';
 import 'pages/login-page.dart';
 import 'widgets/drawer-long-button.dart';
@@ -72,6 +72,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Safe zone', style: Theme.of(context).textTheme.headline1),
         actions: [
           IconButton(

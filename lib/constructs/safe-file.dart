@@ -1,7 +1,7 @@
 import 'package:xml/xml.dart';
-import 'formatters/rgb-color-formatter.dart';
+import '../formatters/rgb-color-formatter.dart';
 import 'package:flutter/material.dart';
-import 'formatters/date-time-formatter.dart';
+import '../formatters/date-time-formatter.dart';
 import 'package:aes_crypt/aes_crypt.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';

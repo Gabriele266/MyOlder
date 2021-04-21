@@ -51,6 +51,9 @@ class InfoPropertyLine extends StatelessWidget {
   /// The style used for names
   static const TextStyle valueStyle = TextStyle(
     fontSize: 16,
-    color: Colors.white,
+    color: Colors.black,
+    fontFamily: 'Courier New',
+    fontWeight: FontWeight.bold,
+    letterSpacing: 0.5,
   );
 }

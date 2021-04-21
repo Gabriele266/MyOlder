@@ -19,7 +19,9 @@ class MyOlderApp extends StatelessWidget {
         accentColor: Colors.yellow[800],
         canvasColor: Colors.grey[600],
         buttonTheme: ButtonThemeData(
-            buttonColor: Colors.redAccent, textTheme: ButtonTextTheme.normal),
+          buttonColor: Colors.redAccent,
+          textTheme: ButtonTextTheme.normal,
+        ),
         textTheme: TextTheme(
           headline1: TextStyle(
             color: Colors.white,
