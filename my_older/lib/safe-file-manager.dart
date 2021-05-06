@@ -82,6 +82,8 @@ class SafeFileManager {
   }
 
   /// Removes the given file index from the list
+  /// 
+  /// [index] The index of the file to remove
   void removeSafeFile(int index) {
     try {
       // Delete the file from the disk
@@ -99,7 +101,7 @@ class SafeFileManager {
   /// Search a specific safe file into this manager
   ///
   /// [file] The file to search for
-  /// Returns his index into the list
+  /// Returns his 'index' into the list
   int searchSafeFile(SafeFile file) {
     for (int x = 0; x < _safeFiles.length; x++) {
       if (file.isEqual(_safeFiles[x])) {
