@@ -4,7 +4,10 @@ class DirectoryNotFoundException implements Exception {
   final String directory;
   final String additionalMessage;
 
-  // TODO: Document this constructor
+  /// Creates a new [DirectoryNotFoundException] 
+  /// 
+  /// Represents an exception thrown when a required [directory]
+  /// isn't found. If you wish you can add an [additionalMessage] to display among with this exception
   const DirectoryNotFoundException({@required this.directory, this.additionalMessage});
 
   @override
