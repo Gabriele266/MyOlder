@@ -13,6 +13,7 @@ class RootCreatePage extends StatefulWidget {
   State<StatefulWidget> createState() => _RootCreatePageState();
 }
 
+// TODO: Make RootCreatePage page responsive and adaptive
 class _RootCreatePageState extends State<RootCreatePage> {
   // Spazio tra i controlli attuale
   var spaceBetween = 30.0;
@@ -56,6 +57,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
     });
   }
 
+  // TODO: Optimize build function using final variables for [Theme.of] and [MediaQuery.of]
   @override
   Widget build(BuildContext context) {
     // Format the internal message
@@ -121,6 +123,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
               ),
               child: TextField(
                 controller: _userController,
+                // TODO: Use Theme decoration instead of custom one
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
@@ -144,7 +147,9 @@ class _RootCreatePageState extends State<RootCreatePage> {
               ),
               child: TextField(
                 obscureText: hidePassword,
+                keyboardType: TextInputType.text,
                 controller: _passController,
+                // TODO: Use Theme decoration instead of custom one
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(
                     borderRadius: const BorderRadius.all(

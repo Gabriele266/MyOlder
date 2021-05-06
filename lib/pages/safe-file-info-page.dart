@@ -17,22 +17,19 @@ class SafeFileInfoPage extends StatefulWidget {
   SafeFileInfoPage({@required this.file});
 
   @override
-  State<StatefulWidget> createState() => _SafeFileInfoPageState(file);
+  State<StatefulWidget> createState() => _SafeFileInfoPageState();
 }
 
-class _SafeFileInfoPageState extends State<StatefulWidget> {
-  // File to show informations for
-  final SafeFile _file;
-
+// TODO: Make this page responsive and adaptive
+// TODO: Add use of theme
+class _SafeFileInfoPageState extends State<SafeFileInfoPage> {
   // TextEditingController
-  TextEditingController controller;
+  final controller = TextEditingController();
 
-  /// Initializes a new instance of a page to show informations about a safe file
-  ///
-  /// The file should be given and shouldn't be null.
-  _SafeFileInfoPageState(this._file) {
-    // Create the textediting controller and give it an initial value text
-    controller = TextEditingController(text: _file.description);
+  @override
+  void initState() {
+    super.initState();
+    // Add an empty listener
     controller.addListener(() {});
   }
 
@@ -40,12 +37,12 @@ class _SafeFileInfoPageState extends State<StatefulWidget> {
   @override
   Widget build(BuildContext context) {
     String description;
-    if (_file.description != null)
-      description = _file.description;
+    if (widget.file.description != null)
+      description = widget.file.description;
     else
       description = "";
 
-    if (_file != null) {
+    if (widget.file != null) {
       return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
@@ -97,11 +94,11 @@ class _SafeFileInfoPageState extends State<StatefulWidget> {
                             children: [
                               InfoPropertyLine(
                                 name: 'Name',
-                                value: _file.name,
+                                value: widget.file.name,
                               ),
                               InfoPropertyLine(
                                 name: 'Path',
-                                value: _file.savePath,
+                                value: widget.file.savePath,
                               ),
                               InfoPropertyLineAction(
                                 name: 'Info',
@@ -135,7 +132,7 @@ class _SafeFileInfoPageState extends State<StatefulWidget> {
                                   print('Overlay accepted: ${controller.text}');
                                   // Set it as new
                                   setState(
-                                    () => _file.description = controller.text,
+                                    () => widget.file.description = controller.text,
                                   );
                                 },
                               ),
@@ -150,15 +147,15 @@ class _SafeFileInfoPageState extends State<StatefulWidget> {
                       children: [
                         InfoPropertyLine(
                           name: 'Date',
-                          value: DateFormat.yMd().format(_file.addedDateTime),
+                          value: DateFormat.yMd().format(widget.file.addedDateTime),
                         ),
                         InfoPropertyLine(
                           name: 'Time',
-                          value: DateFormat.Hm().format(_file.addedDateTime),
+                          value: DateFormat.Hm().format(widget.file.addedDateTime),
                         ),
                         InfoPropertyLine(
                           name: 'Suffix',
-                          value: _file.suffix,
+                          value: widget.file.suffix,
                         ),
                       ],
                     ),
@@ -180,8 +177,8 @@ class _SafeFileInfoPageState extends State<StatefulWidget> {
                       ),
                     ),
                     child: Column(
-                      children: (_file.tags.isNotEmpty)
-                          ? _file.tags.map((tag) {
+                      children: (widget.file.tags.isNotEmpty)
+                          ? widget.file.tags.map((tag) {
                               return TagWidget(
                                 tag: tag,
                                 showByTag: null,

@@ -7,6 +7,7 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Represents a protected file into the application
+/// TODO: Make all fields public and remove getters/setters
 class SafeFile {
   // File name
   String _name;
@@ -128,6 +129,7 @@ class SafeFile {
   /// Converts the informations of this safe file into a save-able string
   /// to be used into text files. It is composed of a series of property-value lines
   /// separated by a :.
+  /// TODO: Fix return type issues
   String toXmlString() {
     // Create document tree
     final builder = XmlBuilder();
@@ -240,15 +242,15 @@ class SafeFile {
     return ' ';
   }
 
-  @override
-  String toString() =>
-      'SafeFile $_name. Created on: $_addedDateTime. Optional description: $_description. Original file path: $_savePath. '
-      ' Label color: $_color';
-
   /// Checks if this file is equal to another
   bool isEqual(SafeFile file) {
     return (_name == file.name &&
         _savePath == file.savePath &&
         _addedDateTime == file.addedDateTime);
   }
+
+  @override
+  String toString() =>
+      'SafeFile $_name. Created on: $_addedDateTime. Optional description: $_description. Original file path: $_savePath. '
+      ' Label color: $_color';
 }

@@ -10,6 +10,7 @@ import 'exceptions/file-not-defined-exception.dart';
 import 'exceptions/file-not-found-exception.dart';
 import 'exceptions/user-not-defined-exception.dart';
 
+// TODO: Make all the fields public and remove getters/setters
 class UserFileManager {
   String _file;
   MyOlderUser _user;

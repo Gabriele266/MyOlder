@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
+
+// TODO: Update documentation
 class FileNotFoundException implements Exception {
     String file;
     String path;
 
-    FileNotFoundException({this.file, this.path});
+    FileNotFoundException({@required this.file, @required this.path});
 
     @override
     String toString() =>

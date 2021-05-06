@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
+
+// TODO: Update documentation
 class UserNotDefinedException implements Exception {
     final String operation;
 
-    UserNotDefinedException({this.operation});
+    UserNotDefinedException({@required this.operation});
 
     @override
     String toString() {

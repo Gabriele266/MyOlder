@@ -12,54 +12,45 @@ import '../myolder-user.dart';
 
 class SafeZoneHome extends StatefulWidget {
   // Logged User informations
-  final MyOlderUser _user;
+  final MyOlderUser user;
 
   // The safefile manager inherited from other controls
-  final SafeFileManager _manager;
+  final SafeFileManager manager;
 
   /// Creates a new instance of a safezonehome page with a logged user.
-  SafeZoneHome(this._user, this._manager);
+  ///
+  /// [user] The logged user
+  /// [manager] The safefile manager
+  SafeZoneHome(this.user, this.manager);
 
   /// Creates the state of this of
   @override
-  State<StatefulWidget> createState() => _SafeZoneHome(_user, _manager);
+  State<StatefulWidget> createState() => _SafeZoneHome();
 }
 
+// TODO: Make _SafeZoneHome responsive and adaptive
 class _SafeZoneHome extends State<SafeZoneHome> {
-  // Logged user informations
-  final MyOlderUser _user;
-
   // Text edit controller for the input search box
-  var _searchController = TextEditingController();
-
-  // Safe file manager
-  final SafeFileManager _manager;
-
-  /// Creates a new instance of this state
-  _SafeZoneHome(this._user, this._manager);
+  final _searchController = TextEditingController();
 
   /// Initializes the state of the page
   @override
   void initState() {
-    // Add an empty listenter
-    _searchController.addListener(() {});
     // Init user state informations
     super.initState();
-
-    setState(() {
-      // Load widgets
-    });
+    // Add an empty listenter
+    _searchController.addListener(() {});
   }
 
   /// Deletes the safe file
   void _deleteSafeFile(SafeFile file) {
     try {
       // Search for the file
-      final fileIndex = _manager.searchSafeFile(file);
+      final fileIndex = widget.manager.searchSafeFile(file);
 
       // Set the new state
       setState(() {
-        _manager.removeSafeFile(fileIndex);
+        widget.manager.removeSafeFile(fileIndex);
       });
     } on ElementNotFoundException catch (exc) {
       print(
@@ -119,10 +110,10 @@ class _SafeZoneHome extends State<SafeZoneHome> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _manager.safeFilesCount,
+              itemCount: widget.manager.safeFilesCount,
               itemBuilder: (context, index) {
                 return SafeFileWidget(
-                  safeFile: _manager.safeFiles[index],
+                  safeFile: widget.manager.safeFiles[index],
                   showByTag: (String tag) {},
                   deleteSafeFile: _deleteSafeFile,
                 );
@@ -171,7 +162,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
                       Padding(
                         padding: EdgeInsets.only(top: 40),
                         child: Text(
-                          '${_user.name}',
+                          '${widget.user.name}',
                           style: Theme.of(context).textTheme.headline4,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -259,6 +250,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   }
 
   /// Adds a new file to the safe zone
+  /// TODO: Make addNewFile
   Future<void> addNewFile(BuildContext context) async {
     // Get a file from the default file-picker
     FilePickerResult file = await FilePicker.platform
@@ -278,15 +270,17 @@ class _SafeZoneHome extends State<SafeZoneHome> {
       );
 
       // Add the file and encrypt it
-      _manager.addSafeFile(safe, object.bytes);
+      widget.manager.addSafeFile(safe, object.bytes);
       // Set the new state
       setState(() {});
     }
   }
 
   /// Clears the safezone removing all the files
+  /// TODO: Make clearSafeZone private
   Future<void> clearSafeZone() async {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
+      // TODO: Implement use of separated widget to display the 'clear all' dialog
       return AlertDialog(
         title: Text('Alert: clear all files?'),
         content: Text(
@@ -302,7 +296,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
           TextButton(
             child: Text('Yes i am shure. '),
             onPressed: () {
-              _manager.clearAllSafeFiles();
+              widget.manager.clearAllSafeFiles();
               Navigator.pop(context);
               Navigator.pop(context);
               setState(() {});
@@ -314,32 +308,38 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   }
 
   /// Shows the application faq
+  /// TODO: Make showApplicationFAQ private
   Future<void> showApplicationFAQ() async {
     // TODO: Implement application faq
   }
 
   /// Shows the user settings page
+  /// TODO: Make showUserSettings private
   Future<void> showUserSettings() async {
     // TODO: Implement user settings
   }
 
   /// Shows the application informations
+  /// TODO: Make showApplicationInformations private
   Future<void> showApplicationInformations() async {
     // TODO: Implement application informations
   }
 
   /// Shows the application settings
+  /// TODO: Make showApplicationSettings
   Future<void> showApplicationSettings() async {
     // TODO: Implement application settings
   }
 
   /// Starts the research for a file with a given name
+  /// TODO: Make startSearch private
   Future<void> startSearch(String search_text) async {
     // TODO: Implement file search by name
     print('Search by name not yet implemented. File name: $search_text');
   }
 
   /// Executes the logout to the application
+  /// TODO: Make doLogout private
   Future<void> doLogout(BuildContext context) async {
     dispose();
     Navigator.pushReplacement(
@@ -349,7 +349,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   /// Disposes all the resources used by this main page
   @override
   void dispose() {
-    _searchController.dispose();
     super.dispose();
+    _searchController.dispose();
   }
 }

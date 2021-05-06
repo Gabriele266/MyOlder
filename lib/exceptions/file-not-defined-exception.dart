@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
+
+// TODO: Update documentation
 class FileNotDefinedException implements Exception {
     final String operation;
 
-    FileNotDefinedException({this.operation});
+    FileNotDefinedException({@required this.operation});
 
     @override
     String toString() =>

@@ -1,6 +1,7 @@
 import 'package:xml/xml.dart';
 
 /// Represents a user of the application
+/// TODO: Make _name and _password public and remove getters and setters
 class MyOlderUser{
   String _name;
   String _password;
@@ -16,6 +17,7 @@ class MyOlderUser{
     _password = password;
   }
 
+  // TODO: Write better documentation for fromXmlElement *documentation*
   MyOlderUser.fromXmlElement(XmlElement element){
     _name = element.findElements('name').first.text;
     _password = element.findElements('password').first.text;

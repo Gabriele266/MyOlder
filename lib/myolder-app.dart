@@ -10,8 +10,8 @@ class MyOlderApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MyOlderApp',
-
       // Theme informations for the application
+      // TODO: Make this theme more consistent and with better colors
       theme: ThemeData(
         iconTheme: IconThemeData(size: 25, color: Colors.white),
         backgroundColor: Colors.grey[700],

@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
+
 class DirectoryNotFoundException implements Exception {
   final String directory;
   final String additionalMessage;
 
-  DirectoryNotFoundException({this.directory, this.additionalMessage});
+  // TODO: Document this constructor
+  const DirectoryNotFoundException({@required this.directory, this.additionalMessage});
 
   @override
   String toString() =>

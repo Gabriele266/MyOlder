@@ -16,19 +16,17 @@ class LoginPage extends StatefulWidget {
   /// Creates a new instance of a LoginPage
   ///
   /// [banner] A banner to show at page display
-  LoginPage({
+  const LoginPage({
     this.banner,
   });
 
   @override
-  State<StatefulWidget> createState() =>
-      _LoginNormalState(initialBanner: banner);
+  State<StatefulWidget> createState() => _LoginNormalState();
 }
 
+// TODO: Make LoginPage page responsive and adaptive
+// TODO: Add use of theme for the various colors
 class _LoginNormalState extends State<LoginPage> {
-  // Optional banner to show as first widget
-  MaterialBanner _initialBanner;
-
   // Valore del padding superiore
   var _topPadding = 74.0;
 
@@ -56,12 +54,10 @@ class _LoginNormalState extends State<LoginPage> {
   // This string contains eventual errors during the login phase
   String _errorString = '';
 
-  _LoginNormalState({MaterialBanner initialBanner}) {
-    _initialBanner = initialBanner;
-  }
-
+  // TODO: Move listeners into separated internal functions into state class
   @override
   void initState() {
+    super.initState();
     _keyboardController.addNewListener(onShow: () {
       setState(() {
         _topPadding = 28;
@@ -82,15 +78,14 @@ class _LoginNormalState extends State<LoginPage> {
     _passController.addListener(() {
       _userInfo.password = _passController.text;
     });
-
-    super.initState();
   }
 
+  // TODO: Adapt build using function to build the banner if necessary
   @override
   Widget build(BuildContext context) {
-    if (_initialBanner != null) {
+    if (widget.banner != null) {
       _showBanner = true;
-      _initialBanner.actions.add(
+      widget.banner.actions.add(
         TextButton(
           child: Text(
             'Ok',
@@ -127,7 +122,7 @@ class _LoginNormalState extends State<LoginPage> {
         child: ListView(
           children: [
             _showBanner
-                ? _initialBanner
+                ? widget.banner
                 : const SizedBox(
                     width: 0,
                     height: 0,
@@ -281,6 +276,7 @@ class _LoginNormalState extends State<LoginPage> {
   }
 
   /// Performs the login process
+  /// TODO: Make this function private
   Future<void> performLogin() async {
     // Execute the login
     var reader = UserFileManager(file: 'root.cfg', user: _userInfo);
@@ -334,6 +330,7 @@ class _LoginNormalState extends State<LoginPage> {
   }
 
   /// Handles the button pression
+  /// TODO: Make this function private
   Future<void> onLoginRequest() async {
     // Calculate access time
     // The function that represents this is y = 5 ^ (x - 1) - 1
@@ -380,12 +377,11 @@ class _LoginNormalState extends State<LoginPage> {
 
   @override
   void dispose() {
+    super.dispose();
     // Dispose text editing controllers
     _userController.dispose();
     _passController.dispose();
     // Dispose the keyboardcontroller
     _keyboardController.dispose();
-    // Call the super dispose
-    super.dispose();
   }
 }

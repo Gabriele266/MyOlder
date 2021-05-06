@@ -1,4 +1,5 @@
 
+// TODO: Make all fields public and use a named constructor
 class ManagerAddToListException implements Exception{
     final Object _object;
     final String _managerList;
@@ -7,6 +8,7 @@ class ManagerAddToListException implements Exception{
     ///
     /// [_object] The object that had to be added to the container
     /// [_managerList] The list where the manager tryed to add the object
+    /// TODO: Update documentation
     ManagerAddToListException(this._object, this._managerList);
 
     Object get object => _object;
