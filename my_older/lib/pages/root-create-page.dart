@@ -35,6 +35,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
 
   @override
   void initState() {
+    super.initState();
     // Keyboard listeners
     KeyboardVisibilityNotification().addNewListener(onShow: () {
       setState(() {
@@ -207,6 +208,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
   }
 
   /// Performs the operations for creating the new user
+  /// TODO: Implement use of separated widget
   Future<void> createNewUser() async {
     // Show the alert dialog
     await Navigator.push(

@@ -6,6 +6,7 @@ import '../constructs/safe-file.dart';
 import 'tag-widget.dart';
 import 'package:myolder/formatters/date-time-formatter.dart';
 
+// FIXME: Fix NoSuchMethodError when displaying the details page
 class SafeFileWidget extends StatefulWidget {
   // The file to show widget for
   final SafeFile safeFile;
@@ -28,6 +29,7 @@ class SafeFileWidget extends StatefulWidget {
     this.deleteSafeFile,
   });
 
+  // TODO: Avoid this horrible pattern
   @override
   State<StatefulWidget> createState() => _SafeFileWidgetState(
         safeFile: safeFile,
@@ -51,6 +53,10 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
     this.deleteSafeFile,
   });
 
+  // TODO: Switch to ListTile for displaying informations
+  // TODO: Optimize theme fetching using final variables
+  // TODO: Make this widget responsive
+  // TODO: Use 'const' where possible
   @override
   Widget build(BuildContext context) {
     // Load a list with the showable tags
@@ -165,11 +171,14 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
     );
   }
 
+  // TODO: Make onWidgetPressed private
   void onWidgetPressed() {
     safeFile.unlockAndOpen();
   }
 
   /// Shows the informations page relative to this file
+  // TODO: Make showInfoPage private
+  // TODO: Switch to a modalbottomdialog instead of creating a new standalone page
   void showInfoPage() => Navigator.push(
         context,
         MaterialPageRoute(
@@ -180,6 +189,8 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
       );
 
   /// Deletes this file
+  /// 
+  /// TODO: Make deleteFile private
   void deleteFile() {
     deleteSafeFile(safeFile);
   }

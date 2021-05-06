@@ -59,6 +59,13 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     }
   }
 
+  // TODO: Create a text to display when there aren't safe files, with an icon of empty container. 
+  // TODO: Use const where possible
+  // TODO: Switch to scrollbar for scrolling a child view. (with SingleChildScrollView)
+  // TODO: Use a better color for the appbar
+  // TODO: Optimize device / theme informations fetching with final variables
+  // TODO: Create a separeted widget for the Drawer (HomeDrawer)
+  // TODO: Create a separated widget for the safefile list (SafeFileListViewer)
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -250,7 +257,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   }
 
   /// Adds a new file to the safe zone
-  /// TODO: Make addNewFile
+  /// TODO: Make addNewFile private
   Future<void> addNewFile(BuildContext context) async {
     // Get a file from the default file-picker
     FilePickerResult file = await FilePicker.platform
