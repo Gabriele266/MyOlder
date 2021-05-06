@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 
 import '../pages/safe-file-info-page.dart';
-import 'package:flutter/material.dart';
 import '../constructs/safe-file.dart';
-import 'tag-widget.dart';
-import 'package:myolder/formatters/date-time-formatter.dart';
+import './tag-widget.dart';
+import '../formatters/date-time-formatter.dart';
 
 // FIXME: Fix NoSuchMethodError when displaying the details page
 class SafeFileWidget extends StatefulWidget {

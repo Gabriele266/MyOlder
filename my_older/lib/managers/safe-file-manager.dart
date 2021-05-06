@@ -257,7 +257,7 @@ class SafeFileManager {
               'File used: $filePath');
         }
       }
-      else throw FileNotFoundException(file: filePath);
+      else throw FileNotFoundException(file: filePath, path: filePath);
     } else
       throw DirectoryNotFoundException(
           directory: dirPath,
