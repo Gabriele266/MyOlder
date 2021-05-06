@@ -8,15 +8,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:crypto/crypto.dart';
 import 'package:xml/xml.dart';
 
-import 'constructs/safe-file.dart';
-import 'myolder-user.dart';
+import '../constructs/safe-file.dart';
+import '../constructs/myolder-user.dart';
 
-import 'formatters/date-time-formatter.dart';
-import 'exceptions/manager-add-list-exception.dart';
-import 'exceptions/element-not-found-exception.dart';
-import 'exceptions/null-data-exception.dart';
-import 'exceptions/directory-not-found-exception.dart';
-import 'exceptions/file-not-found-exception.dart';
+import '../formatters/date-time-formatter.dart';
+import '../exceptions/manager-add-list-exception.dart';
+import '../exceptions/element-not-found-exception.dart';
+import '../exceptions/null-data-exception.dart';
+import '../exceptions/directory-not-found-exception.dart';
+import '../exceptions/file-not-found-exception.dart';
 
 class SafeFileManager {
   // List of safe files

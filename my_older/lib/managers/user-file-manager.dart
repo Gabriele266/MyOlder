@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:aes_crypt/aes_crypt.dart';
 
-import 'exceptions/null-data-exception.dart';
-import 'myolder-user.dart';
-import 'exceptions/file-not-defined-exception.dart';
-import 'exceptions/file-not-found-exception.dart';
-import 'exceptions/user-not-defined-exception.dart';
+import '../exceptions/null-data-exception.dart';
+import '../constructs/myolder-user.dart';
+import '../exceptions/file-not-defined-exception.dart';
+import '../exceptions/file-not-found-exception.dart';
+import '../exceptions/user-not-defined-exception.dart';
 
 class UserFileManager {
   String file;

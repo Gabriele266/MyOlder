@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../user-file-manager.dart';
+import '../managers/user-file-manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 
-import 'package:myolder/myolder-user.dart';
+import 'package:myolder/constructs/myolder-user.dart';
 import 'package:myolder/pages/login-page.dart';
-import 'package:myolder/safe-file-manager.dart';
+import 'package:myolder/managers/safe-file-manager.dart';
 import 'package:myolder/widgets/icon-text-button.dart';
 import 'package:myolder/constructs/status-text-indicator.dart';
 

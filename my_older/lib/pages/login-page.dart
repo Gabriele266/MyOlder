@@ -4,9 +4,9 @@ import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'dart:math';
 import 'dart:async';
 
-import 'package:myolder/myolder-user.dart';
-import 'package:myolder/user-file-manager.dart';
-import 'package:myolder/safe-file-manager.dart';
+import 'package:myolder/constructs/myolder-user.dart';
+import 'package:myolder/managers/user-file-manager.dart';
+import 'package:myolder/managers/safe-file-manager.dart';
 import 'package:myolder/pages/safe-zone-home.dart';
 
 class LoginPage extends StatefulWidget {

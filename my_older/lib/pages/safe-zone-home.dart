@@ -5,10 +5,10 @@ import 'package:myolder/exceptions/element-not-found-exception.dart';
 
 import '../widgets/safe-file-widget.dart';
 import '../constructs/safe-file.dart';
-import '../safe-file-manager.dart';
+import '../managers/safe-file-manager.dart';
 import 'login-page.dart';
 import '../widgets/drawer-long-button.dart';
-import '../myolder-user.dart';
+import '../constructs/myolder-user.dart';
 
 class SafeZoneHome extends StatefulWidget {
   // Logged User informations

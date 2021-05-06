@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:ui';
 
-import '../user-file-manager.dart';
-import '../myolder-user.dart';
-import 'package:myolder/safe-file-manager.dart';
+import '../managers/user-file-manager.dart';
+import '../constructs/myolder-user.dart';
+import 'package:myolder/managers/safe-file-manager.dart';
 import 'package:myolder/widgets/double-action-alert.dart';
 
 class SplashPage extends StatefulWidget {
