@@ -59,7 +59,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     }
   }
 
-  // TODO: Create a text to display when there aren't safe files, with an icon of empty container. 
+  // TODO: Create a text to display when there aren't safe files, with an icon of empty container.
   // TODO: Use const where possible
   // TODO: Switch to scrollbar for scrolling a child view. (with SingleChildScrollView)
   // TODO: Use a better color for the appbar
@@ -71,7 +71,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Safe zone', style: Theme.of(context).textTheme.headline1),
+        title: const Text('Safe zone'),
         actions: [
           IconButton(
             icon: Icon(

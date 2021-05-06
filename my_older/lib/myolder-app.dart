@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
-import 'pages/login-page.dart';
-import 'pages/root-create-page.dart';
-import 'pages/splash-page.dart';
-import 'pages/login-info-page.dart';
-import 'pages/newuser-info-page.dart';
+
+import './pages/login-page.dart';
+import './pages/root-create-page.dart';
+import './pages/splash-page.dart';
+import './pages/login-info-page.dart';
+import './pages/newuser-info-page.dart';
 
 class MyOlderApp extends StatelessWidget {
+  // The bluet color of this theme
+  Color get _bluet => const Color(0xff87b6a7);
+
+  // The brown color accent
+  Color get _brown => const Color(0xff5b5941);
+
+  // The light yellow color
+  Color get _lightYellow => const Color(0xffe3f09b);
+
+  // The orange shadow
+  Color get _orangeAccent => const Color(0xfff7d08a);
+
+  // The red color
+  Color get _redAccent => const Color(0xfff7f79);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,23 +30,25 @@ class MyOlderApp extends StatelessWidget {
       // TODO: Make this theme more consistent and with better colors
       theme: ThemeData(
         iconTheme: IconThemeData(size: 25, color: Colors.white),
-        backgroundColor: Colors.grey[700],
-        primaryColor: Colors.white,
-        accentColor: Colors.yellow[800],
+        backgroundColor: _orangeAccent,
+        primaryColor: _bluet,
+        accentColor: _lightYellow,
         canvasColor: Colors.grey[600],
+        errorColor: Colors.red[800],
         buttonTheme: ButtonThemeData(
           buttonColor: Colors.redAccent,
           textTheme: ButtonTextTheme.normal,
         ),
         textTheme: TextTheme(
           headline1: TextStyle(
-            color: Colors.white,
+            color: _brown,
             fontSize: 20,
             letterSpacing: 1.2,
             fontWeight: FontWeight.bold,
+            fontFamily: 'Courier New',
           ),
           headline2: TextStyle(
-            color: Colors.yellow[800],
+            color: _orangeAccent,
             fontSize: 15,
             letterSpacing: 0.4,
             fontWeight: FontWeight.w600,
@@ -69,10 +87,15 @@ class MyOlderApp extends StatelessWidget {
         ),
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.redAccent,
-          foregroundColor: Colors.white,
+          foregroundColor: Colors.amberAccent,
+          titleTextStyle: TextStyle(
+            color: _brown,
+            fontFamily: 'Courier New',
+            fontWeight: FontWeight.bold,
+          ),
           actionsIconTheme: IconThemeData(
-            color: Colors.white,
-            size: 30,
+            color: _brown,
+            size: 40,
             opacity: 1,
           ),
         ),

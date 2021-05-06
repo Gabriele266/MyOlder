@@ -28,7 +28,7 @@ class LoginPage extends StatefulWidget {
 // TODO: Add use of theme for the various colors
 class _LoginNormalState extends State<LoginPage> {
   // Valore del padding superiore
-  var _topPadding = 74.0;
+  var _topPadding = 30.0;
 
   // Number of failed logins
   int _failedLogins = 0;
@@ -64,7 +64,7 @@ class _LoginNormalState extends State<LoginPage> {
       });
     }, onHide: () {
       setState(() {
-        _topPadding = 74.0;
+        _topPadding = 30.0;
       });
     });
 
@@ -99,24 +99,25 @@ class _LoginNormalState extends State<LoginPage> {
       );
     }
 
+    final theme = Theme.of(context);
+    final media = MediaQuery.of(context);
+
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: theme.backgroundColor,
       appBar: AppBar(
         title: Text(
           'Safe area access',
-          style: Theme.of(context).textTheme.headline1,
+          style: theme.appBarTheme.titleTextStyle,
         ),
         actions: [
           IconButton(
             icon: Icon(
               Icons.info,
-              size: Theme.of(context).appBarTheme.actionsIconTheme.size,
-              color: Theme.of(context).appBarTheme.actionsIconTheme.color,
+              size: theme.appBarTheme.actionsIconTheme.size,
             ),
             onPressed: () => Navigator.pushNamed(context, '/login/info'),
           ),
         ],
-        backgroundColor: Colors.redAccent,
       ),
       body: Center(
         child: ListView(
@@ -136,7 +137,7 @@ class _LoginNormalState extends State<LoginPage> {
                   ),
                   child: Text(
                     'Insert login credentials',
-                    style: Theme.of(context).textTheme.headline1,
+                    style: theme.textTheme.headline1,
                   ),
                 ),
                 _errorString != ''
@@ -146,7 +147,7 @@ class _LoginNormalState extends State<LoginPage> {
                         ),
                         child: Text(
                           _errorString,
-                          style: Theme.of(context).textTheme.overline,
+                          style: theme.textTheme.overline,
                           textAlign: TextAlign.center,
                         ),
                       )
@@ -167,7 +168,7 @@ class _LoginNormalState extends State<LoginPage> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Theme.of(context).accentColor,
+                              color: theme.accentColor,
                               width: 2,
                             ),
                           ),
@@ -177,7 +178,7 @@ class _LoginNormalState extends State<LoginPage> {
                             ),
                           ),
                           labelText: 'User name',
-                          labelStyle: Theme.of(context).textTheme.bodyText1,
+                          labelStyle: theme.textTheme.bodyText1,
                         ),
                         controller: _userController,
                       ),
@@ -188,7 +189,7 @@ class _LoginNormalState extends State<LoginPage> {
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Theme.of(context).accentColor,
+                                color: theme.accentColor,
                                 width: 2,
                               ),
                             ),
@@ -220,7 +221,7 @@ class _LoginNormalState extends State<LoginPage> {
                               ),
                             ),
                             labelText: 'Password',
-                            labelStyle: Theme.of(context).textTheme.bodyText1,
+                            labelStyle: theme.textTheme.bodyText1,
                           ),
                           controller: _passController,
                         ),
