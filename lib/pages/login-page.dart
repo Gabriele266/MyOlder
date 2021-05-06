@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:myolder/myolder-user.dart';
 import 'package:myolder/user-file-manager.dart';
 import 'package:myolder/safe-file-manager.dart';
-import 'package:myolder/safe-zone-home.dart';
+import 'package:myolder/pages/safe-zone-home.dart';
 
 class LoginPage extends StatefulWidget {
   // Banner to show at top
