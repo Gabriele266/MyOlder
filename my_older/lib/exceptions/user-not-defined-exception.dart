@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 
-// TODO: Update documentation
 class UserNotDefinedException implements Exception {
     final String operation;
 
-    UserNotDefinedException({@required this.operation});
+    /// Creates a new [UserNotDefinedException]
+    /// 
+    /// This exception can be thrown when a user isn't specified during an [operation]
+    /// e.g an authenticating operation. 
+    const UserNotDefinedException({@required this.operation});
 
     @override
     String toString() {

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-// TODO: Update documentation
 class RootFileNullContentException implements Exception {
   // The file path
   final String file;
@@ -8,7 +7,12 @@ class RootFileNullContentException implements Exception {
   // Operation
   final String operation;
 
-  RootFileNullContentException({@required this.file, this.operation});
+  /// Creates a new [RootFileNullContentException]
+  /// 
+  /// This exception can be thrown when a root [file] for the application
+  /// doesn't contain the needed informations (e.g) it's empty. The [operation] represents the
+  /// function that needed this informations. 
+  const RootFileNullContentException({@required this.file, this.operation});
 
   @override
   String toString() =>

@@ -11,7 +11,7 @@ class ElementNotFoundException implements Exception{
     /// [elementName] Represents the element that wasn't found
     /// [elementType] Represents the type of the element that wasn't found
     /// [container] The place where the element should be saved
-    ElementNotFoundException(this.elementName, this.elementType, this.container);
+    const ElementNotFoundException(this.elementName, this.elementType, this.container);
     
     @override
     String toString() => 'ElementNotFoundException. The elementName wasnt found in the list $container. The type is: $elementType';
