@@ -271,8 +271,8 @@ class _SafeZoneHome extends State<SafeZoneHome> {
       var safe = SafeFile(
         name: object.name,
         suffix: object.extension,
-        savePath: '',
-        addedDateTime: DateTime.now(),
+        path: '',
+        dateTime: DateTime.now(),
         color: Colors.blue,
       );
 

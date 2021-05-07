@@ -98,7 +98,7 @@ class _SafeFileInfoPageState extends State<SafeFileInfoPage> {
                               ),
                               InfoPropertyLine(
                                 name: 'Path',
-                                value: widget.file.savePath,
+                                value: widget.file.path,
                               ),
                               InfoPropertyLineAction(
                                 name: 'Info',
@@ -147,11 +147,11 @@ class _SafeFileInfoPageState extends State<SafeFileInfoPage> {
                       children: [
                         InfoPropertyLine(
                           name: 'Date',
-                          value: DateFormat.yMd().format(widget.file.addedDateTime),
+                          value: DateFormat.yMd().format(widget.file.dateTime),
                         ),
                         InfoPropertyLine(
                           name: 'Time',
-                          value: DateFormat.Hm().format(widget.file.addedDateTime),
+                          value: DateFormat.Hm().format(widget.file.dateTime),
                         ),
                         InfoPropertyLine(
                           name: 'Suffix',

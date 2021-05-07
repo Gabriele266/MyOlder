@@ -187,27 +187,15 @@ class _LoginNormalState extends State<LoginPage> {
     return Container(
       width: media.size.width * (landscape ? 0.20 : 0.30),
       height: media.size.height * (landscape ? 0.10 : 0.06),
-      child: MaterialButton(
-        color: theme.buttonColor,
-        elevation: 2,
-        child: Row(
-          children: [
-            Icon(
-              Icons.login,
-              size: 30,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: Text(
-                'Login',
-                style: TextStyle(
-                  color: theme.primaryColorDark,
-                ),
-              ),
-            ),
-          ],
-        ),
+      child: TextButton.icon(
         onPressed: _onPressedHandler,
+        icon: const Icon(
+          Icons.login,
+          size: 30,
+        ),
+        label: const Text(
+          'Login',
+        ),
       ),
     );
   }

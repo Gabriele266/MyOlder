@@ -55,6 +55,7 @@ class IconTextButton extends StatelessWidget {
           ? background
           : Theme.of(context).appBarTheme.color,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           if (icon != null)
             Padding(
