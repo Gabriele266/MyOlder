@@ -27,6 +27,25 @@ class AppTheme {
           disabledColor: Colors.grey[600],
         ),
 
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(CustomColors.redAccent),
+            foregroundColor: MaterialStateProperty.all(CustomColors.brown),
+            elevation: MaterialStateProperty.all(2),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                side: BorderSide(
+                  width: 1.5,
+                  color: CustomColors.lightYellow,
+                ),
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(30),
+                ),
+              ),
+            ),
+          ),
+        ),
+
         textTheme: TextTheme(
           headline1: TextStyle(
             color: CustomColors.lightYellow,
