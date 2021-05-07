@@ -8,31 +8,30 @@ import '../formatters/rgb-color-formatter.dart';
 import '../formatters/date-time-formatter.dart';
 
 /// Represents a protected file into the application
-/// TODO: Make all fields public and remove getters/setters
 class SafeFile {
   // File name
-  String _name;
+  String name;
 
   // File suffix
-  String _suffix;
+  String suffix;
 
   // File description
-  String _description;
+  String description;
 
   // Creation time
-  DateTime _addedDateTime;
+  DateTime dateTime;
 
   // Associated color
-  Color _color;
+  Color color;
 
   // path of the saved file
-  String _savePath;
+  String path;
 
   // List of file tags
-  List<String> _tags;
+  List<String> tags;
 
   // File access password
-  String _password;
+  String password;
 
   /// Creates a new instance of a safe file
   ///
@@ -43,133 +42,97 @@ class SafeFile {
   /// [description] : An optional description to assign at the file <br>
   /// [color] : A label color to tag this file <br>
   /// [addedDateTime] : A datetime instance that represents the time when the file was added (if not given it will be the current date <b>
-  ///
-  SafeFile(
-      {@required String name,
-      @required String suffix,
-      @required String savePath,
-      String description,
-      DateTime addedDateTime,
-      Color color,
-      List<String> tags}) {
-    _name = name;
-    _description = description;
-    _suffix = suffix;
-    _addedDateTime = addedDateTime;
-    _color = color;
-    _savePath = savePath;
-    _tags = tags;
-  }
+  /// [password] The password to use for crypt / decrypt this file
+  SafeFile({
+    @required this.name,
+    @required this.path,
+    this.color,
+    this.dateTime,
+    this.description,
+    this.password,
+    this.suffix,
+  });
 
   /// Creates a new empty instance of safe file
   ///
   /// All the internal members will be set to null or to the default values.
   /// To assign something use the default constructor.
   SafeFile.empty() {
-    _name = '';
-    _description = '';
-    _addedDateTime = null;
-    _savePath = '';
-    _color = null;
-    _tags = [];
-    _suffix = '';
+    name = '';
+    description = '';
+    dateTime = null;
+    path = '';
+    color = null;
+    tags = [];
+    suffix = '';
+    password = '';
   }
 
-  String get name => _name;
-
-  String get description => _description;
-
-  DateTime get addedDateTime => _addedDateTime;
-
-  String get savePath => _savePath;
-
-  Color get color => _color;
-
-  String get password => _password;
-
-  List<String> get tags => _tags;
-
-  String get suffix => _suffix;
-
-  set name(String name) => _name = name;
-
-  set description(String description) => _description = description;
-
-  set addedDateTime(DateTime added) => _addedDateTime = added;
-
-  set savePath(String original) => _savePath = original;
-
-  set color(Color color) => _color = color;
-
-  set tags(List<String> tags) => _tags = tags;
-
-  set password(String passwd) => _password = passwd;
-
-  set suffix(String suffix) => _suffix = suffix;
-
   /// Returns the tag with the given index
-  String getTag(int index) => _tags[index];
+  String getTag(int index) => tags[index];
 
   /// Adds the tag to the tag list of this file
   void appendTag(String tag) {}
 
   /// Returns the number of tags assigned to this file
-  int tagsCount() => _tags.length;
+  int tagsCount() => tags.length;
 
   /// Checks if there is a tag with the given index
   ///
   /// [index] The index of the tag <br>
   /// returns true if there is a tag with this index, false otherwise
-  bool existsTag(int index) => index >= 0 && index < _tags.length;
+  bool existsTag(int index) => index >= 0 && index < tags.length;
 
   /// Checks if this safe file has some tags
   ///
-  /// returns true if there are almost one tag, false otherwise
-  bool hasTags() => _tags != null;
+  /// returns 'true' if there are almost one tag, 'false' otherwise
+  bool hasTags() => tags != null;
 
-  /// Converts the informations of this safe file into a save-able string
-  /// to be used into text files. It is composed of a series of property-value lines
-  /// separated by a :.
-  /// TODO: Fix return type issues
+  /// Converts the informations of this safe file into an xml string
+  ///
+  ///
+  /// The returned string can be used into [xml] files.
   String toXmlString() {
     // Create document tree
     final builder = XmlBuilder();
     try {
       builder.element('safe-file', nest: () {
         builder.element('display-name', nest: () {
-          builder.text(_name);
+          builder.text(name);
         });
         builder.element('save-path', nest: () {
-          builder.text(_savePath);
+          builder.text(path);
         });
         builder.element('added-on', nest: () {
-          builder.text(DateTimeFormatter.complete(_addedDateTime).format());
+          builder.text(DateTimeFormatter.complete(dateTime).format());
         });
         builder.element('description', nest: () {
           try {
-            builder.text(_description);
+            builder.text(description);
           } on NoSuchMethodError catch (exception) {
             // Nothing
-            print('No description given for the safefile $_name');
+            print('No description given for the safefile $name');
+            print(exception);
           }
         });
         builder.element('suffix', nest: () {
-          builder.text(_suffix);
+          builder.text(suffix);
         });
         builder.element('color', nest: () {
           builder.attribute('format', 'rgb');
           try {
-            builder.text(RgbColorFormatter.fromColor(_color).formatString());
+            builder.text(RgbColorFormatter.fromColor(color).formatString());
           } on NoSuchMethodError catch (exception) {
-            print('No color given for the safefile $_name');
+            print('No color given for the safefile $name');
+            print(exception);
           }
         });
         builder.element('password', nest: () {
-          builder.text(_password);
+          builder.text(password);
         });
         builder.element('tags', nest: () {
           try {
-            for (var tag in _tags) {
+            for (var tag in tags) {
               builder.element('tag', nest: () {
                 builder.text(tag);
               });
@@ -177,6 +140,7 @@ class SafeFile {
           } on NoSuchMethodError catch (i) {
             print(
                 'Exception while formatting the tag elements for the safefile: $this');
+            print(i);
           }
         });
       });
@@ -188,6 +152,8 @@ class SafeFile {
     } catch (exc) {
       print('Failed loading of a safefile. ');
     }
+
+    return null;
   }
 
   /// Loads the information about a safe file from a string (ideologically
@@ -202,8 +168,8 @@ class SafeFile {
     try {
       file.name = source.findElements('display-name').single.text;
       file.password = source.findElements('password').single.text;
-      file.savePath = source.findElements('save-path').single.text;
-      file.addedDateTime = DateTimeFormatter.completePattern()
+      file.path = source.findElements('save-path').single.text;
+      file.dateTime = DateTimeFormatter.completePattern()
           .fromString(source.findElements('added-on').single.text);
       file.suffix = source.findElements('suffix').single.text;
       file.description = source.findElements('description').single.text;
@@ -221,37 +187,38 @@ class SafeFile {
   }
 
   /// Opens this file, decrypts his contents and opens it with the default app
+  ///
+  /// Requires that [password] is given and also [path] and [name]
   Future<String> unlockAndOpen() async {
     try {
       // Search the safefile index into this object
       // Read the file
-      var crt = AesCrypt(_password);
+      final crt = AesCrypt(password);
       crt.setOverwriteMode(AesCryptOwMode.on);
       // Get the temporary path
-      String path = '${(await getExternalStorageDirectory()).path}/$_name';
-      print('Decrypted file path: $path');
-      print('Decrypted file suffix: $_suffix');
+      final path = '${(await getExternalStorageDirectory()).path}/$name';
       // Decrypt all
-      crt.decryptFile(_savePath, path);
+      crt.decryptFile(path, path);
 
       // Launch default viewer
       OpenFile.open(path);
     } catch (i) {
-      print('Exception during unlocking file $_name');
+      print('Exception during unlocking file $name');
     }
 
     return ' ';
   }
 
-  /// Checks if this file is equal to another
-  bool isEqual(SafeFile file) {
-    return (_name == file.name &&
-        _savePath == file.savePath &&
-        _addedDateTime == file.addedDateTime);
-  }
+  /// Checks if [file] has the same properties as this current object
+  ///
+  /// The checked properties are [name], [path], [dateTime]
+  /// The others are ignored
+  /// Returns 'true' if the two objects are equal, 'false' otherwise
+  bool isEqual(final SafeFile file) =>
+      (name == file.name && path == file.path && dateTime == file.dateTime);
 
   @override
   String toString() =>
-      'SafeFile $_name. Created on: $_addedDateTime. Optional description: $_description. Original file path: $_savePath. '
-      ' Label color: $_color';
+      'SafeFile $name. Created on: $dateTime. Optional description: $description. Original file path: $path. '
+      ' Label color: $color';
 }
