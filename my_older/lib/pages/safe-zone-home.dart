@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../exceptions/element-not-found-exception.dart';
-import '../widgets/safe-file-widget.dart';
 import '../constructs/safe-file.dart';
 import '../managers/safe-file-manager.dart';
 import './login-page.dart';
 import '../widgets/drawer-long-button.dart';
 import '../constructs/myolder-user.dart';
+import '../widgets/safe-file-list-viewer.dart';
+import '../dialogs/clear-all-files-dialog.dart';
 
 class SafeZoneHome extends StatefulWidget {
   // Logged User informations
@@ -42,96 +43,98 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     _searchController.addListener(() {});
   }
 
-  /// Deletes the safe file
-  void _deleteSafeFile(SafeFile file) {
-    try {
-      // Search for the file
-      final fileIndex = widget.manager.searchSafeFile(file);
+  /// Builds the [AppBar] for this page
+  AppBar _buildAppBar() {
+    final theme = Theme.of(context);
 
-      // Set the new state
-      setState(() {
-        widget.manager.removeSafeFile(fileIndex);
-      });
-    } on ElementNotFoundException catch (exc) {
-      print(
-          'Element not found exception. Exception during removing file $file');
-      print(exc);
-    }
+    return AppBar(
+      centerTitle: true,
+      title: Text('Safe zone', style: theme.appBarTheme.titleTextStyle),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.logout,
+            size: theme.appBarTheme.actionsIconTheme.size,
+            color: theme.primaryColorDark,
+          ),
+          onPressed: () {
+            _doLogout(context);
+          },
+        ),
+      ],
+    );
   }
 
-  // TODO: Create a text to display when there aren't safe files, with an icon of empty container.
-  // TODO: Use const where possible
-  // TODO: Switch to scrollbar for scrolling a child view. (with SingleChildScrollView)
-  // TODO: Use a better color for the appbar
+  /// Builds the [SearchBox] for this page
+  Widget _buildSearchBox() {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+      height: 65,
+      child: TextField(
+        controller: _searchController,
+        maxLines: 1,
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.text_format,
+            size: theme.primaryIconTheme.size,
+          ),
+          suffix: IconButton(
+              icon: Icon(
+                Icons.search,
+                size: theme.primaryIconTheme.size,
+                color: theme.primaryIconTheme.color,
+              ),
+              onPressed: () {
+                // Start research for files with this name
+                _startSearch(_searchController.text);
+              }),
+        ),
+      ),
+    );
+  }
+
   // TODO: Optimize device / theme informations fetching with final variables
-  // TODO: Create a separeted widget for the Drawer (HomeDrawer)
-  // TODO: Create a separated widget for the safefile list (SafeFileListViewer)
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Safe zone'),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.logout,
-              size: Theme.of(context).iconTheme.size,
-              color: Theme.of(context).iconTheme.color,
-            ),
-            onPressed: () {
-              doLogout(context);
-            },
-          ),
-        ],
-      ),
+      backgroundColor: Theme.of(context).backgroundColor,
+      appBar: _buildAppBar(),
       body: Column(
         children: [
-          Container(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-            height: 65,
-            child: TextField(
-              controller: _searchController,
-              maxLines: 1,
-              decoration: InputDecoration(
-                prefixIcon: Icon(
-                  Icons.text_format,
-                  size: Theme.of(context).iconTheme.size,
-                ),
-                suffix: IconButton(
-                    icon: Icon(
-                      Icons.search,
-                      size: Theme.of(context).iconTheme.size,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                    onPressed: () {
-                      // Start research for files with this name
-                      startSearch(_searchController.text);
-                    }),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  borderSide: BorderSide(color: Colors.black, width: 1),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.manager.safeFilesCount,
-              itemBuilder: (context, index) {
-                return SafeFileWidget(
-                  safeFile: widget.manager.safeFiles[index],
-                  showByTag: (String tag) {},
-                  deleteSafeFile: _deleteSafeFile,
-                );
-              },
-            ),
-          ),
+          _buildSearchBox(),
+          SafeFileListViewer(
+              files: widget.manager.safeFiles, deleteSafeFile: _deleteSafeFile),
         ],
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
-      drawer: Drawer(
-          child: ListView(
+      drawer: _buildDrawer(),
+      floatingActionButton: _buildFloatingActionButton(),
+    );
+  }
+
+  /// Builds the [FloatingActionButton]
+  FloatingActionButton _buildFloatingActionButton() {
+    final theme = Theme.of(context);
+
+    return FloatingActionButton(
+      onPressed: () {
+        _addNewFile(context);
+      },
+      backgroundColor: theme.floatingActionButtonTheme.backgroundColor,
+      child: Icon(
+        Icons.add,
+        size: theme.primaryIconTheme.size + 10,
+        color: theme.primaryIconTheme.color,
+      ),
+      splashColor: theme.floatingActionButtonTheme.splashColor,
+    );
+  }
+
+  /// Builds the [Drawer]
+  Drawer _buildDrawer() {
+    return Drawer(
+      child: ListView(
         children: [
           Padding(
             padding: EdgeInsets.only(top: 40),
@@ -144,7 +147,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
             margin: EdgeInsets.all(20),
             child: MaterialButton(
               onPressed: () {
-                showUserSettings();
+                _showUserSettings();
               },
               color: Theme.of(context).backgroundColor,
               shape: RoundedRectangleBorder(
@@ -192,7 +195,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
               color: Colors.black,
             ),
             callBack: () {
-              showApplicationInformations();
+              _showApplicationInformations();
             },
           ),
           DrawerLongButton(
@@ -203,7 +206,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
               color: Colors.black,
             ),
             callBack: () {
-              showApplicationSettings();
+              _showApplicationSettings();
             },
           ),
           DrawerLongButton(
@@ -214,7 +217,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
               color: Colors.black,
             ),
             callBack: () {
-              addNewFile(context);
+              _addNewFile(context);
               Navigator.pop(context);
             },
           ),
@@ -222,43 +225,30 @@ class _SafeZoneHome extends State<SafeZoneHome> {
             text: 'Clear safe zone',
             icon: Icon(Icons.delete, size: 20, color: Colors.black),
             callBack: () {
-              clearSafeZone();
+              _clearSafeZone();
             },
           ),
           DrawerLongButton(
             text: 'MyOlder FAQ',
             icon: Icon(Icons.question_answer, size: 20, color: Colors.black),
             callBack: () {
-              showApplicationFAQ();
+              _showApplicationFAQ();
             },
           ),
           DrawerLongButton(
             text: 'Logout',
             icon: Icon(Icons.logout, color: Colors.black, size: 20),
             callBack: () {
-              doLogout(context);
+              _doLogout(context);
             },
           ),
         ],
-      )),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            addNewFile(context);
-          },
-          backgroundColor:
-              Theme.of(context).floatingActionButtonTheme.backgroundColor,
-          child: Icon(
-            Icons.add,
-            size: Theme.of(context).primaryIconTheme.size + 10,
-            color: Theme.of(context).primaryIconTheme.color,
-          ),
-          splashColor: Theme.of(context).floatingActionButtonTheme.splashColor),
+      ),
     );
   }
 
   /// Adds a new file to the safe zone
-  /// TODO: Make addNewFile private
-  Future<void> addNewFile(BuildContext context) async {
+  Future<void> _addNewFile(BuildContext context) async {
     // Get a file from the default file-picker
     FilePickerResult file = await FilePicker.platform
         .pickFiles(withData: true, withReadStream: true);
@@ -283,74 +273,72 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     }
   }
 
-  /// Clears the safezone removing all the files
-  /// TODO: Make clearSafeZone private
-  Future<void> clearSafeZone() async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      // TODO: Implement use of separated widget to display the 'clear all' dialog
-      return AlertDialog(
-        title: Text('Alert: clear all files?'),
-        content: Text(
-            'This operation will remove all your data from the disk, this means that you wont be able to access your files anymore. ARE YOU SHURE??'),
-        actions: [
-          TextButton(
-            child: Text('No'),
-            onPressed: () {
-              // Remove this alert
-              Navigator.pop(context);
-            },
-          ),
-          TextButton(
-            child: Text('Yes i am shure. '),
-            onPressed: () {
-              widget.manager.clearAllSafeFiles();
-              Navigator.pop(context);
-              Navigator.pop(context);
-              setState(() {});
-            },
-          )
-        ],
-      );
-    }));
+  /// Deletes a [file] from the safezone
+  void _deleteSafeFile(SafeFile file) {
+    try {
+      // Search for the file
+      final fileIndex = widget.manager.searchSafeFile(file);
+
+      // Set the new state
+      setState(() {
+        widget.manager.removeSafeFile(fileIndex);
+      });
+    } on ElementNotFoundException catch (exc) {
+      print(
+          'Element not found exception. Exception during removing file $file');
+      print(exc);
+    }
+  }
+
+  /// Clears the [SafeZone] removing all the files
+  Future<void> _clearSafeZone() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ClearAllSafeFilesDialog(_onClearSafeZoneAccepted),
+      ),
+    );
+  }
+
+  /// Called when the user accepts the [ClearAllSafeFilesDialog]
+  void _onClearSafeZoneAccepted() {
+    widget.manager.clearAllSafeFiles();
+    Navigator.pop(context);
+    Navigator.pop(context);
+    setState(() {});
   }
 
   /// Shows the application faq
-  /// TODO: Make showApplicationFAQ private
-  Future<void> showApplicationFAQ() async {
+  Future<void> _showApplicationFAQ() async {
     // TODO: Implement application faq
   }
 
   /// Shows the user settings page
-  /// TODO: Make showUserSettings private
-  Future<void> showUserSettings() async {
+  Future<void> _showUserSettings() async {
     // TODO: Implement user settings
   }
 
   /// Shows the application informations
-  /// TODO: Make showApplicationInformations private
-  Future<void> showApplicationInformations() async {
+  Future<void> _showApplicationInformations() async {
     // TODO: Implement application informations
   }
 
   /// Shows the application settings
-  /// TODO: Make showApplicationSettings
-  Future<void> showApplicationSettings() async {
+  Future<void> _showApplicationSettings() async {
     // TODO: Implement application settings
   }
 
   /// Starts the research for a file with a given name
-  /// TODO: Make startSearch private
-  Future<void> startSearch(String search_text) async {
+  Future<void> _startSearch(String search_text) async {
     // TODO: Implement file search by name
     print('Search by name not yet implemented. File name: $search_text');
   }
 
   /// Executes the logout to the application
-  /// TODO: Make doLogout private
-  Future<void> doLogout(BuildContext context) async {
-    dispose();
+  Future<void> _doLogout(BuildContext context) async {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
+    dispose();
   }
 
   /// Disposes all the resources used by this main page
