@@ -10,6 +10,7 @@ class AppTheme {
         backgroundColor: CustomColors.orangeAccent,
         primaryColor: CustomColors.orangeAccent,
         primaryColorDark: CustomColors.brown,
+        primaryColorLight: CustomColors.bluet,
         accentColor: CustomColors.lightYellow,
         canvasColor: CustomColors.orangeAccent,
         errorColor: Colors.red[800],
@@ -126,8 +127,8 @@ class AppTheme {
         ),
 
         floatingActionButtonTheme: FloatingActionButtonThemeData(
-          splashColor: Colors.orange,
-          backgroundColor: Colors.red[800],
+          splashColor: CustomColors.lightYellow,
+          backgroundColor: CustomColors.bluet,
           elevation: 1.2,
         ),
 
