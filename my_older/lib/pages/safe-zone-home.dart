@@ -249,8 +249,8 @@ class _SafeZoneHome extends State<SafeZoneHome> {
               Theme.of(context).floatingActionButtonTheme.backgroundColor,
           child: Icon(
             Icons.add,
-            size: Theme.of(context).iconTheme.size + 10,
-            color: Theme.of(context).iconTheme.color,
+            size: Theme.of(context).primaryIconTheme.size + 10,
+            color: Theme.of(context).primaryIconTheme.color,
           ),
           splashColor: Theme.of(context).floatingActionButtonTheme.splashColor),
     );
