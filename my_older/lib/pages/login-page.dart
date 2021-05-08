@@ -145,7 +145,7 @@ class _LoginNormalState extends State<LoginPage> {
 
   /// Builds [widget.banner]. Requires that [_configureBanner] has configured this state
   /// to display a banner.
-  /// TODO: FIXME: The ok button of the banner doesn't remove the banner.  
+  /// TODO: FIXME: The ok button of the banner doesn't remove the banner.
   Widget _buildMessageBanner() => _showBanner
       ? widget.banner
       : const SizedBox(
@@ -270,6 +270,8 @@ class _LoginNormalState extends State<LoginPage> {
           ),
           SizedBox(height: media.size.height * 0.05),
           TextField(
+            controller: _passController,
+            obscureText: _hidePassword,
             decoration: InputDecoration(
               prefixIcon: const Icon(
                 Icons.password,
