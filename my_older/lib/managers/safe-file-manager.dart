@@ -234,7 +234,7 @@ class SafeFileManager {
           creationDateTimeElement.getAttribute('pattern');
 
           // Load use information
-          final user =
+          var user =
           MyOlderUser.fromXmlElement(alUser
               .findElements('user')
               .single);

@@ -145,6 +145,7 @@ class _LoginNormalState extends State<LoginPage> {
 
   /// Builds [widget.banner]. Requires that [_configureBanner] has configured this state
   /// to display a banner.
+  /// TODO: FIXME: The ok button of the banner doesn't remove the banner.  
   Widget _buildMessageBanner() => _showBanner
       ? widget.banner
       : const SizedBox(
@@ -294,10 +295,10 @@ class _LoginNormalState extends State<LoginPage> {
 
     if (result) {
       // Start loading the safe-zone-files
-      final SafeFileManager man = await SafeFileManager.readConfigurationFile(
+      SafeFileManager man = await SafeFileManager.readConfigurationFile(
           'safe-dir', 'rc&MEuFiMoZBB8Ru*Sa8');
       // Check if the two users are equal
-      final MyOlderUser usr = man.user;
+      MyOlderUser usr = man.user;
 
       if (_userInfo.equals(usr)) {
         // print('VERY GOOD, LOGIN SUPER SUCCESSFUL');

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../managers/user-file-manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 
-import 'package:myolder/constructs/myolder-user.dart';
-import 'package:myolder/pages/login-page.dart';
-import 'package:myolder/managers/safe-file-manager.dart';
-import 'package:myolder/widgets/icon-text-button.dart';
-import 'package:myolder/constructs/status-text-indicator.dart';
+import '../constructs/myolder-user.dart';
+import '../managers/user-file-manager.dart';
+import '../pages/login-page.dart';
+import '../managers/safe-file-manager.dart';
+import '../constructs/status-text-indicator.dart';
+import '../dialogs/save-informations-dialog.dart';
 
 class RootCreatePage extends StatefulWidget {
   @override
@@ -153,7 +153,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
       width: media.size.width * (landscape ? 0.20 : 0.30),
       height: media.size.height * (landscape ? 0.10 : 0.06),
       child: TextButton.icon(
-        onPressed: _createNewUser,
+        onPressed: _onCreateRequest,
         icon: const Icon(
           Icons.edit,
         ),
@@ -235,44 +235,21 @@ class _RootCreatePageState extends State<RootCreatePage> {
   }
 
   /// Checks the new user credentials added into the boxes and shows state
-  void _checkNewUserCredentials() {
-  }
+  void _checkNewUserCredentials() {}
 
   /// Performs the operations for creating the new user
-  /// TODO: Implement use of separated widget
-  Future<void> _createNewUser() async {
+  Future<void> _onCreateRequest() async {
     // Show the alert dialog
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-              'Saving...',
-            ),
+          return SaveInformationsDialog(
             content:
-                Text('The following informations will be written:\n\n$_user'),
-            actions: [
-              TextButton(
-                child: const Text('Save'),
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Start the saving of the content
-                  final manager =
-                      UserFileManager(file: 'root.cfg', user: _user);
-                  manager.writeFile();
-
-                  // Configure the safe directory and the configuration file
-                  final configurator = SafeFileManager(
-                    user: _user,
-                    safeDirectory: 'safe-dir',
-                  );
-                  configurator.configureSafeDirectory();
-                  // Save all the informations
-                  configurator.saveInformations();
-                },
-              ),
-            ],
+                'The following new user will be created: $_user. Do you wish to continue? ',
+            title: 'New user creation',
+            onDialogAccepted: _onNewUserAccepted,
+            onDialogCanceled: _onNewUserCanceled,
           );
         },
       ),
@@ -282,12 +259,35 @@ class _RootCreatePageState extends State<RootCreatePage> {
       context,
       MaterialPageRoute(
         builder: (context) => LoginPage(
-          banner: const MaterialBanner(
+          banner: MaterialBanner(
             content: const Text('New user successfully created. '),
-            actions: const [],
+            actions: [],
           ),
         ),
       ),
     );
+  }
+
+  /// Called when the user cancels the [SaveInformationsDialog]
+  void _onNewUserCanceled() {
+    // Hide this dialog
+    Navigator.of(context).pop();
+  }
+
+  /// Called when the user accepts the [SaveInformationsDialog]
+  void _onNewUserAccepted() {
+    Navigator.pop(context);
+    // Start the saving of the content
+    var manager = UserFileManager(file: 'root.cfg', user: _user);
+    manager.writeFile();
+
+    // Configure the safe directory and the configuration file
+    var configurator = SafeFileManager(
+      user: _user,
+      safeDirectory: 'safe-dir',
+    );
+    configurator.configureSafeDirectory();
+    // Save all the informations
+    configurator.saveInformations();
   }
 }
