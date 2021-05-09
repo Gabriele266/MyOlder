@@ -8,7 +8,7 @@ class AppTheme {
   /// Uses most of the colors definded into [CustomColors] in file [colors.dart]
   static get normalTheme => ThemeData(
         backgroundColor: CustomColors.orangeAccent,
-        primaryColor: CustomColors.orangeAccent,
+        primaryColor: CustomColors.redAccent,
         primaryColorDark: CustomColors.brown,
         primaryColorLight: CustomColors.bluet,
         accentColor: CustomColors.lightYellow,
@@ -62,16 +62,16 @@ class AppTheme {
             ],
           ),
           headline2: TextStyle(
-            color: CustomColors.orangeAccent,
-            fontSize: 15,
+            color: CustomColors.lightYellow,
+            fontSize: 18,
             letterSpacing: 0.4,
             fontWeight: FontWeight.w600,
             fontFamily: 'Times new Roman',
           ),
           headline3: TextStyle(
-            color: Colors.tealAccent,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+            color: CustomColors.brown,
+            fontSize: 15,
+            fontWeight: FontWeight.w300,
             fontFamily: 'Times new Roman',
           ),
           headline4: TextStyle(
