@@ -5,8 +5,7 @@ import 'dart:ui';
 
 import '../managers/user-file-manager.dart';
 import '../constructs/myolder-user.dart';
-import 'package:myolder/managers/safe-file-manager.dart';
-import 'package:myolder/widgets/double-action-alert.dart';
+import '../widgets/double-action-alert.dart';
 
 class SplashPage extends StatefulWidget {
   // The message of this widget
@@ -18,7 +17,10 @@ class SplashPage extends StatefulWidget {
   /// The page should display informations about the operation in progress,<br>
   /// and has the same color of the appBar. <br>
   /// It shows the login page or the rootcreatepage if there aren't users
-  SplashPage({this.message = ' '}) : super();
+  SplashPage({
+    Key key,
+    this.message = ' ',
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SplashPageState();
@@ -27,6 +29,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   /// Gets the correct main page for the application
   /// TODO: Make getMainPage private
+  /// TODO: Use final and const members
   Future<void> getMainPage(BuildContext context) async {
     // Create a user file reader
     var fileReader = UserFileManager(file: 'root.cfg', user: MyOlderUser());
@@ -46,24 +49,29 @@ class _SplashPageState extends State<SplashPage> {
       print('File non esiste');
     } else if ((root && !config) || (!root && config)) {
       // Show alert and ask if should remove the configuration file
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return DoubleActionAlert(
-          title: 'Problems detected',
-          contents:
-              'MyOlder has detected some file issues, resolve them by deleting all? You will lose all your data. '
-              'If you wont perform this operation, you wont be able to use them anymore. ',
-          firstActionText: 'Yes, i accept',
-          firstAction: () {
-            // Delete all configurations
-            deleteAllConfigurations(fileReader);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return DoubleActionAlert(
+              title: 'Problems detected',
+              contents:
+                  'MyOlder has detected some file issues, resolve them by deleting all? You will lose all your data. '
+                  'If you wont perform this operation, you wont be able to use them anymore. ',
+              firstActionText: 'Yes, i accept',
+              firstAction: () {
+                // Delete all configurations
+                deleteAllConfigurations(fileReader);
+              },
+              secondActionText: 'No, leave all',
+              secondAction: () {
+                Navigator.pop(context);
+                exit(0);
+              },
+            );
           },
-          secondActionText: 'No, leave all',
-          secondAction: () {
-            Navigator.pop(context);
-            exit(0);
-          },
-        );
-      }));
+        ),
+      );
     }
   }
 

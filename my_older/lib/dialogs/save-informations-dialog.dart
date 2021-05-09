@@ -14,8 +14,14 @@ class SaveInformationsDialog extends StatelessWidget {
   final String title;
 
   /// Creates a new [SaveInformationsDialog] to display a dialog
-  /// before saving some informations. 
-  SaveInformationsDialog({@required this.content, @required this.title, this.onDialogAccepted, this.onDialogCanceled});
+  /// before saving some informations.
+  SaveInformationsDialog({
+    Key key,
+    @required this.content,
+    @required this.title,
+    this.onDialogAccepted,
+    this.onDialogCanceled,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

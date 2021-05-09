@@ -14,7 +14,10 @@ class SafeFileInfoPage extends StatefulWidget {
   /// about a SafeFile.
   ///
   /// [file] The file to show informations on
-  SafeFileInfoPage({@required this.file});
+  SafeFileInfoPage({
+    Key key,
+    @required this.file,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SafeFileInfoPageState();
@@ -132,7 +135,8 @@ class _SafeFileInfoPageState extends State<SafeFileInfoPage> {
                                   print('Overlay accepted: ${controller.text}');
                                   // Set it as new
                                   setState(
-                                    () => widget.file.description = controller.text,
+                                    () => widget.file.description =
+                                        controller.text,
                                   );
                                 },
                               ),

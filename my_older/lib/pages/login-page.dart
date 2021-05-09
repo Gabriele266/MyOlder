@@ -17,7 +17,10 @@ class LoginPage extends StatefulWidget {
   ///
   /// [banner] A banner to show in the page top view
   /// to show additional informations
-  const LoginPage({this.banner});
+  const LoginPage({
+    Key key,
+    this.banner,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _LoginNormalState();
