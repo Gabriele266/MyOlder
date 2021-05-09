@@ -79,7 +79,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
                 child: Icon(
                   Icons.file_present,
-                  size: Theme.of(context).iconTheme.size * 1.5,
+                  size: Theme.of(context).primaryIconTheme.size * 1.5,
                   color: Colors.tealAccent,
                 ),
               ),
@@ -131,15 +131,15 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
                   IconButton(
                     icon: Icon(
                       Icons.search,
-                      size: Theme.of(context).iconTheme.size,
-                      color: Theme.of(context).iconTheme.color,
+                      size: Theme.of(context).primaryIconTheme.size,
+                      color: Theme.of(context).primaryIconTheme.color,
                     ),
                     onPressed: _showInfoPage,
                   ),
                   IconButton(
                     icon: Icon(
                       Icons.delete,
-                      size: Theme.of(context).iconTheme.size,
+                      size: Theme.of(context).primaryIconTheme.size,
                       color: Colors.red,
                     ),
                     onPressed: _deleteFile,
