@@ -9,6 +9,7 @@ import './login-page.dart';
 import '../widgets/drawer-long-button.dart';
 import '../constructs/myolder-user.dart';
 import '../widgets/safe-file-list-viewer.dart';
+import '../widgets/myolder-user-widget.dart';
 import '../dialogs/clear-all-files-dialog.dart';
 
 class SafeZoneHome extends StatefulWidget {
@@ -54,7 +55,6 @@ class _SafeZoneHome extends State<SafeZoneHome> {
         IconButton(
           icon: Icon(
             Icons.logout,
-            size: theme.appBarTheme.actionsIconTheme.size,
             color: theme.primaryColorDark,
           ),
           onPressed: () {
@@ -68,44 +68,51 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   /// Builds the [SearchBox] for this page
   Widget _buildSearchBox() {
     final theme = Theme.of(context);
+    final media = MediaQuery.of(context);
 
-    return Container(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-      height: 65,
-      child: TextField(
-        controller: _searchController,
-        maxLines: 1,
-        decoration: InputDecoration(
-          prefixIcon: Icon(
-            Icons.text_format,
-            size: theme.primaryIconTheme.size,
-          ),
-          suffix: IconButton(
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: media.size.width * 0.08,
+          vertical: media.size.height * 0.025,
+        ),
+        child: TextField(
+          controller: _searchController,
+          maxLines: 1,
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              Icons.text_format,
+              size: theme.primaryIconTheme.size,
+            ),
+            suffix: IconButton(
               icon: Icon(
                 Icons.search,
                 size: theme.primaryIconTheme.size,
                 color: theme.primaryIconTheme.color,
               ),
-              onPressed: () {
-                // Start research for files with this name
-                _startSearch(_searchController.text);
-              }),
+              onPressed: () =>
+                  // Start research for files with this name
+                  _startSearch(_searchController.text),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  // TODO: Optimize device / theme informations fetching with final variables
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
+      
       appBar: _buildAppBar(),
       body: Column(
         children: [
           _buildSearchBox(),
           SafeFileListViewer(
-              files: widget.manager.safeFiles, deleteSafeFile: _deleteSafeFile),
+            files: widget.manager.safeFiles,
+            deleteSafeFile: _deleteSafeFile,
+          ),
         ],
       ),
       drawer: _buildDrawer(),
@@ -133,116 +140,82 @@ class _SafeZoneHome extends State<SafeZoneHome> {
 
   /// Builds the [Drawer]
   Drawer _buildDrawer() {
+    final media = MediaQuery.of(context);
+    final theme = Theme.of(context);
+
     return Drawer(
-      child: ListView(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 40),
-            child: Center(
-              child: Text('MyOlder Safe Zone',
-                  style: Theme.of(context).textTheme.bodyText1),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: media.viewPadding.top + 40),
+              child: Text(
+                'MyOlder Safe Zone',
+                style: Theme.of(context).textTheme.headline1,
+              ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.all(20),
-            child: MaterialButton(
-              onPressed: () {
-                _showUserSettings();
+            MyOlderUserWidget(
+              user: widget.user,
+              showUserSettings: _showUserSettings,
+              safeFilesCount: widget.manager.safeFilesCount,
+            ),
+            DrawerLongButton(
+              text: 'Application informations',
+              icon: Icon(
+                Icons.info,
+                size: 20,
+                color: Colors.black,
+              ),
+              callBack: () {
+                _showApplicationInformations();
               },
-              color: Theme.of(context).backgroundColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                side: BorderSide(width: 1.5, color: Colors.black),
+            ),
+            DrawerLongButton(
+              text: 'Settings',
+              icon: Icon(
+                Icons.settings,
+                size: 20,
+                color: Colors.black,
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: EdgeInsets.all(20) - EdgeInsets.only(left: 15),
-                    child:
-                        Icon(Icons.person, size: 70, color: Colors.tealAccent),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black, width: 1.5),
-                      borderRadius: BorderRadius.all(Radius.circular(35)),
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 40),
-                        child: Text(
-                          '${widget.user.name}',
-                          style: Theme.of(context).textTheme.headline4,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Text('Authenticated user'),
-                      ),
-                    ],
-                  )
-                ],
+              callBack: () {
+                _showApplicationSettings();
+              },
+            ),
+            DrawerLongButton(
+              text: 'Add new safe file',
+              icon: Icon(
+                Icons.add,
+                size: 20,
+                color: Colors.black,
               ),
+              callBack: () {
+                _addNewFile(context);
+                Navigator.pop(context);
+              },
             ),
-          ),
-          DrawerLongButton(
-            text: 'Application informations',
-            icon: Icon(
-              Icons.info,
-              size: 20,
-              color: Colors.black,
+            DrawerLongButton(
+              text: 'Clear safe zone',
+              icon: Icon(Icons.delete, size: 20, color: Colors.black),
+              callBack: () {
+                _clearSafeZone();
+              },
             ),
-            callBack: () {
-              _showApplicationInformations();
-            },
-          ),
-          DrawerLongButton(
-            text: 'Settings',
-            icon: Icon(
-              Icons.settings,
-              size: 20,
-              color: Colors.black,
+            DrawerLongButton(
+              text: 'MyOlder FAQ',
+              icon: Icon(Icons.question_answer, size: 20, color: Colors.black),
+              callBack: () {
+                _showApplicationFAQ();
+              },
             ),
-            callBack: () {
-              _showApplicationSettings();
-            },
-          ),
-          DrawerLongButton(
-            text: 'Add new safe file',
-            icon: Icon(
-              Icons.add,
-              size: 20,
-              color: Colors.black,
+            DrawerLongButton(
+              text: 'Logout',
+              icon: Icon(Icons.logout, color: Colors.black, size: 20),
+              callBack: () {
+                _doLogout(context);
+              },
             ),
-            callBack: () {
-              _addNewFile(context);
-              Navigator.pop(context);
-            },
-          ),
-          DrawerLongButton(
-            text: 'Clear safe zone',
-            icon: Icon(Icons.delete, size: 20, color: Colors.black),
-            callBack: () {
-              _clearSafeZone();
-            },
-          ),
-          DrawerLongButton(
-            text: 'MyOlder FAQ',
-            icon: Icon(Icons.question_answer, size: 20, color: Colors.black),
-            callBack: () {
-              _showApplicationFAQ();
-            },
-          ),
-          DrawerLongButton(
-            text: 'Logout',
-            icon: Icon(Icons.logout, color: Colors.black, size: 20),
-            callBack: () {
-              _doLogout(context);
-            },
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
