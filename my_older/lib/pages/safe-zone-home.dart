@@ -104,7 +104,6 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      
       appBar: _buildAppBar(),
       body: Column(
         children: [
@@ -116,6 +115,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
         ],
       ),
       drawer: _buildDrawer(),
+      // drawer: _buildSecondDrawer(),
       floatingActionButton: _buildFloatingActionButton(),
     );
   }
@@ -138,7 +138,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     );
   }
 
-  /// Builds the [Drawer]
+  /// Builds the [Drawer] for this page
   Drawer _buildDrawer() {
     final media = MediaQuery.of(context);
     final theme = Theme.of(context);
@@ -147,69 +147,63 @@ class _SafeZoneHome extends State<SafeZoneHome> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.only(top: media.viewPadding.top + 40),
-              child: Text(
-                'MyOlder Safe Zone',
-                style: Theme.of(context).textTheme.headline1,
+            Container(
+              height: media.size.height * 0.20,
+              child: DrawerHeader(
+                child: MyOlderUserWidget(
+                  safeFilesCount: widget.manager.safeFilesCount,
+                  user: widget.user,
+                  showUserSettings: () {
+                    print('User settings');
+                  },
+                ),
               ),
             ),
-            MyOlderUserWidget(
-              user: widget.user,
-              showUserSettings: _showUserSettings,
-              safeFilesCount: widget.manager.safeFilesCount,
+            Divider(
+              color: theme.primaryColorDark,
+              height: 20,
+              indent: media.size.width * 0.05,
+              endIndent: media.size.width * 0.05,
             ),
-            DrawerLongButton(
+            DrawerListTileButton(
               text: 'Application informations',
-              icon: Icon(
-                Icons.info,
-                size: 20,
-                color: Colors.black,
-              ),
+              icon: Icons.info,
               callBack: () {
                 _showApplicationInformations();
               },
             ),
-            DrawerLongButton(
+            DrawerListTileButton(
               text: 'Settings',
-              icon: Icon(
-                Icons.settings,
-                size: 20,
-                color: Colors.black,
-              ),
+              icon: Icons.settings,
               callBack: () {
                 _showApplicationSettings();
               },
             ),
-            DrawerLongButton(
+            DrawerListTileButton(
               text: 'Add new safe file',
-              icon: Icon(
-                Icons.add,
-                size: 20,
-                color: Colors.black,
-              ),
+              icon: Icons.add,
               callBack: () {
                 _addNewFile(context);
                 Navigator.pop(context);
               },
             ),
-            DrawerLongButton(
+            DrawerListTileButton(
               text: 'Clear safe zone',
-              icon: Icon(Icons.delete, size: 20, color: Colors.black),
+              icon: Icons.delete,
               callBack: () {
                 _clearSafeZone();
               },
             ),
-            DrawerLongButton(
+            DrawerListTileButton(
               text: 'MyOlder FAQ',
-              icon: Icon(Icons.question_answer, size: 20, color: Colors.black),
+              icon: Icons.question_answer,
               callBack: () {
                 _showApplicationFAQ();
               },
             ),
-            DrawerLongButton(
+            DrawerListTileButton(
               text: 'Logout',
-              icon: Icon(Icons.logout, color: Colors.black, size: 20),
+              icon: Icons.logout,
               callBack: () {
                 _doLogout(context);
               },
