@@ -65,6 +65,7 @@ class SafeFileListViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
+      flex: 7,
       child: (files != null && files.length > 0)
           ? _buildListView()
           : _buildNoFilesView(context),
