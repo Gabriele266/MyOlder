@@ -35,13 +35,13 @@ class InfoPropertyLineAction extends StatefulWidget {
   /// [onActionPerformed] The function to call when the action is performed <br>
   /// [onOverlayPerformed] The function to call when the overlay widget is hidden and the value widget is shown
   InfoPropertyLineAction(
-      {@required this.name,
+      {Key key, @required this.name,
       @required this.value,
       this.actionIcon,
       this.onOverlayPerformed,
       this.onActionPerformed,
       this.overlayIcon,
-      this.overlayWidget});
+      this.overlayWidget}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _InfoPropertyLineActionState(
@@ -55,6 +55,7 @@ class InfoPropertyLineAction extends StatefulWidget {
       );
 }
 
+// TODO: Avoid this horrible pattern
 class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
   // Property name
   String _name;

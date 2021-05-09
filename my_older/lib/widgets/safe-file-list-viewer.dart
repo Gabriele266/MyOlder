@@ -15,7 +15,11 @@ class SafeFileListViewer extends StatelessWidget {
   ///
   /// [files] The list of files to display
   /// [deleteSafeFile] The function to call for deleting a [SafeFile]
-  SafeFileListViewer({@required this.files, @required this.deleteSafeFile});
+  SafeFileListViewer({
+    Key key,
+    @required this.files,
+    @required this.deleteSafeFile,
+  }) : super(key: key);
 
   /// Builds the list view, when there are items to display
   Widget _buildListView() {

@@ -13,8 +13,13 @@ class InfoPropertyLine extends StatelessWidget {
   /// To create a line information with a button use the infoproperty-line-button class instead
   /// [name] The name of the property
   /// [value] The value of the property
-  InfoPropertyLine({@required this.name, @required this.value});
+  InfoPropertyLine({
+    Key key,
+    @required this.name,
+    @required this.value,
+  }) : super(key: key);
 
+  // TODO: Make this widget responsive
   @override
   Widget build(BuildContext context) {
     return Padding(

@@ -12,7 +12,7 @@ class TagWidget extends StatelessWidget {
   /// This widget represents a tag with all its properties
   /// [tag] The tag name
   /// [showByTag] The function to call when the user wan't to sort all the files by tag
-  TagWidget({@required this.tag, this.showByTag});
+  TagWidget({Key key, @required this.tag, this.showByTag}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

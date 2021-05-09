@@ -13,7 +13,12 @@ class DrawerLongButton extends StatelessWidget {
   /// [text] The text of the button
   /// [icon] The icon of the button
   /// [callBack] The callback of the button
-  DrawerLongButton({@required this.text, this.callBack, this.icon});
+  DrawerLongButton({
+    Key key,
+    @required this.text,
+    this.callBack,
+    this.icon,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
