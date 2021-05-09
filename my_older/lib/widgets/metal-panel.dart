@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// TODO: Abort use of this widget
 class MetalPanelContainer extends StatelessWidget {
   // The child widget
   final Widget child;
