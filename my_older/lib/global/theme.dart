@@ -121,9 +121,10 @@ class AppTheme {
           size: 20,
           color: CustomColors.lightYellow,
         ),
+
         accentIconTheme: IconThemeData(
           size: 20,
-          color: CustomColors.brown,
+          color: CustomColors.bluet,
         ),
 
         floatingActionButtonTheme: FloatingActionButtonThemeData(
