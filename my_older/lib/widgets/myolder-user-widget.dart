@@ -34,9 +34,6 @@ class MyOlderUserWidget extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Container(
-          height: media.size.height * 0.20,
-          width: constraints.maxWidth - media.size.width * 0.15,
-          padding: EdgeInsets.symmetric(vertical: media.size.height * 0.03),
           child: MaterialButton(
             splashColor: theme.backgroundColor,
             color: theme.primaryColor,
