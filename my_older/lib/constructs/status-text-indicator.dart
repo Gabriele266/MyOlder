@@ -7,6 +7,7 @@ enum StatusType{
   Warning
 }
 
+// TODO: Use public members instead of private ones
 class StatusTextIndicator {
   // Status of this indicator
   StatusType _status;

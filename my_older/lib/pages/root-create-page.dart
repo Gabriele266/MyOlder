@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import '../managers/user-file-manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 
-import 'package:myolder/constructs/myolder-user.dart';
-import 'package:myolder/pages/login-page.dart';
-import 'package:myolder/managers/safe-file-manager.dart';
-import 'package:myolder/widgets/icon-text-button.dart';
-import 'package:myolder/constructs/status-text-indicator.dart';
+import '../constructs/myolder-user.dart';
+import '../managers/user-file-manager.dart';
+import '../pages/login-page.dart';
+import '../managers/safe-file-manager.dart';
+import '../constructs/status-text-indicator.dart';
+import '../dialogs/save-informations-dialog.dart';
 
 class RootCreatePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _RootCreatePageState();
 }
 
-// TODO: Make RootCreatePage page responsive and adaptive
 class _RootCreatePageState extends State<RootCreatePage> {
   // Spazio tra i controlli attuale
   var spaceBetween = 30.0;
@@ -33,32 +32,40 @@ class _RootCreatePageState extends State<RootCreatePage> {
   // The internal message
   StatusTextIndicator _internalMessage;
 
+  /// Called when the keyboard is shown
+  void _onKeyboardShow() {
+    setState(() {
+      spaceBetween = 5;
+    });
+  }
+
+  /// Called when the keyboard is hidden
+  void _onKeyboardHide() {
+    setState(() {
+      spaceBetween = 30;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     // Keyboard listeners
-    KeyboardVisibilityNotification().addNewListener(onShow: () {
-      setState(() {
-        spaceBetween = 5;
-      });
-    }, onHide: () {
-      setState(() {
-        spaceBetween = 30;
-      });
-    });
+    KeyboardVisibilityNotification().addNewListener(
+      onShow: _onKeyboardShow,
+      onHide: _onKeyboardHide,
+    );
 
     _userController.addListener(() {
       _user.name = _userController.text;
-      checkNewUserCredentials();
+      _checkNewUserCredentials();
     });
 
     _passController.addListener(() {
       _user.password = _passController.text;
-      checkNewUserCredentials();
+      _checkNewUserCredentials();
     });
   }
 
-  // TODO: Optimize build function using final variables for [Theme.of] and [MediaQuery.of]
   @override
   Widget build(BuildContext context) {
     // Format the internal message
@@ -66,182 +73,183 @@ class _RootCreatePageState extends State<RootCreatePage> {
         'The user informations will be used for controlling the safe-zone access. ',
         StatusType.Success);
 
+    // Simplify
+    final theme = Theme.of(context);
+
+    // Pre build app bar to have its size
+    final appBar = _buildAppBar();
+
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        title: Text(
-          'Add new user',
-          style: TextStyle(
-            fontSize: 24,
-            color: Theme.of(context).appBarTheme.foregroundColor,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
+      backgroundColor: theme.backgroundColor,
+      appBar: appBar,
+      body: SingleChildScrollView(
+        child: Expanded(
+          // width: media.size.width,
+          // height: media.size.height - (appBar.preferredSize.height),
+          child: Column(
+            children: [
+              _buildHeader(),
+              _buildConditionalMessage(),
+              _buildRootCredentialsInput(),
+              _buildCreateRootButton(),
+            ],
           ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.info,
-              size: Theme.of(context).appBarTheme.actionsIconTheme.size,
-              color: Theme.of(context).appBarTheme.actionsIconTheme.color,
-            ),
-            onPressed: () => Navigator.pushNamed(context, '/create/info'),
-          ),
-        ],
-      ),
-      body: Center(
-        child: ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 30),
-              child: Text(
-                'Insert the new user informations below',
-                style: Theme.of(context).textTheme.headline1,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Text(
-                  // TODO: Implement use of multistate text
-                  _internalMessage.getText(),
-                  textAlign: TextAlign.center,
-                  style: (_internalMessage.isSuccessMessage())
-                      ? Theme.of(context).textTheme.headline2
-                      : Theme.of(context).textTheme.overline,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 20,
-                left: 10,
-                right: 20,
-                bottom: 20,
-              ),
-              child: TextField(
-                controller: _userController,
-                // TODO: Use Theme decoration instead of custom one
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                  ),
-                  labelText: 'User name',
-                  labelStyle: Theme.of(context).textTheme.bodyText1,
-                  prefixIcon: Icon(
-                    Icons.person_add,
-                    size: Theme.of(context).iconTheme.size,
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: spaceBetween,
-                left: 10,
-                right: 20,
-              ),
-              child: TextField(
-                obscureText: hidePassword,
-                keyboardType: TextInputType.text,
-                controller: _passController,
-                // TODO: Use Theme decoration instead of custom one
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(10),
-                    ),
-                  ),
-                  labelText: 'Password',
-                  prefixIcon:
-                      Icon(Icons.lock, size: Theme.of(context).iconTheme.size),
-                  suffix: SizedBox(
-                    width: 40,
-                    height: 30,
-                    child: IconButton(
-                      icon: Icon(
-                        hidePassword == true
-                            ? Icons.remove_red_eye
-                            : Icons.security,
-                        size: Theme.of(context).iconTheme.size,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      onPressed: () {
-                        setState(() => hidePassword = !hidePassword);
-                      },
-                    ),
-                  ),
-                  labelStyle: Theme.of(context).textTheme.bodyText1,
-                ),
-              ),
-            ),
-            Center(
-              child: Container(
-                margin: const EdgeInsets.only(top: 30),
-                width: 180,
-                height: 60,
-                child: IconTextButton(
-                  text: 'Create user',
-                  icon: const Icon(
-                    Icons.create,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  callback: createNewUser,
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
   }
 
-  /// Checks the new user credentials added into the boxes and shows state
-  void checkNewUserCredentials() {
-    // TODO: Implement multistate text
+  /// Builds the [_internalMessage] for  displaying an optional
+  /// error message or information message
+  Widget _buildConditionalMessage() {
+    final theme = Theme.of(context);
+
+    return _internalMessage.getText().isNotEmpty
+        ? FittedBox(
+            child: Text(
+              _internalMessage.getText(),
+              textAlign: TextAlign.center,
+              style: (_internalMessage.isSuccessMessage())
+                  ? theme.textTheme.headline2
+                  : theme.textTheme.overline,
+            ),
+          )
+        : const SizedBox(
+            width: 0,
+            height: 0,
+          );
   }
 
+  /// Builds the [appBar] for this page
+  AppBar _buildAppBar() {
+    // Simplify
+    final theme = Theme.of(context);
+
+    return AppBar(
+      backgroundColor: theme.appBarTheme.backgroundColor,
+      title: Text(
+        'Add new user',
+        style: theme.appBarTheme.titleTextStyle,
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.info,
+            size: theme.appBarTheme.actionsIconTheme.size,
+            color: theme.appBarTheme.actionsIconTheme.color,
+          ),
+          onPressed: () => Navigator.pushNamed(context, '/create/info'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCreateRootButton() {
+    final media = MediaQuery.of(context);
+    final landscape = media.orientation == Orientation.landscape;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 30),
+      width: media.size.width * (landscape ? 0.20 : 0.30),
+      height: media.size.height * (landscape ? 0.10 : 0.06),
+      child: TextButton.icon(
+        onPressed: _onCreateRequest,
+        icon: const Icon(
+          Icons.edit,
+        ),
+        label: const Text(
+          'Create user',
+        ),
+      ),
+    );
+  }
+
+  /// Builds the root credentials input boxes
+  Widget _buildRootCredentialsInput() {
+    // Simplify
+    final theme = Theme.of(context);
+    final media = MediaQuery.of(context);
+
+    return Container(
+      margin: EdgeInsets.symmetric(
+        vertical: media.size.height * 0.03,
+        horizontal: media.size.width * 0.05,
+      ),
+      child: Column(
+        children: [
+          TextField(
+            controller: _userController,
+            decoration: InputDecoration(
+              labelText: 'User name',
+              prefixIcon: Icon(
+                Icons.person_add,
+                size: theme.iconTheme.size,
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: media.size.height * 0.05),
+            child: TextField(
+              obscureText: hidePassword,
+              keyboardType: TextInputType.text,
+              controller: _passController,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                prefixIcon: Icon(Icons.lock, size: theme.iconTheme.size),
+                suffix: IconButton(
+                  icon: Icon(
+                    hidePassword == true
+                        ? Icons.remove_red_eye
+                        : Icons.security,
+                    size: theme.iconTheme.size,
+                    color: theme.iconTheme.color,
+                  ),
+                  onPressed: () {
+                    setState(() => hidePassword = !hidePassword);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Builds the header of the page
+  Widget _buildHeader() {
+    // Simplify
+    final media = MediaQuery.of(context);
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: media.size.width * 0.05,
+          vertical: media.size.height * 0.03),
+      child: Text(
+        'Insert the new user informations below',
+        style: theme.textTheme.headline1,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  /// Checks the new user credentials added into the boxes and shows state
+  void _checkNewUserCredentials() {}
+
   /// Performs the operations for creating the new user
-  /// TODO: Implement use of separated widget
-  Future<void> createNewUser() async {
+  Future<void> _onCreateRequest() async {
     // Show the alert dialog
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-              'Saving...',
-            ),
+          return SaveInformationsDialog(
             content:
-                Text('The following informations will be written:\n\n$_user'),
-            actions: [
-              TextButton(
-                child: const Text('Save'),
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Start the saving of the content
-                  final manager =
-                      UserFileManager(file: 'root.cfg', user: _user);
-                  manager.writeFile();
-
-                  // Configure the safe directory and the configuration file
-                  final configurator = SafeFileManager(
-                    user: _user,
-                    safeDirectory: 'safe-dir',
-                  );
-                  configurator.configureSafeDirectory();
-                  // Save all the informations
-                  configurator.saveInformations();
-                },
-              ),
-            ],
+                'The following new user will be created: $_user. Do you wish to continue? ',
+            title: 'New user creation',
+            onDialogAccepted: _onNewUserAccepted,
+            onDialogCanceled: _onNewUserCanceled,
           );
         },
       ),
@@ -251,12 +259,35 @@ class _RootCreatePageState extends State<RootCreatePage> {
       context,
       MaterialPageRoute(
         builder: (context) => LoginPage(
-          banner: const MaterialBanner(
+          banner: MaterialBanner(
             content: const Text('New user successfully created. '),
-            actions: const [],
+            actions: [],
           ),
         ),
       ),
     );
+  }
+
+  /// Called when the user cancels the [SaveInformationsDialog]
+  void _onNewUserCanceled() {
+    // Hide this dialog
+    Navigator.of(context).pop();
+  }
+
+  /// Called when the user accepts the [SaveInformationsDialog]
+  void _onNewUserAccepted() {
+    Navigator.pop(context);
+    // Start the saving of the content
+    var manager = UserFileManager(file: 'root.cfg', user: _user);
+    manager.writeFile();
+
+    // Configure the safe directory and the configuration file
+    var configurator = SafeFileManager(
+      user: _user,
+      safeDirectory: 'safe-dir',
+    );
+    configurator.configureSafeDirectory();
+    // Save all the informations
+    configurator.saveInformations();
   }
 }

@@ -60,7 +60,7 @@ class SafeFileManager {
         final String password = sha256.convert(bytes).toString();
         // Save password to use it
         _safeFiles.last.password = password;
-        _safeFiles.last.savePath = filePath;
+        _safeFiles.last.path = filePath;
         // Use it as file encrypt password
         final crypt = AesCrypt(password);
         crypt.setOverwriteMode(AesCryptOwMode.on);
@@ -87,7 +87,7 @@ class SafeFileManager {
   void removeSafeFile(int index) {
     try {
       // Delete the file from the disk
-      final file = File(_safeFiles[index].savePath);
+      final file = File(_safeFiles[index].path);
       file.deleteSync();
     } on IOException catch (exc) {
       print(
@@ -234,7 +234,7 @@ class SafeFileManager {
           creationDateTimeElement.getAttribute('pattern');
 
           // Load use information
-          final user =
+          var user =
           MyOlderUser.fromXmlElement(alUser
               .findElements('user')
               .single);

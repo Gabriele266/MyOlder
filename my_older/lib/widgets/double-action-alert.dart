@@ -29,13 +29,15 @@ class DoubleActionAlert extends StatelessWidget {
   /// [secondAction] The function to call when the second action button is pressed
   /// [firstAction] The first action text
   /// [secondAction] The second action text
-  DoubleActionAlert(
-      {@required this.title,
-      @required this.contents,
-      this.firstAction,
-      this.secondAction,
-      this.firstActionText,
-      this.secondActionText});
+  DoubleActionAlert({
+    Key key,
+    @required this.title,
+    @required this.contents,
+    this.firstAction,
+    this.secondAction,
+    this.firstActionText,
+    this.secondActionText,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

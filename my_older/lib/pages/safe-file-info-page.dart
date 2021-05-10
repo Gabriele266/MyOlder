@@ -14,7 +14,10 @@ class SafeFileInfoPage extends StatefulWidget {
   /// about a SafeFile.
   ///
   /// [file] The file to show informations on
-  SafeFileInfoPage({@required this.file});
+  SafeFileInfoPage({
+    Key key,
+    @required this.file,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SafeFileInfoPageState();
@@ -98,7 +101,7 @@ class _SafeFileInfoPageState extends State<SafeFileInfoPage> {
                               ),
                               InfoPropertyLine(
                                 name: 'Path',
-                                value: widget.file.savePath,
+                                value: widget.file.path,
                               ),
                               InfoPropertyLineAction(
                                 name: 'Info',
@@ -132,7 +135,8 @@ class _SafeFileInfoPageState extends State<SafeFileInfoPage> {
                                   print('Overlay accepted: ${controller.text}');
                                   // Set it as new
                                   setState(
-                                    () => widget.file.description = controller.text,
+                                    () => widget.file.description =
+                                        controller.text,
                                   );
                                 },
                               ),
@@ -147,11 +151,11 @@ class _SafeFileInfoPageState extends State<SafeFileInfoPage> {
                       children: [
                         InfoPropertyLine(
                           name: 'Date',
-                          value: DateFormat.yMd().format(widget.file.addedDateTime),
+                          value: DateFormat.yMd().format(widget.file.dateTime),
                         ),
                         InfoPropertyLine(
                           name: 'Time',
-                          value: DateFormat.Hm().format(widget.file.addedDateTime),
+                          value: DateFormat.Hm().format(widget.file.dateTime),
                         ),
                         InfoPropertyLine(
                           name: 'Suffix',

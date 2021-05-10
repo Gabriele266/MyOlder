@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+// TODO: Use better pattern for this page
+// TODO: Optimize Theme and Media with final variables
+// TODO: Make this page responsive and adaptive
 class LoginInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

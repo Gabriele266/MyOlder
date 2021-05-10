@@ -31,13 +31,14 @@ class IconTextButton extends StatelessWidget {
   /// [background] The background color of this button
   /// [foreground] The foreground color of this button used for text
   IconTextButton({
+    Key key,
     @required this.text,
     @required this.icon,
     this.callback,
     this.border,
     this.background,
     this.foreground,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +56,7 @@ class IconTextButton extends StatelessWidget {
           ? background
           : Theme.of(context).appBarTheme.color,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           if (icon != null)
             Padding(

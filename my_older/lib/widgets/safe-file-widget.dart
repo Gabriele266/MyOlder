@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 import '../pages/safe-file-info-page.dart';
 import '../constructs/safe-file.dart';
 import './tag-widget.dart';
@@ -30,29 +29,11 @@ class SafeFileWidget extends StatefulWidget {
     this.deleteSafeFile,
   });
 
-  // TODO: Avoid this horrible pattern
   @override
-  State<StatefulWidget> createState() => _SafeFileWidgetState(
-        safeFile: safeFile,
-        showByTag: showByTag,
-        deleteSafeFile: deleteSafeFile,
-      );
+  State<StatefulWidget> createState() => _SafeFileWidgetState();
 }
 
 class _SafeFileWidgetState extends State<SafeFileWidget> {
-  SafeFile safeFile;
-  final void Function(String) showByTag;
-  final void Function(SafeFile) deleteSafeFile;
-
-  /// Creates a new instance of the state for the safe file widget
-  ///
-  /// [safeFile] Represents the file to show informations for. <br>
-  /// [showByTag] represents a function to call to order other widgets by tag <br>
-  _SafeFileWidgetState({
-    @required this.safeFile,
-    this.showByTag,
-    this.deleteSafeFile,
-  });
 
   // TODO: Switch to ListTile for displaying informations
   // TODO: Optimize theme fetching using final variables
@@ -64,13 +45,13 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
     const List<TagWidget> tagWidgets = [];
 
     // Check if file has tags
-    if (safeFile.hasTags()) {
+    if (widget.safeFile.hasTags()) {
       for (int x = 0; x < 2; x++) {
-        if (safeFile.existsTag(x)) {
+        if (widget.safeFile.existsTag(x)) {
           tagWidgets.add(
             TagWidget(
-              showByTag: showByTag,
-              tag: safeFile.tags[x],
+              showByTag: widget.showByTag,
+              tag: widget.safeFile.tags[x],
             ),
           );
         }
@@ -83,7 +64,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
         width: 360,
         height: 120,
         child: MaterialButton(
-          onPressed: onWidgetPressed,
+          onPressed: _onWidgetPressed,
           color: Colors.grey[800],
           shape: RoundedRectangleBorder(
             borderRadius: const BorderRadius.all(
@@ -98,7 +79,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
                 child: Icon(
                   Icons.file_present,
-                  size: Theme.of(context).iconTheme.size * 1.5,
+                  size: Theme.of(context).primaryIconTheme.size * 1.5,
                   color: Colors.tealAccent,
                 ),
               ),
@@ -110,7 +91,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
                     Container(
                       width: 150,
                       child: Text(
-                        safeFile.name,
+                        widget.safeFile.name,
                         overflow: TextOverflow.clip,
                         style: Theme.of(context).textTheme.headline3,
                         maxLines: 2,
@@ -124,7 +105,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
                         child: Center(
                           child: Text(
                             DateTimeFormatter.onlyDate(
-                              safeFile.addedDateTime,
+                              widget.safeFile.dateTime,
                             ).format(),
                             overflow: TextOverflow.clip,
                             maxLines: 2,
@@ -150,18 +131,18 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
                   IconButton(
                     icon: Icon(
                       Icons.search,
-                      size: Theme.of(context).iconTheme.size,
-                      color: Theme.of(context).iconTheme.color,
+                      size: Theme.of(context).primaryIconTheme.size,
+                      color: Theme.of(context).primaryIconTheme.color,
                     ),
-                    onPressed: showInfoPage,
+                    onPressed: _showInfoPage,
                   ),
                   IconButton(
                     icon: Icon(
                       Icons.delete,
-                      size: Theme.of(context).iconTheme.size,
+                      size: Theme.of(context).primaryIconTheme.size,
                       color: Colors.red,
                     ),
-                    onPressed: deleteFile,
+                    onPressed: _deleteFile,
                   ),
                 ],
               ),
@@ -172,27 +153,28 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
     );
   }
 
-  // TODO: Make onWidgetPressed private
-  void onWidgetPressed() {
-    safeFile.unlockAndOpen();
+  /// Handles the pression of this widget
+  /// 
+  /// When this widget is pressed, the [safeFile] is unlocked and opened using the 
+  /// system viewer. Lib: [OpenFile]. 
+  void _onWidgetPressed() {
+    widget.safeFile.unlockAndOpen();
   }
 
-  /// Shows the informations page relative to this file
-  // TODO: Make showInfoPage private
+  /// Shows the informations page relative to this [safeFile]
   // TODO: Switch to a modalbottomdialog instead of creating a new standalone page
-  void showInfoPage() => Navigator.push(
+  void _showInfoPage() => Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => SafeFileInfoPage(
-            file: safeFile,
+            file: widget.safeFile,
           ),
         ),
       );
 
-  /// Deletes this file
-  /// 
-  /// TODO: Make deleteFile private
-  void deleteFile() {
-    deleteSafeFile(safeFile);
+  /// Deletes this [safeFile]
+  ///
+  void _deleteFile() {
+    widget.deleteSafeFile(widget.safeFile);
   }
 }
