@@ -44,6 +44,30 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     _searchController.addListener(() {});
   }
 
+  /// General [build] method, calls all the other private builders
+  /// for the various elements of this page. More documentation can
+  /// be found into the [homeDocumentation.html] file into the [documentation]
+  /// folder
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      appBar: _buildAppBar(),
+      body: Column(
+        children: [
+          _buildSearchBox(),
+          SafeFileListViewer(
+            files: widget.manager.safeFiles,
+            deleteSafeFile: _deleteSafeFile,
+          ),
+        ],
+      ),
+      drawer: _buildDrawer(),
+      // drawer: _buildSecondDrawer(),
+      floatingActionButton: _buildFloatingActionButton(),
+    );
+  }
+
   /// Builds the [AppBar] for this page
   AppBar _buildAppBar() {
     final theme = Theme.of(context);
@@ -100,25 +124,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          _buildSearchBox(),
-          SafeFileListViewer(
-            files: widget.manager.safeFiles,
-            deleteSafeFile: _deleteSafeFile,
-          ),
-        ],
-      ),
-      drawer: _buildDrawer(),
-      // drawer: _buildSecondDrawer(),
-      floatingActionButton: _buildFloatingActionButton(),
-    );
-  }
+  
 
   /// Builds the [FloatingActionButton]
   FloatingActionButton _buildFloatingActionButton() {
