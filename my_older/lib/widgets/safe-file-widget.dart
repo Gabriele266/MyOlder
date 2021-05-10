@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../pages/safe-file-info-page.dart';
 import '../constructs/safe-file.dart';
@@ -34,11 +35,9 @@ class SafeFileWidget extends StatefulWidget {
 }
 
 class _SafeFileWidgetState extends State<SafeFileWidget> {
-
-  // TODO: Switch to ListTile for displaying informations
-  // TODO: Optimize theme fetching using final variables
-  // TODO: Make this widget responsive
-  // TODO: Use 'const' where possible
+  /// General [build] method. Constructs this widget
+  /// More informations about this widget can be found into the
+  /// [SafeFileWidget.html] file.
   @override
   Widget build(BuildContext context) {
     // Load a list with the showable tags
@@ -58,105 +57,38 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
       }
     }
 
+    final theme = Theme.of(context);
+    final media = MediaQuery.of(context);
+
     return Padding(
-      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-      child: Container(
-        width: 360,
-        height: 120,
-        child: MaterialButton(
-          onPressed: _onWidgetPressed,
-          color: Colors.grey[800],
-          shape: RoundedRectangleBorder(
-            borderRadius: const BorderRadius.all(
-              const Radius.circular(20),
-            ),
-            side: const BorderSide(width: 1, color: Colors.black),
+      padding: EdgeInsets.symmetric(
+        horizontal: media.size.width * 0.05,
+        vertical: media.size.height * 0.01,
+      ),
+      child: ListTile(
+        leading: const Icon(Icons.file_present),
+        onTap: _onWidgetPressed,
+        onLongPress: _showInfoPage,
+        title: Text(widget.safeFile.name, style: theme.textTheme.headline3),
+        shape: theme.buttonTheme.shape,
+        subtitle: Text(DateFormat.yMd().format(widget.safeFile.dateTime)),
+        tileColor: theme.primaryColor,
+        trailing: IconButton(
+          icon: Icon(
+            Icons.delete,
+            color: theme.errorColor,
+            size: theme.primaryIconTheme.size,
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20),
-                child: Icon(
-                  Icons.file_present,
-                  size: Theme.of(context).primaryIconTheme.size * 1.5,
-                  color: Colors.tealAccent,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15, top: 15),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 150,
-                      child: Text(
-                        widget.safeFile.name,
-                        overflow: TextOverflow.clip,
-                        style: Theme.of(context).textTheme.headline3,
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Container(
-                        width: 150,
-                        child: Center(
-                          child: Text(
-                            DateTimeFormatter.onlyDate(
-                              widget.safeFile.dateTime,
-                            ).format(),
-                            overflow: TextOverflow.clip,
-                            maxLines: 2,
-                            style: Theme.of(context).textTheme.headline4,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(top: 18),
-                      width: 200,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: tagWidgets,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.search,
-                      size: Theme.of(context).primaryIconTheme.size,
-                      color: Theme.of(context).primaryIconTheme.color,
-                    ),
-                    onPressed: _showInfoPage,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      size: Theme.of(context).primaryIconTheme.size,
-                      color: Colors.red,
-                    ),
-                    onPressed: _deleteFile,
-                  ),
-                ],
-              ),
-            ],
-          ),
+          onPressed: _deleteFile,
         ),
       ),
     );
   }
 
   /// Handles the pression of this widget
-  /// 
-  /// When this widget is pressed, the [safeFile] is unlocked and opened using the 
-  /// system viewer. Lib: [OpenFile]. 
+  ///
+  /// When this widget is pressed, the [safeFile] is unlocked and opened using the
+  /// system viewer. Lib: [OpenFile].
   void _onWidgetPressed() {
     widget.safeFile.unlockAndOpen();
   }
