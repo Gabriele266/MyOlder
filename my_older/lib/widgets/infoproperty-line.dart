@@ -20,6 +20,7 @@ class InfoPropertyLine extends StatelessWidget {
   }) : super(key: key);
 
   // TODO: Make this widget responsive
+  // TODO: Make this widget follow the theme
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -46,6 +47,7 @@ class InfoPropertyLine extends StatelessWidget {
     );
   }
 
+  // TODO: Put [nameStyle] style into the theme
   /// The style used for names
   static const TextStyle nameStyle = TextStyle(
     fontSize: 18,
@@ -53,6 +55,7 @@ class InfoPropertyLine extends StatelessWidget {
     color: Colors.black,
   );
 
+  // TODO: Put [valueStyle] style into the theme
   /// The style used for names
   static const TextStyle valueStyle = TextStyle(
     fontSize: 16,
