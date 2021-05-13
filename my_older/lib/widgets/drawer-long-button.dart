@@ -38,7 +38,7 @@ class DrawerListTileButton extends StatelessWidget {
             color: theme.primaryColorDark,
             width: 2 * media.textScaleFactor,
           ),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(media.size.width * 0.03),
         ),
         tileColor: theme.primaryColor,
         onTap: callBack,
