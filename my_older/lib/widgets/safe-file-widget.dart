@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../pages/safe-file-info-page.dart';
 import '../constructs/safe-file.dart';
 import './tag-widget.dart';
-import '../formatters/date-time-formatter.dart';
+import '../modals/safe-file-info-modal.dart';
 
 // FIXME: Fix NoSuchMethodError when displaying the details page
 class SafeFileWidget extends StatefulWidget {
@@ -94,12 +93,16 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
   }
 
   /// Shows the informations page relative to this [safeFile]
-  // TODO: Switch to a modalbottomdialog instead of creating a new standalone page
-  void _showInfoPage() => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SafeFileInfoPage(
-            file: widget.safeFile,
+  void _showInfoPage() => showModalBottomSheet(
+        context: context,
+        builder: (context) => SafeFileInfoModal(widget.safeFile),
+        backgroundColor: Theme.of(context).backgroundColor,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(
+            color: Theme.of(context).primaryColorDark,
+            width: 2 * MediaQuery.of(context).textScaleFactor,
           ),
         ),
       );
