@@ -7,9 +7,13 @@ import 'dart:async';
 import 'package:myolder/constructs/myolder-user.dart';
 import 'package:myolder/managers/user-file-manager.dart';
 import 'package:myolder/managers/safe-file-manager.dart';
+import 'package:myolder/pages/login-info-page.dart';
 import 'package:myolder/pages/safe-zone-home.dart';
 
 class LoginPage extends StatefulWidget {
+  /// The name of this page
+  static const String routeName = '/login';
+
   // Banner to show at top
   final MaterialBanner banner;
 
@@ -110,7 +114,7 @@ class _LoginNormalState extends State<LoginPage> {
 
   /// Displays the login info page
   void _displayLoginInfo() {
-    Navigator.pushNamed(context, '/login/info');
+    Navigator.pushNamed(context, LoginInfoPage.routeName);
   }
 
   @override

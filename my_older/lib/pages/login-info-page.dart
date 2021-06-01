@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // TODO: Optimize Theme and Media with final variables
 // TODO: Make this page responsive and adaptive
 class LoginInfoPage extends StatelessWidget {
+  /// The name of this page
+  static const String routeName = '/login/info';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

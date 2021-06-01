@@ -6,8 +6,13 @@ import 'dart:ui';
 import '../managers/user-file-manager.dart';
 import '../constructs/myolder-user.dart';
 import '../widgets/double-action-alert.dart';
+import '../pages/login-page.dart';
+import '../pages/root-create-page.dart';
 
 class SplashPage extends StatefulWidget {
+  /// Route name
+  static const String routeName = '/splash';
+
   // The message of this widget
   final String message;
 
@@ -40,12 +45,12 @@ class _SplashPageState extends State<SplashPage> {
     if (root && config) {
       // Allow login
       // Push the widget into the navigator
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, LoginPage.routeName);
       print('File esiste');
     } else if (!root && !config) {
       // No configuration for this appilcation.
       // Create one
-      Navigator.pushReplacementNamed(context, '/create');
+      Navigator.pushReplacementNamed(context, RootCreatePage.routeName);
       print('File non esiste');
     } else if ((root && !config) || (!root && config)) {
       // Show alert and ask if should remove the configuration file

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:myolder/pages/newuser-info-page.dart';
 
 import '../constructs/myolder-user.dart';
 import '../managers/user-file-manager.dart';
@@ -9,6 +10,9 @@ import '../constructs/status-text-indicator.dart';
 import '../dialogs/save-informations-dialog.dart';
 
 class RootCreatePage extends StatefulWidget {
+  /// The page name
+  static const String routeName = '/create';
+
   @override
   State<StatefulWidget> createState() => _RootCreatePageState();
 }
@@ -138,7 +142,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
             size: theme.appBarTheme.actionsIconTheme.size,
             color: theme.appBarTheme.actionsIconTheme.color,
           ),
-          onPressed: () => Navigator.pushNamed(context, '/create/info'),
+          onPressed: () => Navigator.pushNamed(context, NewUserInfoPage.routeName),
         ),
       ],
     );

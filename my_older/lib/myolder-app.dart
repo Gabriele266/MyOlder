@@ -17,15 +17,17 @@ class MyOlderApp extends StatelessWidget {
       title: 'MyOlderApp',
       // Theme informations for the application
       theme: AppTheme.normalTheme,
+
+      initialRoute: SplashPage.routeName,
+
       routes: {
-        '/splash': (context) =>
+        SplashPage.routeName: (context) =>
             SplashPage(message: 'Loading application... please wait. '),
-        '/login': (context) => LoginPage(),
-        '/create': (context) => RootCreatePage(),
-        '/create/info': (context) => NewUserInfoPage(),
-        '/login/info': (context) => LoginInfoPage(),
+        LoginPage.routeName: (context) => LoginPage(),
+        RootCreatePage.routeName: (context) => RootCreatePage(),
+        NewUserInfoPage.routeName: (context) => NewUserInfoPage(),
+        LoginInfoPage.routeName: (context) => LoginInfoPage(),
       },
-      home: SplashPage(),
     );
   }
 }

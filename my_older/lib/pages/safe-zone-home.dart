@@ -308,6 +308,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   }
 
   /// Executes the logout to the application
+  /// TODO: Avoid passing data via constructor
   Future<void> _doLogout(BuildContext context) async {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
