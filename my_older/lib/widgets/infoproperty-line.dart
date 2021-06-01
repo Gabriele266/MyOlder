@@ -14,10 +14,9 @@ class InfoPropertyLine extends StatelessWidget {
   /// [name] The name of the property
   /// [value] The value of the property
   InfoPropertyLine({
-    Key key,
-    @required this.name,
-    @required this.value,
-  }) : super(key: key);
+    required this.name,
+    required this.value,
+  }) : super();
 
   // TODO: Make this widget responsive
   // TODO: Make this widget follow the theme
@@ -36,7 +35,7 @@ class InfoPropertyLine extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 20),
               child: Text(
-                value,
+                value != null ? value : '',
                 style: valueStyle,
                 textAlign: TextAlign.center,
               ),
