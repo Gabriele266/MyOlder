@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
+
 import 'package:xml/xml.dart';
 
 /// Represents a user of the application
-/// TODO: Make _name and _password public and remove getters and setters
+/// TODO: Make this a provider to give informations about the logged user
 class MyOlderUser {
   final String name;
   final String password;

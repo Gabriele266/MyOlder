@@ -1,41 +1,39 @@
 /// Created by gabriele on 14/04/21
 /// Project myolder
 
+/// Represents a status
 enum StatusType{
   Success,
   Error,
   Warning
 }
 
-// TODO: Use public members instead of private ones
 class StatusTextIndicator {
   // Status of this indicator
-  StatusType _status;
+  StatusType status;
   // The applied text
   String _appliedText;
   // The default text
-  final String _defaultText;
+  final String defaultText;
 
   // ignore: unnecessary_getters_setters
   set text (String text) {
     _appliedText = text;
   }
 
-  // ignore: unnecessary_getters_setters
   String get text => _appliedText;
-  String get defaultText => _defaultText;
 
-  set status(StatusType status){
-    _status = status;
-  }
-  /// Olds the informations about a text, giving it a default value and allowing the user to change it
-  StatusTextIndicator(this._defaultText);
+  /// Olds the informations about a text, giving it a default value 
+  /// and allowing the user to change it
+  /// 
+  /// [defaultText] The default text to apply
+  StatusTextIndicator(this.defaultText);
 
   /// Creates a new instance of a textindicator and gives it a default value and a status
   ///
   /// [statusType] Defines the status of the text, if it is an error, a success text or a warning
-  StatusTextIndicator.stateful(this._defaultText, StatusType statusType){
-    _status = statusType;
+  StatusTextIndicator.stateful(this.defaultText, StatusType statusType){
+    status = statusType;
   }
 
   /// Returns the text of this indicator
@@ -44,12 +42,12 @@ class StatusTextIndicator {
   /// It is based onto [_defaultText] and [_appliedText]
   String getText(){
     if(_appliedText != null) return _appliedText;
-    else return _defaultText;
+    else return defaultText;
   }
 
   /// Returns the status string of this text indicator
   String getStatusString() {
-    switch(_status){
+    switch(status){
       case StatusType.Error:
         return 'Error';
       case StatusType.Success:
@@ -64,14 +62,14 @@ class StatusTextIndicator {
   /// Changes the text and optionally his status
   void changeText(String newText, {StatusType status = StatusType.Success}){
     _appliedText = newText;
-    _status = status;
+    status = status;
   }
 
   /// Returns true if this indicator is a success message
-  bool isSuccessMessage() => _status == StatusType.Success;
+  bool isSuccessMessage() => status == StatusType.Success;
 
   /// Returns true if this indicator is an error message
-  bool isErrorMessage() => _status == StatusType.Error;
+  bool isErrorMessage() => status == StatusType.Error;
 
-  String toString() => 'StatusTextIndicator. Default text: $_defaultText. Applied text: $_appliedText. ';
+  String toString() => 'StatusTextIndicator. Default text: $defaultText. Applied text: $_appliedText. ';
 }
