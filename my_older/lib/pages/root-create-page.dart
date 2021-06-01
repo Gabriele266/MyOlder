@@ -24,9 +24,6 @@ class _RootCreatePageState extends State<RootCreatePage> {
   // Determina se nascondere la password
   bool hidePassword = true;
 
-  // Informazioni create
-  var _user = MyOlderUser();
-
   // Controllore del nome utente
   var _userController = TextEditingController();
 
@@ -60,12 +57,10 @@ class _RootCreatePageState extends State<RootCreatePage> {
     );
 
     _userController.addListener(() {
-      _user.name = _userController.text;
       _checkNewUserCredentials();
     });
 
     _passController.addListener(() {
-      _user.password = _passController.text;
       _checkNewUserCredentials();
     });
   }
@@ -142,7 +137,8 @@ class _RootCreatePageState extends State<RootCreatePage> {
             size: theme.appBarTheme.actionsIconTheme.size,
             color: theme.appBarTheme.actionsIconTheme.color,
           ),
-          onPressed: () => Navigator.pushNamed(context, NewUserInfoPage.routeName),
+          onPressed: () =>
+              Navigator.pushNamed(context, NewUserInfoPage.routeName),
         ),
       ],
     );
@@ -249,8 +245,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
       MaterialPageRoute(
         builder: (BuildContext context) {
           return SaveInformationsDialog(
-            content:
-                'The following new user will be created: $_user. Do you wish to continue? ',
+            content: 'The new user will be created. Do you wish to continue? ',
             title: 'New user creation',
             onDialogAccepted: _onNewUserAccepted,
             onDialogCanceled: _onNewUserCanceled,
@@ -281,13 +276,19 @@ class _RootCreatePageState extends State<RootCreatePage> {
   /// Called when the user accepts the [SaveInformationsDialog]
   void _onNewUserAccepted() {
     Navigator.pop(context);
+
+    final createUser = MyOlderUser(
+      name: _userController.text,
+      password: _passController.text,
+    );
+
     // Start the saving of the content
-    var manager = UserFileManager(file: 'root.cfg', user: _user);
+    var manager = UserFileManager(file: 'root.cfg', user: createUser);
     manager.writeFile();
 
     // Configure the safe directory and the configuration file
     var configurator = SafeFileManager(
-      user: _user,
+      user: createUser,
       safeDirectory: 'safe-dir',
     );
     configurator.configureSafeDirectory();

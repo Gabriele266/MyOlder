@@ -45,9 +45,6 @@ class _LoginNormalState extends State<LoginPage> {
   final _keyboardController = KeyboardVisibilityNotification();
   var _onPressedHandler;
 
-  // Utente inserito in input
-  var _userInfo = MyOlderUser();
-
   // Indica se nascondere la password
   bool _hidePassword = true;
   bool _showBanner = false;
@@ -66,12 +63,8 @@ class _LoginNormalState extends State<LoginPage> {
     _onPressedHandler = _onLoginRequest;
 
     // Add listeners to the keyboard to see when it is shown
-    _userController.addListener(() {
-      _userInfo.name = _userController.text;
-    });
-    _passController.addListener(() {
-      _userInfo.password = _passController.text;
-    });
+    _userController.addListener(() {});
+    _passController.addListener(() {});
   }
 
   /// Called when the keyboard is shown
@@ -298,8 +291,17 @@ class _LoginNormalState extends State<LoginPage> {
 
   /// Performs the login process
   Future<void> _performLogin() async {
+    // Get the user informations
+    final logUser = MyOlderUser(
+      name: _userController.text,
+      password: _passController.text,
+    );
+
     // Execute the login
-    var reader = UserFileManager(file: 'root.cfg', user: _userInfo);
+    var reader = UserFileManager(
+      file: 'root.cfg',
+      user: logUser,
+    );
     final bool result = await reader.doControl();
 
     if (result) {
@@ -309,7 +311,7 @@ class _LoginNormalState extends State<LoginPage> {
       // Check if the two users are equal
       MyOlderUser usr = man.user;
 
-      if (_userInfo.equals(usr)) {
+      if (logUser.equals(usr)) {
         // print('VERY GOOD, LOGIN SUPER SUCCESSFUL');
         setState(
           () {
