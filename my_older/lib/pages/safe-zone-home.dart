@@ -137,7 +137,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
       backgroundColor: theme.floatingActionButtonTheme.backgroundColor,
       child: Icon(
         Icons.add,
-        size: theme.primaryIconTheme.size + 10,
+        size: theme.primaryIconTheme.size! + 10,
         color: theme.primaryIconTheme.color,
       ),
       splashColor: theme.floatingActionButtonTheme.splashColor,
@@ -223,7 +223,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   /// Adds a new file to the safe zone
   Future<void> _addNewFile(BuildContext context) async {
     // Get a file from the default file-picker
-    FilePickerResult file = await FilePicker.platform
+    FilePickerResult? file = await FilePicker.platform
         .pickFiles(withData: true, withReadStream: true);
 
     if (file != null) {
@@ -232,15 +232,11 @@ class _SafeZoneHome extends State<SafeZoneHome> {
       print('File suffix: ${object.extension}');
       // Create the safefile object
       var safe = SafeFile(
-        name: object.name,
-        suffix: object.extension,
-        path: '',
-        dateTime: DateTime.now(),
-        color: Colors.blue,
+        
       );
 
       // Add the file and encrypt it
-      widget.manager.addSafeFile(safe, object.bytes);
+      widget.manager.addSafeFile(safe, object.bytes!);
       // Set the new state
       setState(() {});
     }
