@@ -98,6 +98,12 @@ class AppTheme {
             letterSpacing: 1,
             fontWeight: FontWeight.w600,
           ),
+          bodyText2: TextStyle(
+            color: CustomColors.brown,
+            fontSize: 18,
+            fontWeight: FontWeight.w300,
+            fontFamily: 'Times new Roman',
+          ),
         ),
 
         /// The appbar theme for styling the [AppBar]
