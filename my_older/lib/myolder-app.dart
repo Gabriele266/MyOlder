@@ -9,8 +9,6 @@ import './pages/newuser-info-page.dart';
 import './global/theme.dart';
 
 class MyOlderApp extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,8 +19,7 @@ class MyOlderApp extends StatelessWidget {
       initialRoute: SplashPage.routeName,
 
       routes: {
-        SplashPage.routeName: (context) =>
-            SplashPage(message: 'Loading application... please wait. '),
+        SplashPage.routeName: (context) => SplashPage(),
         LoginPage.routeName: (context) => LoginPage(),
         RootCreatePage.routeName: (context) => RootCreatePage(),
         NewUserInfoPage.routeName: (context) => NewUserInfoPage(),
