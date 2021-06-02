@@ -62,7 +62,7 @@ class _SplashPageState extends State<SplashPage> {
               title: 'Problems detected',
               contents:
                   'MyOlder has detected some file issues, resolve them by deleting all? You will lose all your data. '
-                  'If you wont perform this operation, you wont be able to use them anymore. ',
+                  'If you won\'t perform this operation, you won\'t be able to use them anymore. ',
               firstActionText: 'Yes, i accept',
               firstAction: () {
                 // Delete all configurations
