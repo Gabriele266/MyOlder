@@ -1,9 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+
 import '../widgets/text-section.dart';
 
-/// TODO: Make NewUserInfoPage page responsive and adaptive
 class NewUserInfoPage extends StatelessWidget {
   /// Route name
   static const String routeName = '/create/info';
