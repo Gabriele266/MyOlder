@@ -51,7 +51,7 @@ class LoginInfoPage extends StatelessWidget {
                       'Understood',
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
