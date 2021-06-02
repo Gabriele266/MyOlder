@@ -8,9 +8,10 @@ class TextSection extends StatelessWidget {
   final TextAlign textAlign;
   final BoxDecoration decoration;
   final EdgeInsetsGeometry padding;
+  final IconData titleIcon;
 
-  /// Creates a new [TextSection]. A widget to display a section text with a title and some 
-  /// contents. 
+  /// Creates a new [TextSection]. A widget to display a section text with a title and some
+  /// contents.
   ///
   /// [title] The section title
   /// [content] The section content
@@ -27,6 +28,7 @@ class TextSection extends StatelessWidget {
     this.textAlign = TextAlign.center,
     this.decoration = const BoxDecoration(),
     this.padding,
+    this.titleIcon = null,
   }) : super(key: key);
 
   @override
@@ -47,10 +49,30 @@ class TextSection extends StatelessWidget {
         children: [
           Align(
             alignment: _geometryFromTextAlign(textAlign),
-            child: Text(
-              title,
-              style: theme.textTheme.headline1,
-              textAlign: textAlign,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                titleIcon != null
+                    ? Align(
+                        alignment: _geometryFromTextAlign(textAlign),
+                        child: Icon(
+                          titleIcon,
+                        ),
+                      )
+                    : const SizedBox(
+                        width: 0,
+                        height: 0,
+                      ),
+                Align(
+                  alignment: _geometryFromTextAlign(textAlign),
+                  child: Text(
+                    title,
+                    style: theme.textTheme.headline1,
+                    textAlign: textAlign,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              ],
             ),
           ),
           Text(
