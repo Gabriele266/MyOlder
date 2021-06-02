@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:aes_crypt/aes_crypt.dart';
 
 import '../exceptions/null-data-exception.dart';
@@ -10,15 +12,19 @@ import '../exceptions/file-not-defined-exception.dart';
 import '../exceptions/file-not-found-exception.dart';
 import '../exceptions/user-not-defined-exception.dart';
 
-class UserFileManager {
-  String file;
+class UserFileManager with ChangeNotifier {
+  final String rootFile;
+  final String safeFolder;
   MyOlderUser user;
+
+  static UserFileManager of(BuildContext context, {bool listen = false}) =>
+      Provider.of<UserFileManager>(context, listen: listen);
 
   /// Inizializza una [UserFileManager] impostando il file da cui leggere e l'utente con cui confrontarlo
   ///
   /// [file] : Rappresenta il file da cui leggere
   /// [user] : Le informazioni dell' utente con cui controllare
-  UserFileManager({@required this.file, @required this.user});
+  UserFileManager({@required this.rootFile, @required this.safeFolder});
 
   /// Starts the control of the user and checks if it is allowed to access the application
   ///
@@ -27,13 +33,14 @@ class UserFileManager {
   /// In case of errors an exception is thrown.
   ///
   /// If the configuration file doesn't exists, a [FileNotFoundException] is thrown
-  /// If the [file] is empty, then a [NullDataException] is thrown
+  /// If the [rootFile] is empty, then a [NullDataException] is thrown
+  /// [logUser] The user informations
   /// TODO: Implement use of xml for the root file
-  Future<bool> doControl() async {
-    if (file.isNotEmpty) {
+  Future<bool> doControl(MyOlderUser logUser) async {
+    if (rootFile.isNotEmpty) {
       // Get the file object
       var oFile =
-          File('${(await getApplicationDocumentsDirectory()).path}/$file');
+          File('${(await getApplicationDocumentsDirectory()).path}/$rootFile');
 
       // Check if file exists
       if (oFile.existsSync()) {
@@ -51,6 +58,7 @@ class UserFileManager {
         // Password
         var password = '';
 
+        // Read credentials
         for (var line in fileLines) {
           if (!line.startsWith('#')) {
             // Controllo se si tratta di una riga che definisce il nome utente per l'accesso
@@ -63,11 +71,17 @@ class UserFileManager {
           }
         }
 
+        // Load the user informations
+        user = MyOlderUser(
+          name: usr,
+          password: password,
+        );
+
         // return the result of the check
-        return (user.name == usr && user.password == password);
+        return (logUser.name == user.name && logUser.password == user.password);
       } else
         throw FileNotFoundException(
-          file: file,
+          file: rootFile,
           path: oFile.path,
         );
     } else
@@ -79,34 +93,35 @@ class UserFileManager {
       );
   }
 
-  /// Checks if the configuration file for the exists
-  Future<bool> checkConfigurationExists(String name) async {
+  /// Checks if the configuration file for the application exists
+  ///
+  /// [name] The name of the configuration
+  Future<bool> checkConfigurationExists() async {
     // Directory path
     final dir =
-        Directory('${(await getApplicationDocumentsDirectory()).path}/$name');
+        Directory('${(await getApplicationDocumentsDirectory()).path}/$safeFolder');
 
     return dir.existsSync();
   }
 
   /// Removes the configuration folder with the given name
-  Future<void> removeConfigurationFolder(String name) async {
+  Future<void> removeConfigurationFolder() async {
     // Get directory path
     final dir =
-        Directory('${(await getApplicationDocumentsDirectory()).path}/$name');
+        Directory('${(await getApplicationDocumentsDirectory()).path}/$safeFolder');
     dir.delete(recursive: true);
   }
 
   /// Checks if the user credentials are allowed to access the application or not
   ///
-  /// Needs that the internal member file is set.
   /// [file] represents the the file to search
-  /// 
+  ///
   /// If the [file] is empty (no file specified) then a [NullDataException] is thrown
   Future<bool> checkRootExists() async {
-    if (file.isNotEmpty) {
+    if (rootFile.isNotEmpty) {
       // Get the file formatting his path
       final oFile =
-          File('${(await getApplicationDocumentsDirectory()).path}/$file');
+          File('${(await getApplicationDocumentsDirectory()).path}/$rootFile');
 
       // Check if file exists
       return oFile.existsSync();
@@ -124,11 +139,11 @@ class UserFileManager {
   /// TODO: Implement password generation
   Future<void> writeFile() async {
     // Formatto il percorso del file da creare
-    if (file.isNotEmpty) {
+    if (rootFile.isNotEmpty) {
       // Check if the user informations are set
       if (user != null && user.isNotEmpty()) {
         final String filePath =
-            '${(await getApplicationDocumentsDirectory()).path}/$file';
+            '${(await getApplicationDocumentsDirectory()).path}/$rootFile';
 
         // Encrypt all the informations
         final crt = AesCrypt(
@@ -149,9 +164,9 @@ class UserFileManager {
   }
 
   /// Removes the configuration file
-  Future<void> removeFile() async {
+  Future<void> removeRootFile() async {
     final String filePath =
-        '${(await getApplicationDocumentsDirectory()).path}/$file';
+        '${(await getApplicationDocumentsDirectory()).path}/$rootFile';
     final oFile = File(filePath);
     // Check if file exists and delete it
     if (oFile.existsSync()) oFile.deleteSync();

@@ -296,13 +296,8 @@ class _LoginNormalState extends State<LoginPage> {
       name: _userController.text,
       password: _passController.text,
     );
-
-    // Execute the login
-    var reader = UserFileManager(
-      file: 'root.cfg',
-      user: logUser,
-    );
-    final bool result = await reader.doControl();
+    
+    final bool result = await UserFileManager.of(context).doControl(logUser);
 
     if (result) {
       // Start loading the safe-zone-files

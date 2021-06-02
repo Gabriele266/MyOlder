@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../managers/user-file-manager.dart';
-import '../constructs/myolder-user.dart';
 import '../widgets/double-action-alert.dart';
 import '../pages/login-page.dart';
 import '../pages/root-create-page.dart';
@@ -35,10 +34,9 @@ class _SplashPageState extends State<SplashPage> {
   /// Gets the correct main page for the application
   Future<void> _getMainPage(BuildContext context) async {
     // Create a user file reader
-    final fileReader = UserFileManager(file: 'root.cfg', user: MyOlderUser());
     // Check if files and folders exist or not
-    final root = await fileReader.checkRootExists();
-    final config = await fileReader.checkConfigurationExists('safe-dir');
+    final root = await UserFileManager.of(context).checkRootExists();
+    final config = await UserFileManager.of(context).checkConfigurationExists();
 
     if (root && config) {
       // Allow login
@@ -55,17 +53,17 @@ class _SplashPageState extends State<SplashPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => _buildProblemsDialog(context, fileReader),
+          builder: (context) => _buildProblemsDialog(context),
         ),
       );
     }
   }
 
   /// Deletes all the configuration files from all the directories
-  Future<void> _deleteAllConfigurations(UserFileManager fileReader) async {
+  Future<void> _deleteAllConfigurations() async {
     // Remove all the configuration and file and re execute this login
-    fileReader.removeFile();
-    fileReader.removeConfigurationFolder('safe-dir');
+    UserFileManager.of(context).removeRootFile();
+    UserFileManager.of(context).removeConfigurationFolder();
 
     print('Deleting all the application-configuring files. ');
     print('Operation started at: ${DateTime.now().toString()}');
@@ -77,7 +75,7 @@ class _SplashPageState extends State<SplashPage> {
 
   /// Builds the problems dialog
   Widget _buildProblemsDialog(
-      BuildContext context, UserFileManager fileReader) {
+      BuildContext context) {
     return DoubleActionAlert(
       title: 'Problems detected',
       contents:
@@ -86,7 +84,7 @@ class _SplashPageState extends State<SplashPage> {
       firstActionText: 'Yes, i accept',
       firstAction: () {
         // Delete all configurations
-        _deleteAllConfigurations(fileReader);
+        _deleteAllConfigurations();
       },
       secondActionText: 'No, leave all',
       secondAction: () {

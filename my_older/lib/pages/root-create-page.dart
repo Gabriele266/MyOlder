@@ -283,7 +283,10 @@ class _RootCreatePageState extends State<RootCreatePage> {
     );
 
     // Start the saving of the content
-    var manager = UserFileManager(file: 'root.cfg', user: createUser);
+    final manager =
+        UserFileManager(rootFile: 'root.cfg', safeFolder: 'safe-dir');
+    manager.user = createUser;
+    
     manager.writeFile();
 
     // Configure the safe directory and the configuration file
