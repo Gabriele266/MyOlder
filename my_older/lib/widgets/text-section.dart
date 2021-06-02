@@ -55,8 +55,13 @@ class TextSection extends StatelessWidget {
                 titleIcon != null
                     ? Align(
                         alignment: _geometryFromTextAlign(textAlign),
-                        child: Icon(
-                          titleIcon,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            right: media.size.width * 0.04,
+                          ),
+                          child: Icon(
+                            titleIcon,
+                          ),
                         ),
                       )
                     : const SizedBox(
