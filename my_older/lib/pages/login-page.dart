@@ -297,7 +297,7 @@ class _LoginNormalState extends State<LoginPage> {
       password: _passController.text,
     );
     
-    final bool result = await UserFileManager.of(context).doControl(logUser);
+    final bool result = await UserFileManager.of(context).login(logUser);
 
     if (result) {
       // Start loading the safe-zone-files

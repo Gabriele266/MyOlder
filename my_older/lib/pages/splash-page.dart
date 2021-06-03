@@ -18,17 +18,19 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
-    _getMainPage(context);
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      backgroundColor: theme.appBarTheme.backgroundColor,
       body: Center(
-        child: Text(
-          'Loading application... please wait. ',
-          style: Theme.of(context).textTheme.headline2,
-          textAlign: TextAlign.center,
-        ),
+        child: _getPage(),
       ),
     );
+  }
+
+  Widget _getPage() {
+    _getMainPage(context);
+    return Text('Simple WIdget');
   }
 
   /// Gets the correct main page for the application
@@ -38,7 +40,7 @@ class _SplashPageState extends State<SplashPage> {
     final root = await UserFileManager.of(context).checkRootExists();
     final config = await UserFileManager.of(context).checkConfigurationExists();
 
-    if (root && config) {
+    if (await UserFileManager.of(context).readyToLogin()) {
       // Allow login
       // Push the widget into the navigator
       Navigator.pushReplacementNamed(context, LoginPage.routeName);
@@ -74,8 +76,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   /// Builds the problems dialog
-  Widget _buildProblemsDialog(
-      BuildContext context) {
+  Widget _buildProblemsDialog(BuildContext context) {
     return DoubleActionAlert(
       title: 'Problems detected',
       contents:

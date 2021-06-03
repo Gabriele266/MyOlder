@@ -2,10 +2,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../managers/user-file-manager.dart';
+
 import '../exceptions/element-not-found-exception.dart';
 import '../constructs/safe-file.dart';
 import '../managers/safe-file-manager.dart';
-import './login-page.dart';
 import '../widgets/drawer-long-button.dart';
 import '../constructs/myolder-user.dart';
 import '../widgets/safe-file-list-viewer.dart';
@@ -123,8 +124,6 @@ class _SafeZoneHome extends State<SafeZoneHome> {
       ),
     );
   }
-
-  
 
   /// Builds the [FloatingActionButton]
   FloatingActionButton _buildFloatingActionButton() {
@@ -310,9 +309,7 @@ class _SafeZoneHome extends State<SafeZoneHome> {
   /// Executes the logout to the application
   /// TODO: Avoid passing data via constructor
   Future<void> _doLogout(BuildContext context) async {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginPage()));
-    dispose();
+    UserFileManager.of(context).logout();
   }
 
   /// Disposes all the resources used by this main page

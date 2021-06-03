@@ -16,15 +16,19 @@ class UserFileManager with ChangeNotifier {
   final String rootFile;
   final String safeFolder;
   MyOlderUser user;
+  bool userLogged = false;
 
   static UserFileManager of(BuildContext context, {bool listen = false}) =>
       Provider.of<UserFileManager>(context, listen: listen);
 
-  /// Inizializza una [UserFileManager] impostando il file da cui leggere e l'utente con cui confrontarlo
+  /// Creates a new [UserFileManager] to manage the user informations and files
   ///
-  /// [file] : Rappresenta il file da cui leggere
-  /// [user] : Le informazioni dell' utente con cui controllare
-  UserFileManager({@required this.rootFile, @required this.safeFolder});
+  /// [rootFile] The name of the root file to use for saving all the credentials
+  /// [safeFolder] The name of the folder to put safe files into.
+  UserFileManager({
+    @required this.rootFile,
+    @required this.safeFolder,
+  });
 
   /// Starts the control of the user and checks if it is allowed to access the application
   ///
@@ -36,7 +40,7 @@ class UserFileManager with ChangeNotifier {
   /// If the [rootFile] is empty, then a [NullDataException] is thrown
   /// [logUser] The user informations
   /// TODO: Implement use of xml for the root file
-  Future<bool> doControl(MyOlderUser logUser) async {
+  Future<bool> login(MyOlderUser logUser) async {
     if (rootFile.isNotEmpty) {
       // Get the file object
       var oFile =
@@ -77,8 +81,13 @@ class UserFileManager with ChangeNotifier {
           password: password,
         );
 
+        userLogged =
+            (logUser.name == user.name && logUser.password == user.password);
+
+        notifyListeners();
+
         // return the result of the check
-        return (logUser.name == user.name && logUser.password == user.password);
+        return userLogged;
       } else
         throw FileNotFoundException(
           file: rootFile,
@@ -93,13 +102,19 @@ class UserFileManager with ChangeNotifier {
       );
   }
 
+  /// Executes the logout
+  void logout() {
+    userLogged = false;
+    notifyListeners();
+  }
+
   /// Checks if the configuration file for the application exists
   ///
   /// [name] The name of the configuration
   Future<bool> checkConfigurationExists() async {
     // Directory path
-    final dir =
-        Directory('${(await getApplicationDocumentsDirectory()).path}/$safeFolder');
+    final dir = Directory(
+        '${(await getApplicationDocumentsDirectory()).path}/$safeFolder');
 
     return dir.existsSync();
   }
@@ -107,8 +122,8 @@ class UserFileManager with ChangeNotifier {
   /// Removes the configuration folder with the given name
   Future<void> removeConfigurationFolder() async {
     // Get directory path
-    final dir =
-        Directory('${(await getApplicationDocumentsDirectory()).path}/$safeFolder');
+    final dir = Directory(
+        '${(await getApplicationDocumentsDirectory()).path}/$safeFolder');
     dir.delete(recursive: true);
   }
 
@@ -161,6 +176,14 @@ class UserFileManager with ChangeNotifier {
         throw UserNotDefinedException('writeFile() async');
     } else
       throw FileNotDefinedException('writeFile() async');
+  }
+
+  /// Checks if it's ready to make a login
+  Future<bool> readyToLogin() async {
+    final root = await checkRootExists();
+    final config = await checkConfigurationExists();
+
+    return (root && config);
   }
 
   /// Removes the configuration file
