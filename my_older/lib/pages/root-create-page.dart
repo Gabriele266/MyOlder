@@ -291,7 +291,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
 
     // Configure the safe directory and the configuration file
     var configurator = SafeFileManager(
-      user: createUser,
+      allowedUser: createUser,
       safeDirectory: 'safe-dir',
     );
     configurator.configureSafeDirectory();

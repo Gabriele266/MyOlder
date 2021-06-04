@@ -2,36 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 import '../constructs/safe-file.dart';
+import '../managers/safe-file-manager.dart';
 import './safe-file-widget.dart';
 
 class SafeFileListViewer extends StatelessWidget {
-  // The files to display
-  final List<SafeFile> files;
-
-  // Function to call for deleting a safefile
-  final void Function(SafeFile) deleteSafeFile;
-
-  /// Creates a new instance of a [SafeFileListViewer]
-  ///
-  /// [files] The list of files to display
-  /// [deleteSafeFile] The function to call for deleting a [SafeFile]
-  SafeFileListViewer({
-    Key key,
-    @required this.files,
-    @required this.deleteSafeFile,
-  }) : super(key: key);
-
   /// Builds the list view, when there are items to display
-  Widget _buildListView() {
+  Widget _buildListView(BuildContext context) {
     return Scrollbar(
       child: ListView.builder(
         physics: ClampingScrollPhysics(),
-        itemCount: files.length,
+        itemCount: SafeFileManager.of(context).safeFiles.length,
         itemBuilder: (context, index) {
           return SafeFileWidget(
-            safeFile: files[index],
+            safeFile: SafeFileManager.of(context).safeFiles[index],
             showByTag: (String tag) {},
-            deleteSafeFile: deleteSafeFile,
+            deleteSafeFile: (_) {},
           );
         },
       ),
@@ -66,8 +51,8 @@ class SafeFileListViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       flex: 7,
-      child: (files != null && files.length > 0)
-          ? _buildListView()
+      child: (SafeFileManager.of(context).safeFiles != null && SafeFileManager.of(context).safeFiles.length > 0)
+          ? _buildListView(context)
           : _buildNoFilesView(context),
     );
   }

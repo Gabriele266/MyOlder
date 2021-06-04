@@ -10,16 +10,16 @@ import '../formatters/date-time-formatter.dart';
 /// Represents a protected file into the application
 class SafeFile {
   // File name
-  String name;
+  final String name;
 
   // File suffix
-  String suffix;
+  final String suffix;
 
   // File description
   String description;
 
   // Creation time
-  DateTime dateTime;
+  final DateTime dateTime;
 
   // Associated color
   Color color;
@@ -31,7 +31,7 @@ class SafeFile {
   List<String> tags;
 
   // File access password
-  String password;
+  final String password;
 
   /// Creates a new instance of a safe file
   ///
@@ -46,27 +46,12 @@ class SafeFile {
   SafeFile({
     @required this.name,
     @required this.path,
+    @required this.password,
+    @required this.suffix,
     this.color,
     this.dateTime,
     this.description,
-    this.password,
-    this.suffix,
   });
-
-  /// Creates a new empty instance of safe file
-  ///
-  /// All the internal members will be set to null or to the default values.
-  /// To assign something use the default constructor.
-  SafeFile.empty() {
-    name = '';
-    description = '';
-    dateTime = null;
-    path = '';
-    color = null;
-    tags = [];
-    suffix = '';
-    password = '';
-  }
 
   /// Returns the tag with the given index
   String getTag(int index) => tags[index];
@@ -163,17 +148,24 @@ class SafeFile {
   /// The parameter [sourceStr] is mandatory and represents the element to use for
   /// reading the informations. It should follow the [toSaveString] format
   static SafeFile fromXmlElement(XmlElement source) {
-    var file = SafeFile.empty();
+    // File fields
+    String name;
+    String password;
+    String path;
+    DateTime dateTime;
+    String suffix;
+    String description;
+    Color color;
 
     try {
-      file.name = source.findElements('display-name').single.text;
-      file.password = source.findElements('password').single.text;
-      file.path = source.findElements('save-path').single.text;
-      file.dateTime = DateTimeFormatter.completePattern()
+      name = source.findElements('display-name').single.text;
+      password = source.findElements('password').single.text;
+      path = source.findElements('save-path').single.text;
+      dateTime = DateTimeFormatter.completePattern()
           .fromString(source.findElements('added-on').single.text);
-      file.suffix = source.findElements('suffix').single.text;
-      file.description = source.findElements('description').single.text;
-      file.color = RgbColorFormatter.empty()
+      suffix = source.findElements('suffix').single.text;
+      description = source.findElements('description').single.text;
+      color = RgbColorFormatter.empty()
           .fromString(source.findElements('color').single.text);
     } on NoSuchMethodError catch (i) {
       print('Exception during requesting informations from an XmlString. ');
@@ -183,13 +175,22 @@ class SafeFile {
       print('Exception during loading file a file');
     }
 
-    return file;
+    // Create the file and return it
+    return SafeFile(
+      name: name,
+      password: password,
+      path: path,
+      dateTime: dateTime,
+      suffix: suffix,
+      description: description,
+      color: color,
+    );
   }
 
   /// Opens this file, decrypts his contents and opens it with the default app
   ///
   /// Requires that [password] is given and also [path] and [name]
-  Future<String> unlockAndOpen() async {
+  Future<void> unlockAndOpen() async {
     try {
       // Search the safefile index into this object
       // Read the file
@@ -205,8 +206,6 @@ class SafeFile {
     } catch (i) {
       print('Exception during unlocking file $name');
     }
-
-    return ' ';
   }
 
   /// Checks if [file] has the same properties as this current object

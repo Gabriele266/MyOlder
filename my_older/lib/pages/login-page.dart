@@ -303,8 +303,9 @@ class _LoginNormalState extends State<LoginPage> {
       // Start loading the safe-zone-files
       SafeFileManager man = await SafeFileManager.readConfigurationFile(
           'safe-dir', 'rc&MEuFiMoZBB8Ru*Sa8');
+          
       // Check if the two users are equal
-      MyOlderUser usr = man.user;
+      MyOlderUser usr = man.allowedUser;
 
       if (logUser.equals(usr)) {
         // print('VERY GOOD, LOGIN SUPER SUCCESSFUL');
@@ -313,16 +314,9 @@ class _LoginNormalState extends State<LoginPage> {
             _errorString = '';
             _onPressedHandler = _onLoginRequest;
             // Start the login
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return SafeZoneHome(
-                    usr,
-                    man,
-                  );
-                },
-              ),
+            Navigator.of(context).pushReplacementNamed(
+              SafeZoneHome.routeName,
+              arguments: man,
             );
           },
         );
