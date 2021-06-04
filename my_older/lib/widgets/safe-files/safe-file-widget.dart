@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../constructs/safe-file.dart';
-import './tag-widget.dart';
-import '../modals/safe-file-info-modal.dart';
+import '../../constructs/safe-file.dart';
+import 'tag-widget.dart';
+import '../../modals/safe-file-info-modal.dart';
 
 // FIXME: Fix NoSuchMethodError when displaying the details page
 class SafeFileWidget extends StatefulWidget {

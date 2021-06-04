@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../managers/user-file-manager.dart';
-import '../widgets/double-action-alert.dart';
+import '../providers/user-file-manager.dart';
+import '../widgets/textual/double-action-alert.dart';
 import '../pages/login-page.dart';
 import '../pages/root-create-page.dart';
 

@@ -8,7 +8,7 @@ import './pages/root-create-page.dart';
 import './pages/splash-page.dart';
 import './pages/login-info-page.dart';
 import './pages/newuser-info-page.dart';
-import './managers/user-file-manager.dart';
+import './providers/user-file-manager.dart';
 
 import './global/theme.dart';
 

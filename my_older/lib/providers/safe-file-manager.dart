@@ -32,8 +32,10 @@ class SafeFileManager with ChangeNotifier {
   // Date this safefilemanager was created
   final DateTime creationDateTime;
 
+  /// Returns a copy of the safe file list
   List<SafeFile> get safeFiles => [..._safeFiles];
 
+  /// The number of safe files
   int get safeFilesCount => _safeFiles.length;
 
   /// Initializes a new instance of a safefilemanager

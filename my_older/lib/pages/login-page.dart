@@ -4,11 +4,11 @@ import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'dart:math';
 import 'dart:async';
 
-import 'package:myolder/constructs/myolder-user.dart';
-import 'package:myolder/managers/user-file-manager.dart';
-import 'package:myolder/managers/safe-file-manager.dart';
-import 'package:myolder/pages/login-info-page.dart';
-import 'package:myolder/pages/safe-zone-home.dart';
+import '../constructs/myolder-user.dart';
+import '../providers/user-file-manager.dart';
+import '../providers/safe-file-manager.dart';
+import '../pages/login-info-page.dart';
+import '../pages/safe-zone-home.dart';
 
 class LoginPage extends StatefulWidget {
   /// The name of this page

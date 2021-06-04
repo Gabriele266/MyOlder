@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../constructs/safe-file.dart';
-import '../widgets/infoproperty-line.dart';
+import '../widgets/textual/infoproperty-line.dart';
 
 class SafeFileInfoModal extends StatelessWidget {
   // The safe file to display informations about

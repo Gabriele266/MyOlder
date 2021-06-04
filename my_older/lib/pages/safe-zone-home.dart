@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/safe-zone-home-body.dart';
-import '../managers/user-file-manager.dart';
+import '../widgets/page-components/home-body.dart';
+import '../providers/user-file-manager.dart';
 
 import 'package:myolder/drawers/home-drawer.dart';
-import 'package:myolder/widgets/home-fltbutton.dart';
-import '../managers/safe-file-manager.dart';
+import 'package:myolder/widgets/page-components/home-fltbutton.dart';
+import '../providers/safe-file-manager.dart';
 
 class SafeZoneHome extends StatelessWidget {
   static const String routeName = '/home';

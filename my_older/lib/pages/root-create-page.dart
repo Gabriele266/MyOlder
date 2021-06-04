@@ -3,9 +3,9 @@ import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myolder/pages/newuser-info-page.dart';
 
 import '../constructs/myolder-user.dart';
-import '../managers/user-file-manager.dart';
+import '../providers/user-file-manager.dart';
 import '../pages/login-page.dart';
-import '../managers/safe-file-manager.dart';
+import '../providers/safe-file-manager.dart';
 import '../constructs/status-text-indicator.dart';
 import '../dialogs/save-informations-dialog.dart';
 

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 
-import '../constructs/safe-file.dart';
-import '../managers/safe-file-manager.dart';
-import './safe-file-widget.dart';
+import '../../providers/safe-file-manager.dart';
+import 'safe-file-widget.dart';
 
 class SafeFileListViewer extends StatelessWidget {
   /// Builds the list view, when there are items to display

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/text-section.dart';
+import '../widgets/textual/text-section.dart';
 
 class NewUserInfoPage extends StatelessWidget {
   /// Route name

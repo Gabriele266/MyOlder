@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../constructs/safe-file.dart';
-import '../widgets/infoproperty-line-action.dart';
-import '../widgets/infoproperty-line.dart';
-import '../widgets/metal-panel.dart';
-import '../widgets/tag-widget.dart';
+import '../widgets/textual/infoproperty-line-action.dart';
+import '../widgets/textual/infoproperty-line.dart';
+import '../widgets/page-components/metal-panel.dart';
+import '../widgets/safe-files/tag-widget.dart';
 
 class SafeFileInfoPage extends StatefulWidget {
   final SafeFile file;

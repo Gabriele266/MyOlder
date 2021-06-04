@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/drawer-list-tile-button.dart';
-import '../widgets/myolder-user-widget.dart';
-
-import '../managers/safe-file-manager.dart';
+import '../widgets/drawer-components/drawer-list-tile-button.dart';
+import '../widgets/drawer-components/myolder-user-widget.dart';
+import '../providers/safe-file-manager.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({Key key}) : super(key: key);

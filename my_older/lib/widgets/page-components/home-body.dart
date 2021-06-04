@@ -1,22 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
-
-import '../managers/user-file-manager.dart';
-
-import '../exceptions/element-not-found-exception.dart';
-import '../constructs/safe-file.dart';
-import '../managers/safe-file-manager.dart';
-import 'drawer-list-tile-button.dart';
-import '../constructs/myolder-user.dart';
-import '../widgets/safe-file-list-viewer.dart';
-import '../widgets/myolder-user-widget.dart';
-import '../dialogs/clear-all-files-dialog.dart';
-
-import '../widgets/home-appbar.dart';
+import '../../exceptions/element-not-found-exception.dart';
+import '../../constructs/safe-file.dart';
+import '../../providers/safe-file-manager.dart';
+import '../safe-files/safe-file-list-viewer.dart';
+import '../../dialogs/clear-all-files-dialog.dart';
 
 class SafeZoneHomeBody extends StatefulWidget {
   /// Creates the state of this of
