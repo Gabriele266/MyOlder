@@ -80,15 +80,16 @@ class SafeFileManager with ChangeNotifier {
       dateTime: DateTime.now(),
     );
 
+    _safeFiles.add(safeFile);
+    notifyListeners();
+
     // Use it as file encrypt password
     final crypt = AesCrypt(password);
     crypt.setOverwriteMode(AesCryptOwMode.on);
 
     // Start file encrypt
     crypt.encryptDataToFile(file.bytes, filePath);
-
-    _safeFiles.add(safeFile);
-    notifyListeners();
+    
     // Save all the informations
     saveInformations();
   }

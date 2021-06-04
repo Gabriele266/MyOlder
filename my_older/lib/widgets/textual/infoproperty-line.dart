@@ -23,6 +23,8 @@ class InfoPropertyLine extends StatelessWidget {
   // TODO: Make this widget follow the theme
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.only(top: 10, left: 30, right: 30, bottom: 15),
       child: Row(
@@ -30,14 +32,15 @@ class InfoPropertyLine extends StatelessWidget {
         children: [
           Text(
             name,
-            style: nameStyle,
+            style: theme.textTheme.headline3,
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 20),
               child: Text(
                 value,
-                style: valueStyle,
+                style: theme.textTheme.bodyText1
+                    .copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -46,22 +49,4 @@ class InfoPropertyLine extends StatelessWidget {
       ),
     );
   }
-
-  // TODO: Put [nameStyle] style into the theme
-  /// The style used for names
-  static const TextStyle nameStyle = TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
-  );
-
-  // TODO: Put [valueStyle] style into the theme
-  /// The style used for names
-  static const TextStyle valueStyle = TextStyle(
-    fontSize: 16,
-    color: Colors.white,
-    fontFamily: 'Courier New',
-    fontWeight: FontWeight.bold,
-    letterSpacing: 0.5,
-  );
 }

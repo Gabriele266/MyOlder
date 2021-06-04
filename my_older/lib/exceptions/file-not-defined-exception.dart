@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class FileNotDefinedException implements Exception {
   final String operation;
 

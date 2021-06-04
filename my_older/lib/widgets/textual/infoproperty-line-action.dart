@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'infoproperty-line.dart';
 
+// TODO: Make this widget responsive and adaptive
 class InfoPropertyLineAction extends StatefulWidget {
   // Property name
   final String name;
@@ -35,13 +36,15 @@ class InfoPropertyLineAction extends StatefulWidget {
   /// [onActionPerformed] The function to call when the action is performed <br>
   /// [onOverlayPerformed] The function to call when the overlay widget is hidden and the value widget is shown
   InfoPropertyLineAction(
-      {Key key, @required this.name,
+      {Key key,
+      @required this.name,
       @required this.value,
       this.actionIcon,
       this.onOverlayPerformed,
       this.onActionPerformed,
       this.overlayIcon,
-      this.overlayWidget}) : super(key: key);
+      this.overlayWidget})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _InfoPropertyLineActionState(
@@ -123,6 +126,8 @@ class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.only(top: 10, left: 30, right: 30, bottom: 15),
       child: Row(
@@ -130,7 +135,7 @@ class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
         children: [
           Text(
             _name,
-            style: InfoPropertyLine.nameStyle,
+            style: theme.textTheme.headline3,
             textAlign: TextAlign.center,
           ),
           _overlay == false
@@ -139,7 +144,9 @@ class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
                     padding: const EdgeInsets.only(left: 10, right: 20),
                     child: Text(
                       _value,
-                      style: InfoPropertyLine.valueStyle,
+                      style: theme.textTheme.bodyText1.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),

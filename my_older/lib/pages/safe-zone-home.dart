@@ -4,11 +4,9 @@ import 'package:myolder/constructs/providers-couple.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/page-components/home-body.dart';
-import '../providers/user-file-manager.dart';
 
 import 'package:myolder/drawers/home-drawer.dart';
 import 'package:myolder/widgets/page-components/home-fltbutton.dart';
-import '../providers/safe-file-manager.dart';
 
 class SafeZoneHome extends StatelessWidget {
   static const String routeName = '/home';
@@ -55,7 +53,6 @@ class SafeZoneHome extends StatelessWidget {
   }
 
   /// Executes the logout to the application
-  /// TODO: Avoid passing data via constructor
   /// TODO: Reimplement this
   Future<void> _doLogout(BuildContext context) async {
     // UserFileManager.of(context).logout();
