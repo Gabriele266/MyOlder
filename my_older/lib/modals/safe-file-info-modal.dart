@@ -5,12 +5,20 @@ import '../constructs/safe-file.dart';
 import '../widgets/textual/infoproperty-line.dart';
 
 class SafeFileInfoModal extends StatelessWidget {
+  // The safe file to display informations about
+  final SafeFile safeFile;
+
+  /// Creates a new [SafeFileInfoModal] widget.
+  ///
+  /// [safeFile] The file to show informations about
+  SafeFileInfoModal(this.safeFile);
+
   // TODO: Make this width responsive in landscape mode
   @override
   Widget build(BuildContext context) {
     // Simplify
     final media = MediaQuery.of(context);
-    // final theme = Theme.of(context);
+    final theme = Theme.of(context);
 
     return Container(
       width: media.size.width,
@@ -42,13 +50,12 @@ class SafeFileInfoModal extends StatelessWidget {
 
   /// Builds the properties of this [safeFile] into a list.
   List<Widget> _buildPropertiesList(BuildContext context) {
-    final safeFile = SafeFile.of(context);
     final media = MediaQuery.of(context);
     final theme = Theme.of(context);
 
     return [
       InfoPropertyLine(name: 'Name', value: safeFile.name),
-      InfoPropertyLine(name: 'Description', value: safeFile.description!),
+      InfoPropertyLine(name: 'Description', value: safeFile.description),
       Divider(
         color: theme.primaryColorDark,
         height: media.size.height * 0.02,
@@ -73,7 +80,7 @@ class SafeFileInfoModal extends StatelessWidget {
       onPressed: () => _hideThis(context),
       icon: Icon(
         Icons.expand_less,
-        size: theme.primaryIconTheme.size! + 20,
+        size: theme.primaryIconTheme.size + 20,
       ),
     );
   }
