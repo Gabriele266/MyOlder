@@ -26,6 +26,7 @@ dependencies:
   aes_crypt: ^0.1.1
   keyboard_visibility: ^0.5.6
   path_provider: ^2.0.1
+  provider: ^5.0.0
   file_picker: ^3.0.0
   crypto: ^3.0.0
   open_file: ^3.1.0
