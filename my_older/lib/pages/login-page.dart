@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:myolder/constructs/providers-couple.dart';
 
 import 'dart:math';
 import 'dart:async';
@@ -316,7 +317,7 @@ class _LoginNormalState extends State<LoginPage> {
             // Start the login
             Navigator.of(context).pushReplacementNamed(
               SafeZoneHome.routeName,
-              arguments: man,
+              arguments: ProvidersCouple(man, UserFileManager.of(context)),
             );
           },
         );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:myolder/constructs/providers-couple.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/page-components/home-body.dart';
@@ -14,18 +15,20 @@ class SafeZoneHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     // Get the manager
-    final manager = ModalRoute.of(context).settings.arguments as SafeFileManager;
+    final couple = ModalRoute.of(context).settings.arguments as ProvidersCouple;
 
     return ChangeNotifierProvider(
-      create: (_) => manager,
-      child: Scaffold(
-        appBar: _buildAppBar(context),
-        backgroundColor: Theme.of(context).backgroundColor,
-        body: SafeZoneHomeBody(),
-        drawer: HomeDrawer(),
-        floatingActionButton: HomeFloatingActionButton(),
+      create: (_) => couple.userFileManager,
+      child: ChangeNotifierProvider(
+        create: (_) => couple.safeFileManager,
+        child: Scaffold(
+          appBar: _buildAppBar(context),
+          backgroundColor: Theme.of(context).backgroundColor,
+          body: SafeZoneHomeBody(),
+          drawer: HomeDrawer(),
+          floatingActionButton: HomeFloatingActionButton(),
+        ),
       ),
     );
   }
@@ -58,4 +61,3 @@ class SafeZoneHome extends StatelessWidget {
     // UserFileManager.of(context).logout();
   }
 }
-
