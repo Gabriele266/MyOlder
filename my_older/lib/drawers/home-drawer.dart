@@ -83,16 +83,6 @@ class HomeDrawer extends StatelessWidget {
     );
   }
 
-  /// Clears the [SafeZone] removing all the files
-  // Future<void> _clearSafeZone(BuildContext context) async {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => ClearAllSafeFilesDialog(_onClearSafeZoneAccepted),
-  //     ),
-  //   );
-  // }
-
   /// Shows the application faq
   Future<void> _showApplicationFAQ() async {
     // TODO: Implement application faq
