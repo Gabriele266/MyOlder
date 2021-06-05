@@ -89,7 +89,7 @@ class SafeFileManager with ChangeNotifier {
 
     // Start file encrypt
     crypt.encryptDataToFile(file.bytes, filePath);
-    
+
     // Save all the informations
     saveInformations();
   }
@@ -97,7 +97,7 @@ class SafeFileManager with ChangeNotifier {
   /// Removes the given file index from the list
   ///
   /// [index] The index of the file to remove
-  void removeSafeFile(int index) {
+  void removeSafeFileByIndex(int index) {
     try {
       // Delete the file from the disk
       final file = File(_safeFiles[index].path);
@@ -110,6 +110,13 @@ class SafeFileManager with ChangeNotifier {
     // Remove the object
     _safeFiles.removeAt(index);
     notifyListeners();
+  }
+
+  /// Removes a safefile
+  void removeSafeFile(SafeFile file) {
+    _safeFiles.removeWhere((f) => f.isEqual(file));
+    notifyListeners();
+    saveInformations();
   }
 
   /// Search a specific safe file into this manager
