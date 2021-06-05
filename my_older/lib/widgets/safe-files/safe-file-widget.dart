@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:myolder/global/colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../constructs/safe-file.dart';
@@ -49,7 +50,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
         ),
         shape: theme.buttonTheme.shape,
         subtitle: Text(DateFormat.yMd().format(file.dateTime)),
-        tileColor: theme.primaryColor,
+        tileColor: CustomColors.redAccent,
         trailing: IconButton(
           icon: Icon(
             Icons.delete,
