@@ -30,7 +30,7 @@ class _SplashPageState extends State<SplashPage> {
 
   Widget _getPage() {
     _getMainPage(context);
-    return Text('Simple WIdget');
+    return Text('Loading MyOlder...');
   }
 
   /// Gets the correct main page for the application
@@ -43,12 +43,12 @@ class _SplashPageState extends State<SplashPage> {
     if (await UserFileManager.of(context).readyToLogin()) {
       // Allow login
       // Push the widget into the navigator
-      Navigator.pushReplacementNamed(context, LoginPage.routeName);
+      Navigator.of(context).pushReplacementNamed(LoginPage.routeName, arguments: false);
       print('File exists');
     } else if (!root && !config) {
       // No configuration for this appilcation.
       // Create one
-      Navigator.pushReplacementNamed(context, RootCreatePage.routeName);
+      Navigator.of(context).pushReplacementNamed(RootCreatePage.routeName);
       print('File doesn\'t exist');
     } else if ((root && !config) || (!root && config)) {
       // Show alert and ask if should remove the configuration file
