@@ -227,6 +227,10 @@ class SafeFile with ChangeNotifier {
             message:
                 'The file is big, it can take a little for decrypting it. ',
             showProgressIndicator: true,
+            icon: const Icon(
+              Icons.info,
+              color: Colors.white,
+            ),
           );
 
           f..show(context);
@@ -240,6 +244,11 @@ class SafeFile with ChangeNotifier {
             });
           });
         } catch (i) {}
+      } else {
+        crt.decryptFile(path, resultPath).then((value) {
+          // Launch default viewer
+          OpenFile.open(resultPath);
+        });
       }
     } catch (i) {
       print('Exception during unlocking file $name');
