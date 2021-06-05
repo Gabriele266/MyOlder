@@ -79,14 +79,16 @@ class _LoginNormalState extends State<LoginPage> {
 
   /// Displays the 'userjustcreated message'
   void _displayTemporaryMessage() {
-    Flushbar(
-      title: 'New user created',
-      message: 'The new user has been created. Use the credentials to log-in',
-      duration: Duration(
-        seconds: 8,
-      ),
-      isDismissible: true,
-    )..show(context);
+    try {
+      Flushbar(
+        title: 'New user created',
+        message: 'The new user has been created. Use the credentials to log-in',
+        duration: Duration(
+          seconds: 8,
+        ),
+        isDismissible: true,
+      )..show(context);
+    } catch (o) {}
   }
 
   /// Displays the login info page
