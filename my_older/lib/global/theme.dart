@@ -22,7 +22,8 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: const BorderSide(
-              color: CustomColors.lightYellow,
+              color: CustomColors.brown,
+              width: 1,
             ),
           ),
           disabledColor: Colors.grey[600],
