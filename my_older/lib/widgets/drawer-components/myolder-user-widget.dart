@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import '../../constructs/myolder-user.dart';
 
 // TODO: Switch to provider for the user
+// TODO: Adjust widget size to avoid overflow (Issue #)
 class MyOlderUserWidget extends StatelessWidget {
   // Application user
   final MyOlderUser user;
