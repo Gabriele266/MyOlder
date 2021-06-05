@@ -78,6 +78,7 @@ class SafeFileManager with ChangeNotifier {
       suffix: file.extension,
       color: Colors.blue,
       dateTime: DateTime.now(),
+      dimension: file.bytes.length,
     );
 
     _safeFiles.add(safeFile);
