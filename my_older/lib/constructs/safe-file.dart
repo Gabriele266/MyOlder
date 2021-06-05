@@ -2,13 +2,17 @@ import 'package:xml/xml.dart';
 import 'package:flutter/material.dart';
 import 'package:aes_crypt/aes_crypt.dart';
 import 'package:open_file/open_file.dart';
+import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../formatters/rgb-color-formatter.dart';
 import '../formatters/date-time-formatter.dart';
 
 /// Represents a protected file into the application
-class SafeFile {
+class SafeFile with ChangeNotifier {
+  static SafeFile of(BuildContext context, {bool listen = false}) =>
+      Provider.of<SafeFile>(context, listen: listen);
+
   // File name
   final String name;
 
@@ -72,6 +76,12 @@ class SafeFile {
   ///
   /// returns 'true' if there are almost one tag, 'false' otherwise
   bool hasTags() => tags != null;
+
+  /// Changes the descrption of this [SafeFile]
+  void changeDescription(String description) {
+    this.description = description;
+    notifyListeners();
+  }
 
   /// Converts the informations of this safe file into an xml string
   ///
