@@ -28,7 +28,7 @@ class TextSection extends StatelessWidget {
     this.textAlign = TextAlign.center,
     this.decoration = const BoxDecoration(),
     this.padding,
-    this.titleIcon = null,
+    this.titleIcon,
   }) : super(key: key);
 
   @override
