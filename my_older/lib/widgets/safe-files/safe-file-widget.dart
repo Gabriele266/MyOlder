@@ -49,8 +49,8 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
         ),
         shape: theme.buttonTheme.shape,
         subtitle: Text(DateFormat.yMd().format(file.dateTime)),
-/*         tileColor: theme.primaryColor,
- */        trailing: IconButton(
+        tileColor: theme.primaryColor,
+        trailing: IconButton(
           icon: Icon(
             Icons.delete,
             color: theme.errorColor,

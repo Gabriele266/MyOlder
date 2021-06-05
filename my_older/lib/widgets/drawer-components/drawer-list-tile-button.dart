@@ -25,17 +25,21 @@ class DrawerListTileButton extends StatelessWidget {
     final theme = Theme.of(context);
     final media = MediaQuery.of(context);
 
-    return Card(
+    return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: media.size.width * 0.05,
-        vertical: media.size.height * 0.010,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
+        horizontal: media.size.width * 0.08,
+        vertical: media.size.height * 0.01,
       ),
       child: ListTile(
-/*         tileColor: theme.primaryColor,
- */        onTap: callBack,
+        tileColor: theme.primaryColor,
+        onTap: callBack,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(
+            width: 1,
+            color: theme.primaryColorDark,
+          ),
+        ),
         leading: Icon(
           icon,
           size: theme.accentIconTheme.size + (10 * media.textScaleFactor),
