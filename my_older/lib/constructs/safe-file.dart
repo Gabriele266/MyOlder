@@ -37,6 +37,9 @@ class SafeFile with ChangeNotifier {
   // File access password
   final String password;
 
+  // File dimension in bytes
+  final int dimension;
+
   /// Creates a new instance of a safe file
   ///
   /// This instance represents a file that is protected into the application <br>
@@ -52,6 +55,7 @@ class SafeFile with ChangeNotifier {
     @required this.path,
     @required this.password,
     @required this.suffix,
+    @required this.dimension,
     this.color,
     this.dateTime,
     this.description,
@@ -100,6 +104,9 @@ class SafeFile with ChangeNotifier {
         });
         builder.element('added-on', nest: () {
           builder.text(DateTimeFormatter.complete(dateTime).format());
+        });
+        builder.element('dimension', nest: () {
+          builder.text(dimension);
         });
         builder.element('description', nest: () {
           try {
@@ -166,6 +173,7 @@ class SafeFile with ChangeNotifier {
     String suffix;
     String description;
     Color color;
+    int dimension;
 
     try {
       name = source.findElements('display-name').single.text;
@@ -175,6 +183,7 @@ class SafeFile with ChangeNotifier {
           .fromString(source.findElements('added-on').single.text);
       suffix = source.findElements('suffix').single.text;
       description = source.findElements('description').single.text;
+      dimension = int.parse(source.findElements('dimension').single.text);
       color = RgbColorFormatter.empty()
           .fromString(source.findElements('color').single.text);
     } on NoSuchMethodError catch (i) {
@@ -194,22 +203,26 @@ class SafeFile with ChangeNotifier {
       suffix: suffix,
       description: description,
       color: color,
+      dimension: dimension,
     );
   }
 
-  /// Opens this file, decrypts his contents and opens it with the default app
-  ///
-  /// Requires that [password] is given and also [path] and [name]
+  /// Opens this file, decrypts his contents to a temporary
+  ///  path and opens it with the default app.
   Future<void> unlockAndOpen() async {
     try {
-      // Search the safefile index into this object
-      // Read the file
+      // Configure various paths and decrypt it
       final crt = AesCrypt(password);
       crt.setOverwriteMode(AesCryptOwMode.on);
       // Get the temporary path
-      final resultPath = '${(await getExternalStorageDirectory()).path}/$name';
+      final resultPath = '${(await getTemporaryDirectory()).path}/$name';
+
+      // Check the file dimension
+      if (dimension > 20000)
+        print('The file is big, it can take a little for decrypting it. ');
+        
       // Decrypt all
-      crt.decryptFile(path, resultPath);
+      await crt.decryptFile(path, resultPath);
 
       // Launch default viewer
       OpenFile.open(resultPath);
