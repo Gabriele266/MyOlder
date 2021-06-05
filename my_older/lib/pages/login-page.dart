@@ -22,9 +22,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginNormalState extends State<LoginPage> {
-  // Valore del padding superiore
-  var _topPadding = 30.0;
-
   // Number of failed logins
   int _failedLogins = 0;
 
@@ -34,11 +31,11 @@ class _LoginNormalState extends State<LoginPage> {
 
   // Keyboard input controller
   final _keyboardController = KeyboardVisibilityNotification();
-  var _onPressedHandler;
+
+  bool _loginBlocked = false;
 
   // Indica se nascondere la password
   bool _hidePassword = true;
-  bool _showBanner = false;
 
   // This string contains eventual errors during the login phase
   String _errorString = '';
@@ -46,35 +43,10 @@ class _LoginNormalState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    // Keyboard controllers
-    _keyboardController.addNewListener(
-        onShow: _onKeyboardShow, onHide: _onKeyboardHide);
-
-    // Set default login action
-    _onPressedHandler = _onLoginRequest;
 
     // Add listeners to the keyboard to see when it is shown
     _userController.addListener(() {});
     _passController.addListener(() {});
-  }
-
-  /// Called when the keyboard is shown
-  void _onKeyboardShow() {
-    final landscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
-
-    final double pad = landscape ? 28 : 20;
-
-    setState(() {
-      _topPadding = pad;
-    });
-  }
-
-  /// Called when the keyboard is hidded
-  void _onKeyboardHide() {
-    setState(() {
-      _topPadding = 30.0;
-    });
   }
 
   /// Displays the 'userjustcreated message'
@@ -114,19 +86,25 @@ class _LoginNormalState extends State<LoginPage> {
       backgroundColor: theme.backgroundColor,
       appBar: appBar,
       body: SingleChildScrollView(
-        child: Container(
-          width: media.size.width,
-          height: media.size.height - (appBar.preferredSize.height),
-          child: Column(
-            children: [
-              _buildHeading(),
-              _buildErrorMessage(),
-              _buildLoginCredentialsInput(),
-              _buildLoginButton(),
-            ],
-          ),
+        child: Column(
+          children: [
+            _buildHeading(),
+            _buildErrorMessage(),
+            _buildLoginCredentialsInput(),
+            _buildLoginButton(),
+            _buildAdditionalSpace(),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAdditionalSpace() {
+    final media = MediaQuery.of(context);
+    final height = media.viewInsets.top;
+    print(height);
+    return SizedBox(
+      height: height,
     );
   }
 
@@ -141,12 +119,10 @@ class _LoginNormalState extends State<LoginPage> {
   /// Build the page heading
   Widget _buildHeading() {
     final theme = Theme.of(context);
+    final media = MediaQuery.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(
-        top: _topPadding,
-        bottom: _topPadding / 2,
-      ),
+      padding: EdgeInsets.only(top: media.size.height * 0.04),
       child: Text(
         'Insert login credentials',
         style: theme.textTheme.headline1,
@@ -167,7 +143,7 @@ class _LoginNormalState extends State<LoginPage> {
       width: media.size.width * (landscape ? 0.20 : 0.30),
       height: media.size.height * (landscape ? 0.10 : 0.06),
       child: TextButton.icon(
-        onPressed: _onPressedHandler,
+        onPressed: !_loginBlocked ? () => _onLoginRequest() : null,
         icon: const Icon(
           Icons.login,
           size: 30,
@@ -242,11 +218,13 @@ class _LoginNormalState extends State<LoginPage> {
               labelText: 'Username',
             ),
             controller: _userController,
+            enabled: !_loginBlocked,
           ),
           SizedBox(height: media.size.height * 0.05),
           TextField(
             controller: _passController,
             obscureText: _hidePassword,
+            enabled: !_loginBlocked,
             decoration: InputDecoration(
               prefixIcon: const Icon(
                 Icons.lock,
@@ -286,7 +264,7 @@ class _LoginNormalState extends State<LoginPage> {
         setState(
           () {
             _errorString = '';
-            _onPressedHandler = _onLoginRequest;
+            _loginBlocked = false;
             // Start the login
             Navigator.of(context).pushReplacementNamed(
               SafeZoneHome.routeName,
@@ -298,7 +276,7 @@ class _LoginNormalState extends State<LoginPage> {
         setState(
           () {
             _errorString = 'Problems during login. Login aborted. ';
-            _onPressedHandler = _onLoginRequest;
+            _loginBlocked = false;
           },
         );
       }
@@ -308,7 +286,7 @@ class _LoginNormalState extends State<LoginPage> {
           _failedLogins++;
           _errorString =
               'Invalid user name or password. Retry or see the login info page for more details.';
-          _onPressedHandler = _onLoginRequest;
+          _loginBlocked = false;
         },
       );
     }
@@ -325,7 +303,7 @@ class _LoginNormalState extends State<LoginPage> {
     // Disable login button
     setState(
       () {
-        _onPressedHandler = null;
+        _loginBlocked = true;
         _errorString = '';
       },
     );
