@@ -20,28 +20,22 @@ class DrawerListTileButton extends StatelessWidget {
     this.icon,
   }) : super(key: key);
 
-  // TODO: Make this widget responsive
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final media = MediaQuery.of(context);
 
-    return Container(
-      height: media.size.height * 0.06,
+    return Card(
       margin: EdgeInsets.symmetric(
         horizontal: media.size.width * 0.05,
         vertical: media.size.height * 0.010,
       ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
       child: ListTile(
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: theme.primaryColorDark,
-            width: 2 * media.textScaleFactor,
-          ),
-          borderRadius: BorderRadius.circular(media.size.width * 0.03),
-        ),
-        tileColor: theme.primaryColor,
-        onTap: callBack,
+/*         tileColor: theme.primaryColor,
+ */        onTap: callBack,
         leading: Icon(
           icon,
           size: theme.accentIconTheme.size + (10 * media.textScaleFactor),
