@@ -68,7 +68,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
   /// When this widget is pressed, the [safeFile] is unlocked and opened using the
   /// system viewer. Lib: [OpenFile].
   void _onWidgetPressed() {
-    SafeFile.of(context, listen: false).unlockAndOpen();
+    SafeFile.of(context, listen: false).unlockAndOpen(context);
   }
 
   /// Shows the informations relative to this [safeFile]
