@@ -4,6 +4,7 @@ import 'package:aes_crypt/aes_crypt.dart';
 import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flushbar/flushbar.dart';
 
 import '../formatters/rgb-color-formatter.dart';
 import '../formatters/date-time-formatter.dart';
@@ -209,7 +210,7 @@ class SafeFile with ChangeNotifier {
 
   /// Opens this file, decrypts his contents to a temporary
   ///  path and opens it with the default app.
-  Future<void> unlockAndOpen() async {
+  Future<void> unlockAndOpen(BuildContext context) async {
     try {
       // Configure various paths and decrypt it
       final crt = AesCrypt(password);
@@ -218,14 +219,28 @@ class SafeFile with ChangeNotifier {
       final resultPath = '${(await getTemporaryDirectory()).path}/$name';
 
       // Check the file dimension
-      if (dimension > 20000)
+      if (dimension > 20000) {
         print('The file is big, it can take a little for decrypting it. ');
-        
-      // Decrypt all
-      await crt.decryptFile(path, resultPath);
+        try {
+          var f = Flushbar(
+            title: 'Decrypting info',
+            message:
+                'The file is big, it can take a little for decrypting it. ',
+            showProgressIndicator: true,
+          );
 
-      // Launch default viewer
-      OpenFile.open(resultPath);
+          f..show(context);
+
+          // Decrypt all
+          crt.decryptFile(path, resultPath).then((value) {
+            Future.delayed(Duration(seconds: 5), () {
+              f..dismiss();
+              // Launch default viewer
+              OpenFile.open(resultPath);
+            });
+          });
+        } catch (i) {}
+      }
     } catch (i) {
       print('Exception during unlocking file $name');
     }
@@ -236,8 +251,10 @@ class SafeFile with ChangeNotifier {
   /// The checked properties are [name], [path], [dateTime]
   /// The others are ignored
   /// Returns 'true' if the two objects are equal, 'false' otherwise
-  bool isEqual(final SafeFile file) =>
-      (name == file.name && path == file.path && dateTime == file.dateTime);
+  bool isEqual(final SafeFile file) => (name == file.name &&
+      path == file.path &&
+      dateTime == file.dateTime &&
+      file.dimension == dimension);
 
   @override
   String toString() =>
