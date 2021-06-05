@@ -275,7 +275,7 @@ class _LoginNormalState extends State<LoginPage> {
             obscureText: _hidePassword,
             decoration: InputDecoration(
               prefixIcon: const Icon(
-                Icons.password,
+                Icons.lock,
               ),
               suffixIcon: Icon(
                 _buildPasswordSuffixIcon(),
