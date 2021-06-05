@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
-import 'package:myolder/constructs/providers-couple.dart';
+import 'package:flushbar/flushbar.dart';
+
+import '../constructs/providers-couple.dart';
 
 import 'dart:math';
 import 'dart:async';
@@ -14,18 +16,6 @@ import '../pages/safe-zone-home.dart';
 class LoginPage extends StatefulWidget {
   /// The name of this page
   static const String routeName = '/login';
-
-  // Banner to show at top
-  final MaterialBanner banner;
-
-  /// Creates a new instance of a LoginPage
-  ///
-  /// [banner] A banner to show in the page top view
-  /// to show additional informations
-  const LoginPage({
-    Key key,
-    this.banner,
-  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _LoginNormalState();
@@ -87,23 +77,16 @@ class _LoginNormalState extends State<LoginPage> {
     });
   }
 
-  /// Builds the [banner] to display temporary informations
-  void _configureBanner() {
-    if (widget.banner != null) {
-      _showBanner = true;
-      widget.banner.actions.add(
-        TextButton(
-          child: Text(
-            'Ok',
-          ),
-          onPressed: () {
-            setState(() {
-              _showBanner = false;
-            });
-          },
-        ),
-      );
-    }
+  /// Displays the 'userjustcreated message'
+  void _displayTemporaryMessage() {
+    Flushbar(
+      title: 'New user created',
+      message: 'The new user has been created. Use the credentials to log-in',
+      duration: Duration(
+        seconds: 8,
+      ),
+      isDismissible: true,
+    )..show(context);
   }
 
   /// Displays the login info page
@@ -113,15 +96,17 @@ class _LoginNormalState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Build the banner
-    _configureBanner();
-
     // Optimize device/application informations
     final theme = Theme.of(context);
     final media = MediaQuery.of(context);
 
     // build appbar to have it's height
     final appBar = _buildAppBar();
+
+    final showMsg = ModalRoute.of(context).settings.arguments as bool;
+
+    // Check if i have to display the message
+    if (showMsg) _displayTemporaryMessage();
 
     return Scaffold(
       backgroundColor: theme.backgroundColor,
@@ -132,7 +117,6 @@ class _LoginNormalState extends State<LoginPage> {
           height: media.size.height - (appBar.preferredSize.height),
           child: Column(
             children: [
-              _buildMessageBanner(),
               _buildHeading(),
               _buildErrorMessage(),
               _buildLoginCredentialsInput(),
@@ -143,16 +127,6 @@ class _LoginNormalState extends State<LoginPage> {
       ),
     );
   }
-
-  /// Builds [widget.banner]. Requires that [_configureBanner] has configured this state
-  /// to display a banner.
-  /// TODO: FIXME: The ok button of the banner doesn't remove the banner.
-  Widget _buildMessageBanner() => _showBanner
-      ? widget.banner
-      : const SizedBox(
-          width: 0,
-          height: 0,
-        );
 
   /// Builds the password suffix icon
   IconData _buildPasswordSuffixIcon() {
@@ -181,7 +155,8 @@ class _LoginNormalState extends State<LoginPage> {
   /// Builds the login button
   Widget _buildLoginButton() {
     // Simplify
-    final theme = Theme.of(context);
+/*     final theme = Theme.of(context);
+ */
     final media = MediaQuery.of(context);
 
     final landscape = media.orientation == Orientation.landscape;
@@ -257,17 +232,14 @@ class _LoginNormalState extends State<LoginPage> {
       ),
       child: Column(
         children: [
-          Theme(
-            child: TextField(
-              decoration: InputDecoration(
-                prefixIcon: const Icon(
-                  Icons.person,
-                ),
-                labelText: 'Username',
+          TextField(
+            decoration: InputDecoration(
+              prefixIcon: const Icon(
+                Icons.person,
               ),
-              controller: _userController,
+              labelText: 'Username',
             ),
-            data: theme.copyWith(primaryColor: theme.primaryColorDark),
+            controller: _userController,
           ),
           SizedBox(height: media.size.height * 0.05),
           TextField(
@@ -297,19 +269,18 @@ class _LoginNormalState extends State<LoginPage> {
       name: _userController.text,
       password: _passController.text,
     );
-    
+
     final bool result = await UserFileManager.of(context).login(logUser);
 
     if (result) {
       // Start loading the safe-zone-files
       SafeFileManager man = await SafeFileManager.readConfigurationFile(
           'safe-dir', 'rc&MEuFiMoZBB8Ru*Sa8');
-          
+
       // Check if the two users are equal
       MyOlderUser usr = man.allowedUser;
 
       if (logUser.equals(usr)) {
-        // print('VERY GOOD, LOGIN SUPER SUCCESSFUL');
         setState(
           () {
             _errorString = '';
