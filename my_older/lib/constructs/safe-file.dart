@@ -207,12 +207,12 @@ class SafeFile with ChangeNotifier {
       final crt = AesCrypt(password);
       crt.setOverwriteMode(AesCryptOwMode.on);
       // Get the temporary path
-      final path = '${(await getExternalStorageDirectory()).path}/$name';
+      final resultPath = '${(await getExternalStorageDirectory()).path}/$name';
       // Decrypt all
-      crt.decryptFile(path, path);
+      crt.decryptFile(path, resultPath);
 
       // Launch default viewer
-      OpenFile.open(path);
+      OpenFile.open(resultPath);
     } catch (i) {
       print('Exception during unlocking file $name');
     }
