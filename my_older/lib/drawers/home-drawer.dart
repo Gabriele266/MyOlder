@@ -20,85 +20,77 @@ class HomeDrawer extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Drawer(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: media.size.height * 0.20,
-              child: DrawerHeader(
-                child: MyOlderUserWidget(
-                  safeFilesCount: SafeFileManager.of(context).safeFilesCount,
-                  user: SafeFileManager.of(context).allowedUser,
-                  showUserSettings: () {
-                    _showUserSettings();
-                  },
-                ),
+      child: Padding(
+        padding: EdgeInsets.only(top: media.padding.top + 20),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              MyOlderUserWidget(),
+              Divider(
+                color: theme.primaryColorDark,
+                height: 20,
+                indent: media.size.width * 0.05,
+                endIndent: media.size.width * 0.05,
               ),
-            ),
-            Divider(
-              color: theme.primaryColorDark,
-              height: 20,
-              indent: media.size.width * 0.05,
-              endIndent: media.size.width * 0.05,
-            ),
-            DrawerListTileButton(
-              text: 'Application informations',
-              icon: Icons.info,
-              callBack: () {
-                _showApplicationInformations();
-              },
-            ),
-            DrawerListTileButton(
-              text: 'Settings',
-              icon: Icons.settings,
-              callBack: () {
-                _showApplicationSettings();
-              },
-            ),
-            DrawerListTileButton(
-              text: 'Add new safe file',
-              icon: Icons.add,
-              callBack: () {
-                SafeFileManager.of(context, listen: false).importNewFile();
-                Navigator.of(context).pop();
-              },
-            ),
-            DrawerListTileButton(
-              text: 'Clear safe zone',
-              icon: Icons.delete,
-              callBack: () {
-                SafeFileManager.of(context, listen: false).clearAllSafeFiles();
-                Navigator.of(context).pop();
-              },
-            ),
-            DrawerListTileButton(
-              text: 'MyOlder FAQ',
-              icon: Icons.question_answer,
-              callBack: () {
-                _showApplicationFAQ();
-              },
-            ),
-            DrawerListTileButton(
-              text: 'Delete user',
-              icon: Icons.delete,
-              callBack: () {
-                UserFileManager.of(context).removeRootFile();
-                UserFileManager.of(context).removeConfigurationFolder();
-                // Restart this app
-                FlutterRestart.restartApp();
-              },
-            ),
-            DrawerListTileButton(
-              text: 'Logout',
-              icon: Icons.logout,
-              callBack: () {
-                UserFileManager.of(context).logout();
-                Navigator.of(context).pop();
-                Navigator.of(context).pushReplacementNamed(LoginPage.routeName,
-                    arguments: false);
-              },
-            ),
-          ],
+              DrawerListTileButton(
+                text: 'Application informations',
+                icon: Icons.info,
+                callBack: () {
+                  _showApplicationInformations();
+                },
+              ),
+              DrawerListTileButton(
+                text: 'Settings',
+                icon: Icons.settings,
+                callBack: () {
+                  _showApplicationSettings();
+                },
+              ),
+              DrawerListTileButton(
+                text: 'Add new safe file',
+                icon: Icons.add,
+                callBack: () {
+                  SafeFileManager.of(context, listen: false).importNewFile();
+                  Navigator.of(context).pop();
+                },
+              ),
+              DrawerListTileButton(
+                text: 'Clear safe zone',
+                icon: Icons.delete,
+                callBack: () {
+                  SafeFileManager.of(context, listen: false).clearAllSafeFiles();
+                  Navigator.of(context).pop();
+                },
+              ),
+              DrawerListTileButton(
+                text: 'MyOlder FAQ',
+                icon: Icons.question_answer,
+                callBack: () {
+                  _showApplicationFAQ();
+                },
+              ),
+              DrawerListTileButton(
+                text: 'Delete user',
+                icon: Icons.delete,
+                callBack: () {
+                  UserFileManager.of(context).removeRootFile();
+                  UserFileManager.of(context).removeConfigurationFolder();
+                  // Restart this app
+                  FlutterRestart.restartApp();
+                },
+              ),
+              DrawerListTileButton(
+                text: 'Logout',
+                icon: Icons.logout,
+                callBack: () {
+                  UserFileManager.of(context).logout();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacementNamed(LoginPage.routeName,
+                      arguments: false);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
