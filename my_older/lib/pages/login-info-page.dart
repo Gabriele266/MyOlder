@@ -17,7 +17,7 @@ class LoginInfoPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Login informations',
-          style: theme.textTheme.headline1,
+          style: theme.appBarTheme.titleTextStyle,
         ),
       ),
       body: SingleChildScrollView(
