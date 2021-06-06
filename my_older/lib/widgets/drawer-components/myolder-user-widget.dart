@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:myolder/pages/user-tools-page.dart';
+import 'package:provider/provider.dart';
 
 import '../../constructs/myolder-user.dart';
 import '../../providers/safe-file-manager.dart';
+import '../../providers/user-file-manager.dart';
 
 // TODO: Adjust widget size to avoid overflow (Issue #)
 class MyOlderUserWidget extends StatelessWidget {
@@ -23,6 +26,7 @@ class MyOlderUserWidget extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: media.size.width * 0.05),
       child: ListTile(
+        onTap: () => _showUserSettings(context),
         tileColor: theme.primaryColor,
         shape: RoundedRectangleBorder(
           side: BorderSide(
@@ -47,7 +51,20 @@ class MyOlderUserWidget extends StatelessWidget {
   }
 
   /// Shows the user settings
-  void _showUserSettings() {
-    print('To be implemented. ');
+  void _showUserSettings(BuildContext context) {
+    final userM = UserFileManager.of(context, listen: false);
+    final safeFM = SafeFileManager.of(context, listen: false);
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ChangeNotifierProvider.value(
+          value: userM,
+          child: ChangeNotifierProvider.value(
+            value: safeFM,
+            child: UserToolsPage(),
+          ),
+        ),
+      ),
+    );
   }
 }
