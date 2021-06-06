@@ -1,12 +1,11 @@
+import 'dart:math';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:flushbar/flushbar.dart';
 
 import '../constructs/providers-couple.dart';
-
-import 'dart:math';
-import 'dart:async';
-
 import '../constructs/myolder-user.dart';
 import '../providers/user-file-manager.dart';
 import '../providers/safe-file-manager.dart';
@@ -72,8 +71,8 @@ class _LoginNormalState extends State<LoginPage> {
   Widget build(BuildContext context) {
     // Optimize device/application informations
     final theme = Theme.of(context);
-    final media = MediaQuery.of(context);
-
+/*     final media = MediaQuery.of(context);
+ */
     // build appbar to have it's height
     final appBar = _buildAppBar();
 
