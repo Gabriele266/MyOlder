@@ -89,10 +89,7 @@ class SafeFileManager with ChangeNotifier {
     crypt.setOverwriteMode(AesCryptOwMode.on);
 
     // Start file encrypt
-    crypt.encryptDataToFile(file.bytes, filePath);
-
-    // Save all the informations
-    saveInformations();
+    crypt.encryptDataToFile(file.bytes, filePath).then((value) => saveInformations());
   }
 
   /// Removes the given file index from the list
