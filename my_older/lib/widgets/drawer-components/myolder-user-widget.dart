@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:myolder/pages/user-tools-page.dart';
 import 'package:provider/provider.dart';
 
-import '../../constructs/myolder-user.dart';
+import '../../pages/user-tools-page.dart';
 import '../../providers/safe-file-manager.dart';
 import '../../providers/user-file-manager.dart';
 
-// TODO: Adjust widget size to avoid overflow (Issue #)
 class MyOlderUserWidget extends StatelessWidget {
+  final bool enabled;
+
   /// Creates a new instance of a [MyOlderUserWidget]
   ///
+  ///[enabled] Specifies if this widget should redirect the user to the 
+  ///[UserToolsPage]. 
   MyOlderUserWidget({
     Key key,
+    this.enabled = true,
   }) : super(key: key);
 
   @override
@@ -26,7 +29,7 @@ class MyOlderUserWidget extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: media.size.width * 0.05),
       child: ListTile(
-        onTap: () => _showUserSettings(context),
+        onTap: enabled ? () => _showUserSettings(context) : null,
         tileColor: theme.primaryColor,
         shape: RoundedRectangleBorder(
           side: BorderSide(
