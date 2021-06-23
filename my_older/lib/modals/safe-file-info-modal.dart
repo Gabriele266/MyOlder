@@ -14,15 +14,12 @@ class SafeFileInfoModal extends StatelessWidget {
       width: media.size.width,
       height: media.size.height * 0.4,
       child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(top: media.size.height * 0.02),
-          child: Column(
-            children: [
-              _buildCollapseIconButton(context),
-              _buildHeadingTitle(context),
-              ..._buildPropertiesList(context),
-            ],
-          ),
+        child: Column(
+          children: [
+            _buildCollapseIconButton(context),
+            _buildHeadingTitle(context),
+            ..._buildPropertiesList(context),
+          ],
         ),
       ),
     );
@@ -46,7 +43,11 @@ class SafeFileInfoModal extends StatelessWidget {
 
     return [
       InfoPropertyLine(name: 'Name', value: safeFile.name),
-      InfoPropertyLine(name: 'Description', value: safeFile.description),
+      InfoPropertyLine(
+          name: 'Description',
+          value: safeFile.description != null
+              ? safeFile.description
+              : 'No description'),
       Divider(
         color: theme.primaryColorDark,
         height: media.size.height * 0.02,
@@ -55,8 +56,12 @@ class SafeFileInfoModal extends StatelessWidget {
         thickness: 1,
       ),
       InfoPropertyLine(
-          name: 'Added on', value: DateFormat.yMd().format(safeFile.dateTime)),
-      InfoPropertyLine(name: 'Extension', value: safeFile.suffix),
+        name: 'Added on',
+        value: DateFormat.yMd().format(safeFile.dateTime),
+      ),
+      InfoPropertyLine(
+          name: 'Extension',
+          value: safeFile.suffix != null ? safeFile.suffix : 'No suffix'),
     ];
   }
 
@@ -71,7 +76,7 @@ class SafeFileInfoModal extends StatelessWidget {
       onPressed: () => _hideThis(context),
       icon: Icon(
         Icons.expand_less,
-        size: theme.primaryIconTheme.size + 20,
+        size: theme.primaryIconTheme.size + 10,
       ),
     );
   }
