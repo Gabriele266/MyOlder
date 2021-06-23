@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class InfoPropertyLine extends StatelessWidget {
   // Name of the property to display
   final String name;

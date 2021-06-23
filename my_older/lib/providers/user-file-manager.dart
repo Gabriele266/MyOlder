@@ -6,11 +6,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:aes_crypt/aes_crypt.dart';
 
-import '../exceptions/null-data-exception.dart';
 import '../constructs/myolder-user.dart';
-import '../exceptions/file-not-defined-exception.dart';
-import '../exceptions/file-not-found-exception.dart';
-import '../exceptions/user-not-defined-exception.dart';
+import '../exceptions/exceptions.dart';
 
 class UserFileManager with ChangeNotifier {
   final String rootFile;

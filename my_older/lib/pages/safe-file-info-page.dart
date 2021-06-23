@@ -200,13 +200,4 @@ class _SafeFileInfoPageState extends State<SafeFileInfoPage> {
     // Throw exception
 }
 
-/// Represents an exception thrown when a null file is passed to this widget
-class NullFileException implements Exception {
-  String _text;
 
-  NullFileException(this._text);
-
-  @override
-  String toString() =>
-      'NullFileException: A null file was passed to a SafeFileInfoPage. $_text';
-}

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:myolder/constructs/providers-couple.dart';
 import 'package:provider/provider.dart';
 
+import '../constructs/providers-couple.dart';
 import '../widgets/page-components/home-body.dart';
-
-import 'package:myolder/drawers/home-drawer.dart';
-import 'package:myolder/widgets/page-components/home-fltbutton.dart';
+import '../widgets/page-components/home-fltbutton.dart';
+import '../drawers/home-drawer.dart';
 
 class SafeZoneHome extends StatelessWidget {
   static const String routeName = '/home';
