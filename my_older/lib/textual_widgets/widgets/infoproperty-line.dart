@@ -25,7 +25,7 @@ class InfoPropertyLine extends StatelessWidget {
     final media = MediaQuery.of(context);
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: media.size.height * 0.01),
+      padding: EdgeInsets.symmetric(vertical: media.size.height * 0.015),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -38,8 +38,7 @@ class InfoPropertyLine extends StatelessWidget {
           FittedBox(
             child: Text(
               value,
-              style: theme.textTheme.bodyText1
-                  .copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.headline3,
               textAlign: TextAlign.center,
             ),
           ),
