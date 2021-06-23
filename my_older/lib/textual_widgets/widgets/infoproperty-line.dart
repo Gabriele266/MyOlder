@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class InfoPropertyLine extends StatelessWidget {
   // Name of the property to display
   final String name;
@@ -12,36 +13,34 @@ class InfoPropertyLine extends StatelessWidget {
   /// To create a line information with a button use the infoproperty-line-button class instead
   /// [name] The name of the property
   /// [value] The value of the property
-  InfoPropertyLine({
+  const InfoPropertyLine({
     Key key,
     @required this.name,
     @required this.value,
   }) : super(key: key);
 
-  // TODO: Make this widget responsive
-  // TODO: Make this widget follow the theme
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final media = MediaQuery.of(context);
 
     return Padding(
-      padding: const EdgeInsets.only(top: 10, left: 30, right: 30, bottom: 15),
+      padding: EdgeInsets.symmetric(vertical: media.size.height * 0.01),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Text(
-            name,
-            style: theme.textTheme.headline3,
+          FittedBox(
+            child: Text(
+              name,
+              style: theme.textTheme.headline3,
+            ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: Text(
-                value,
-                style: theme.textTheme.bodyText1
-                    .copyWith(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
+          FittedBox(
+            child: Text(
+              value,
+              style: theme.textTheme.bodyText1
+                  .copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
           ),
         ],
