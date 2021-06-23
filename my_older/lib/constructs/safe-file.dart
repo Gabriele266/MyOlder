@@ -2,13 +2,18 @@ import 'package:xml/xml.dart';
 import 'package:flutter/material.dart';
 import 'package:aes_crypt/aes_crypt.dart';
 import 'package:open_file/open_file.dart';
+import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flushbar/flushbar.dart';
 
 import '../formatters/rgb-color-formatter.dart';
 import '../formatters/date-time-formatter.dart';
 
 /// Represents a protected file into the application
-class SafeFile {
+class SafeFile with ChangeNotifier {
+  static SafeFile of(BuildContext context, {bool listen = false}) =>
+      Provider.of<SafeFile>(context, listen: listen);
+
   // File name
   final String name;
 
@@ -33,6 +38,9 @@ class SafeFile {
   // File access password
   final String password;
 
+  // File dimension in bytes
+  final int dimension;
+
   /// Creates a new instance of a safe file
   ///
   /// This instance represents a file that is protected into the application <br>
@@ -48,6 +56,7 @@ class SafeFile {
     @required this.path,
     @required this.password,
     @required this.suffix,
+    @required this.dimension,
     this.color,
     this.dateTime,
     this.description,
@@ -73,6 +82,12 @@ class SafeFile {
   /// returns 'true' if there are almost one tag, 'false' otherwise
   bool hasTags() => tags != null;
 
+  /// Changes the descrption of this [SafeFile]
+  void changeDescription(String description) {
+    this.description = description;
+    notifyListeners();
+  }
+
   /// Converts the informations of this safe file into an xml string
   ///
   ///
@@ -90,6 +105,9 @@ class SafeFile {
         });
         builder.element('added-on', nest: () {
           builder.text(DateTimeFormatter.complete(dateTime).format());
+        });
+        builder.element('dimension', nest: () {
+          builder.text(dimension);
         });
         builder.element('description', nest: () {
           try {
@@ -156,6 +174,7 @@ class SafeFile {
     String suffix;
     String description;
     Color color;
+    int dimension;
 
     try {
       name = source.findElements('display-name').single.text;
@@ -165,6 +184,7 @@ class SafeFile {
           .fromString(source.findElements('added-on').single.text);
       suffix = source.findElements('suffix').single.text;
       description = source.findElements('description').single.text;
+      dimension = int.parse(source.findElements('dimension').single.text);
       color = RgbColorFormatter.empty()
           .fromString(source.findElements('color').single.text);
     } on NoSuchMethodError catch (i) {
@@ -184,25 +204,52 @@ class SafeFile {
       suffix: suffix,
       description: description,
       color: color,
+      dimension: dimension,
     );
   }
 
-  /// Opens this file, decrypts his contents and opens it with the default app
-  ///
-  /// Requires that [password] is given and also [path] and [name]
-  Future<void> unlockAndOpen() async {
+  /// Opens this file, decrypts his contents to a temporary
+  ///  path and opens it with the default app.
+  Future<void> unlockAndOpen(BuildContext context) async {
     try {
-      // Search the safefile index into this object
-      // Read the file
+      // Configure various paths and decrypt it
       final crt = AesCrypt(password);
       crt.setOverwriteMode(AesCryptOwMode.on);
       // Get the temporary path
-      final path = '${(await getExternalStorageDirectory()).path}/$name';
-      // Decrypt all
-      crt.decryptFile(path, path);
+      final resultPath = '${(await getTemporaryDirectory()).path}/$name';
 
-      // Launch default viewer
-      OpenFile.open(path);
+      // Check the file dimension
+      if (dimension > 20000) {
+        print('The file is big, it can take a little for decrypting it. ');
+        try {
+          var f = Flushbar(
+            title: 'Decrypting info',
+            message:
+                'The file is big, it can take a little for decrypting it. ',
+            showProgressIndicator: true,
+            icon: const Icon(
+              Icons.info,
+              color: Colors.white,
+            ),
+          );
+
+          f..show(context);
+
+          // Decrypt all
+          crt.decryptFile(path, resultPath).then((value) {
+            Future.delayed(Duration(seconds: 5), () {
+              f..dismiss();
+              // Launch default viewer
+              OpenFile.open(resultPath);
+            });
+          });
+        } catch (i) {}
+      } else {
+        crt.decryptFile(path, resultPath).then((value) {
+          // Launch default viewer
+          OpenFile.open(resultPath);
+        });
+      }
     } catch (i) {
       print('Exception during unlocking file $name');
     }
@@ -213,8 +260,10 @@ class SafeFile {
   /// The checked properties are [name], [path], [dateTime]
   /// The others are ignored
   /// Returns 'true' if the two objects are equal, 'false' otherwise
-  bool isEqual(final SafeFile file) =>
-      (name == file.name && path == file.path && dateTime == file.dateTime);
+  bool isEqual(final SafeFile file) => (name == file.name &&
+      path == file.path &&
+      dateTime == file.dateTime &&
+      file.dimension == dimension);
 
   @override
   String toString() =>

@@ -5,20 +5,10 @@ import 'package:myolder/textual_widgets/textual_widgets.dart';
 import '../constructs/safe-file.dart';
 
 class SafeFileInfoModal extends StatelessWidget {
-  // The safe file to display informations about
-  final SafeFile safeFile;
-
-  /// Creates a new [SafeFileInfoModal] widget.
-  ///
-  /// [safeFile] The file to show informations about
-  SafeFileInfoModal(this.safeFile);
-
-  // TODO: Make this width responsive in landscape mode
   @override
   Widget build(BuildContext context) {
     // Simplify
     final media = MediaQuery.of(context);
-    final theme = Theme.of(context);
 
     return Container(
       width: media.size.width,
@@ -52,6 +42,7 @@ class SafeFileInfoModal extends StatelessWidget {
   List<Widget> _buildPropertiesList(BuildContext context) {
     final media = MediaQuery.of(context);
     final theme = Theme.of(context);
+    final safeFile = SafeFile.of(context);
 
     return [
       InfoPropertyLine(name: 'Name', value: safeFile.name),

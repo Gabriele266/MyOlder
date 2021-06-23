@@ -1,32 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:myolder/global/colors.dart';
+import 'package:provider/provider.dart';
 
 import '../../constructs/safe-file.dart';
-import 'tag-widget.dart';
 import '../../modals/safe-file-info-modal.dart';
+import '../../providers/safe-file-manager.dart';
 
 // FIXME: Fix NoSuchMethodError when displaying the details page
 class SafeFileWidget extends StatefulWidget {
-  // The file to show widget for
-  final SafeFile safeFile;
-
   // A function to show widgets by tag
   final void Function(String) showByTag;
 
-  // Function to delete this widget
-  final void Function(SafeFile) deleteSafeFile;
-
-  /// Creates an instance of a new SafeFileWidget
+  /// Creates a new [SafeFileWidget] to display informations about a [SafeFile]
   ///
-  /// This instance represents a widget to display informations about a safe file.
-  /// [safeFile] The file to show informations on
-  /// [showByTag] The function to call for showing all the widget by their tag
-  /// [deleteSafeFile] The function to call for deleting this safefile
+  /// [showByTag] The function to display the files by tag
   SafeFileWidget({
-    @required this.safeFile,
     this.showByTag,
-    this.deleteSafeFile,
   });
 
   @override
@@ -39,22 +30,7 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
   /// [SafeFileWidget.html] file.
   @override
   Widget build(BuildContext context) {
-    // Load a list with the showable tags
-    const List<TagWidget> tagWidgets = [];
-
-    // Check if file has tags
-    if (widget.safeFile.hasTags()) {
-      for (int x = 0; x < 2; x++) {
-        if (widget.safeFile.existsTag(x)) {
-          tagWidgets.add(
-            TagWidget(
-              showByTag: widget.showByTag,
-              tag: widget.safeFile.tags[x],
-            ),
-          );
-        }
-      }
-    }
+    final file = SafeFile.of(context, listen: false);
 
     final theme = Theme.of(context);
     final media = MediaQuery.of(context);
@@ -67,11 +43,14 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
       child: ListTile(
         leading: const Icon(Icons.file_present),
         onTap: _onWidgetPressed,
-        onLongPress: _showInfoPage,
-        title: Text(widget.safeFile.name, style: theme.textTheme.headline3),
+        onLongPress: () => _showInfo(file),
+        title: Text(
+          file.name,
+          style: theme.textTheme.headline3,
+        ),
         shape: theme.buttonTheme.shape,
-        subtitle: Text(DateFormat.yMd().format(widget.safeFile.dateTime)),
-        tileColor: theme.primaryColor,
+        subtitle: Text(DateFormat.yMd().format(file.dateTime)),
+        tileColor: CustomColors.redAccent,
         trailing: IconButton(
           icon: Icon(
             Icons.delete,
@@ -89,27 +68,39 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
   /// When this widget is pressed, the [safeFile] is unlocked and opened using the
   /// system viewer. Lib: [OpenFile].
   void _onWidgetPressed() {
-    widget.safeFile.unlockAndOpen();
+    SafeFile.of(context, listen: false).unlockAndOpen(context);
   }
 
-  /// Shows the informations page relative to this [safeFile]
-  void _showInfoPage() => showModalBottomSheet(
-        context: context,
-        builder: (context) => SafeFileInfoModal(widget.safeFile),
-        backgroundColor: Theme.of(context).backgroundColor,
-        isScrollControlled: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: BorderSide(
-            color: Theme.of(context).primaryColorDark,
-            width: 2 * MediaQuery.of(context).textScaleFactor,
-          ),
+  /// Shows the informations relative to this [safeFile]
+  void _showInfo(SafeFile file) {
+    var safeFile = SafeFile.of(context);
+    var fManager = SafeFileManager.of(context, listen: false);
+    final media = MediaQuery.of(context);
+    final theme = Theme.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(media.size.width * 0.1),
+        side: BorderSide(
+          color: theme.primaryColorDark,
+          width: 2,
         ),
-      );
+      ),
+      builder: (context) => ChangeNotifierProvider.value(
+        value: fManager,
+        child: ChangeNotifierProvider.value(
+          value: safeFile,
+          child: SafeFileInfoModal(),
+        ),
+      ),
+    );
+  }
 
   /// Deletes this [safeFile]
   ///
   void _deleteFile() {
-    widget.deleteSafeFile(widget.safeFile);
+    SafeFileManager.of(context, listen: false)
+        .removeSafeFile(SafeFile.of(context));
   }
 }

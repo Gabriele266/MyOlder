@@ -1,28 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 
-import '../../constructs/myolder-user.dart';
+import '../../pages/user-tools-page.dart';
+import '../../providers/safe-file-manager.dart';
+import '../../providers/user-file-manager.dart';
 
 class MyOlderUserWidget extends StatelessWidget {
-  // Application user
-  final MyOlderUser user;
-
-  // Shows the user settings
-  final void Function() showUserSettings;
-
-  // Number of safefiles into the safe zone
-  final int safeFilesCount;
+  final bool enabled;
 
   /// Creates a new instance of a [MyOlderUserWidget]
   ///
-  ///  [user] The user informations
-  ///  [showUserSettings] The fuction to use for displaying the user settings page
-  ///   [safeFilesCount] The number of safefiles
+  ///[enabled] Specifies if this widget should redirect the user to the 
+  ///[UserToolsPage]. 
   MyOlderUserWidget({
     Key key,
-    @required this.user,
-    @required this.showUserSettings,
-    @required this.safeFilesCount,
+    this.enabled = true,
   }) : super(key: key);
 
   @override
@@ -30,44 +23,51 @@ class MyOlderUserWidget extends StatelessWidget {
     // Simplify
     final theme = Theme.of(context);
     final media = MediaQuery.of(context);
+    final manager = SafeFileManager.of(context);
+    final user = manager.allowedUser;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Container(
-          child: MaterialButton(
-            splashColor: theme.backgroundColor,
-            color: theme.primaryColor,
-            onPressed: showUserSettings,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                color: theme.primaryColorDark,
-                width: 2 * media.textScaleFactor,
-              ),
-              borderRadius: BorderRadius.circular(media.size.width * 0.03),
-            ),
-            child: ListTile(
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: constraints.maxWidth * 0.01),
-              leading: CircleAvatar(
-                radius: media.size.height * 0.05,
-                backgroundColor: theme.primaryColorDark,
-                child: CircleAvatar(
-                  child: const Icon(Icons.person),
-                  radius: media.size.height * 0.03,
-                ),
-              ),
-              title: Text('${user.name}', style: theme.textTheme.headline2),
-              subtitle: Padding(
-                padding: EdgeInsets.only(top: media.size.height * 0.009),
-                child: Text(
-                  '$safeFilesCount Locked Files',
-                  style: theme.textTheme.headline3,
-                ),
-              ),
-            ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: media.size.width * 0.05),
+      child: ListTile(
+        onTap: enabled ? () => _showUserSettings(context) : null,
+        tileColor: theme.primaryColor,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+              color: theme.primaryColorDark, width: 1 * media.textScaleFactor),
+          borderRadius: BorderRadius.circular(media.size.width * 0.03),
+        ),
+        leading: CircleAvatar(
+          radius: media.size.height * 0.025,
+          backgroundColor: theme.primaryColorDark,
+          child: CircleAvatar(
+            child: const Icon(Icons.person),
+            radius: media.size.height * 0.02,
           ),
-        );
-      },
+        ),
+        title: Text('${user.name}', style: theme.textTheme.headline2),
+        subtitle: Text(
+          '${manager.safeFilesCount} Locked Files',
+          style: theme.textTheme.headline3,
+        ),
+      ),
+    );
+  }
+
+  /// Shows the user settings
+  void _showUserSettings(BuildContext context) {
+    final userM = UserFileManager.of(context, listen: false);
+    final safeFM = SafeFileManager.of(context, listen: false);
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ChangeNotifierProvider.value(
+          value: userM,
+          child: ChangeNotifierProvider.value(
+            value: safeFM,
+            child: UserToolsPage(),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -254,16 +254,9 @@ class _RootCreatePageState extends State<RootCreatePage> {
       ),
     );
     // Switch to the login page
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LoginPage(
-          banner: MaterialBanner(
-            content: const Text('New user successfully created. '),
-            actions: [],
-          ),
-        ),
-      ),
+    Navigator.of(context).pushReplacementNamed(
+      LoginPage.routeName,
+      arguments: true,
     );
   }
 
@@ -286,7 +279,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
     final manager =
         UserFileManager(rootFile: 'root.cfg', safeFolder: 'safe-dir');
     manager.user = createUser;
-    
+
     manager.writeFile();
 
     // Configure the safe directory and the configuration file

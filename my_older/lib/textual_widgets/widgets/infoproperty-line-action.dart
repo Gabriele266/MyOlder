@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'infoproperty-line.dart';
 
-// TODO: Make this widget responsive and adaptive
 class InfoPropertyLineAction extends StatefulWidget {
   // Property name
   final String name;
@@ -35,95 +33,52 @@ class InfoPropertyLineAction extends StatefulWidget {
   /// [overlayIcon] An icon to set during the overlay phase of the widget <br>
   /// [onActionPerformed] The function to call when the action is performed <br>
   /// [onOverlayPerformed] The function to call when the overlay widget is hidden and the value widget is shown
-  InfoPropertyLineAction(
-      {Key key,
-      @required this.name,
-      @required this.value,
-      this.actionIcon,
-      this.onOverlayPerformed,
-      this.onActionPerformed,
-      this.overlayIcon,
-      this.overlayWidget})
-      : super(key: key);
+  InfoPropertyLineAction({
+    Key key,
+    @required this.name,
+    @required this.value,
+    this.actionIcon,
+    this.onOverlayPerformed,
+    this.onActionPerformed,
+    this.overlayIcon,
+    this.overlayWidget,
+  }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _InfoPropertyLineActionState(
-        name: name,
-        value: value,
-        actionIcon: actionIcon,
-        overlay: overlayWidget,
-        overlayIcon: overlayIcon,
-        onActionPerformed: onActionPerformed,
-        onOverlayPerformed: onOverlayPerformed,
-      );
+  State<StatefulWidget> createState() => _InfoPropertyLineActionState();
 }
 
-// TODO: Avoid this horrible pattern
 class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
-  // Property name
-  String _name;
-
-  // Property value
-  String _value;
-
-  // Icon to use for the actionIcon
-  Icon _actionIcon;
-
-  // Widget to overdraw the current widget when action pressed
-  Widget _overlayWidget;
-
-  // Status of the overlay
-  bool _overlay = false;
-
-  // Icon to show during overlay
-  Icon _overlayIcon;
-
-  void Function(String, String) _onActionPerformed;
-
-  void Function(String, String) _onOverlayPerformed;
-
-  _InfoPropertyLineActionState(
-      {String name,
-      String value,
-      Icon actionIcon,
-      Widget overlay,
-      Icon overlayIcon,
-      void Function(String, String) onActionPerformed,
-      void Function(String, String) onOverlayPerformed}) {
-    _name = name;
-    _value = value;
-    _actionIcon = actionIcon;
-    _overlayWidget = overlay;
-    _overlayIcon = overlayIcon;
-    _onActionPerformed = onActionPerformed;
-    _onOverlayPerformed = onOverlayPerformed;
-  }
+  bool _overlay;
 
   /// Called when an action is performed from the action-button
   void onActionPerformed() {
-    if (_overlayWidget != null) {
-      setState(() {
-        // Invert state of overlay
-        _overlay = !_overlay;
+    if (widget.overlayWidget != null) {
+      setState(
+        () {
+          // Invert state of overlay
+          _overlay = !_overlay;
 
-        // Check function to call
-        if (_overlay == true) {
-          if (_onActionPerformed != null) {
-            // Call function pointer
-            _onActionPerformed(_name, _value);
+          // Check function to call
+          if (_overlay == true) {
+            if (widget.onActionPerformed != null) {
+              // Call function pointer
+              widget.onActionPerformed(widget.name, widget.value);
+            }
+          } else {
+            if (widget.onOverlayPerformed != null) {
+              widget.onOverlayPerformed(widget.name, widget.value);
+            }
           }
-        } else {
-          if (_onOverlayPerformed != null) {
-            _onOverlayPerformed(_name, _value);
-          }
-        }
-      });
+        },
+      );
     } else {
       // Call function pointer
-      _onActionPerformed(_name, _value);
+      widget.onActionPerformed(widget.name, widget.value);
     }
   }
 
+  // TODO: Make this responsive
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -134,7 +89,7 @@ class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            _name,
+            widget.name,
             style: theme.textTheme.headline3,
             textAlign: TextAlign.center,
           ),
@@ -143,7 +98,7 @@ class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10, right: 20),
                     child: Text(
-                      _value,
+                      widget.value,
                       style: theme.textTheme.bodyText1.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -155,21 +110,26 @@ class _InfoPropertyLineActionState extends State<InfoPropertyLineAction> {
                   child: Padding(
                     padding: const EdgeInsets.only(
                         top: 5, left: 10, right: 10, bottom: 5),
-                    child: _overlayWidget,
+                    child: widget.overlayWidget,
                   ),
                 ),
-          if (_actionIcon != null && !_overlay)
-            IconButton(
-              icon: _actionIcon,
-              onPressed: onActionPerformed,
-            )
-          else if (_overlayIcon != null && _overlay)
-            IconButton(
-              icon: _overlayIcon,
-              onPressed: onActionPerformed,
-            ),
+          _buildOverlay(),
         ],
       ),
     );
+  }
+
+  /// Builds the overlay for this widget
+  Widget _buildOverlay() {
+    if (widget.actionIcon != null && !_overlay)
+      return IconButton(
+        icon: widget.actionIcon,
+        onPressed: onActionPerformed,
+      );
+    else if (widget.overlayIcon != null && _overlay)
+      return IconButton(
+        icon: widget.overlayIcon,
+        onPressed: onActionPerformed,
+      );
   }
 }

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_restart/flutter_restart.dart';
 
-import '../constructs/providers-couple.dart';
 import '../widgets/page-components/home-body.dart';
-import '../widgets/page-components/home-fltbutton.dart';
-import '../drawers/home-drawer.dart';
 
 class SafeZoneHome extends StatelessWidget {
   static const String routeName = '/home';
@@ -33,7 +31,7 @@ class SafeZoneHome extends StatelessWidget {
   /// Builds the app bar
   AppBar _buildAppBar(BuildContext context) {
     final theme = Theme.of(context);
-
+    
     return AppBar(
       centerTitle: true,
       title: Text('Safe zone', style: theme.appBarTheme.titleTextStyle),
@@ -52,8 +50,8 @@ class SafeZoneHome extends StatelessWidget {
   }
 
   /// Executes the logout to the application
-  /// TODO: Reimplement this
   Future<void> _doLogout(BuildContext context) async {
-    // UserFileManager.of(context).logout();
+    UserFileManager.of(context).logout();
+    FlutterRestart.restartApp();
   }
 }

@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
-import 'package:myolder/constructs/providers-couple.dart';
-
 import 'dart:math';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:flushbar/flushbar.dart';
+
+import '../constructs/providers-couple.dart';
 import '../constructs/myolder-user.dart';
 import '../providers/user-file-manager.dart';
 import '../providers/safe-file-manager.dart';
@@ -15,26 +16,11 @@ class LoginPage extends StatefulWidget {
   /// The name of this page
   static const String routeName = '/login';
 
-  // Banner to show at top
-  final MaterialBanner banner;
-
-  /// Creates a new instance of a LoginPage
-  ///
-  /// [banner] A banner to show in the page top view
-  /// to show additional informations
-  const LoginPage({
-    Key key,
-    this.banner,
-  }) : super(key: key);
-
   @override
   State<StatefulWidget> createState() => _LoginNormalState();
 }
 
 class _LoginNormalState extends State<LoginPage> {
-  // Valore del padding superiore
-  var _topPadding = 30.0;
-
   // Number of failed logins
   int _failedLogins = 0;
 
@@ -44,11 +30,11 @@ class _LoginNormalState extends State<LoginPage> {
 
   // Keyboard input controller
   final _keyboardController = KeyboardVisibilityNotification();
-  var _onPressedHandler;
+
+  bool _loginBlocked = false;
 
   // Indica se nascondere la password
   bool _hidePassword = true;
-  bool _showBanner = false;
 
   // This string contains eventual errors during the login phase
   String _errorString = '';
@@ -56,54 +42,24 @@ class _LoginNormalState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    // Keyboard controllers
-    _keyboardController.addNewListener(
-        onShow: _onKeyboardShow, onHide: _onKeyboardHide);
-
-    // Set default login action
-    _onPressedHandler = _onLoginRequest;
 
     // Add listeners to the keyboard to see when it is shown
     _userController.addListener(() {});
     _passController.addListener(() {});
   }
 
-  /// Called when the keyboard is shown
-  void _onKeyboardShow() {
-    final landscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
-
-    final double pad = landscape ? 28 : 20;
-
-    setState(() {
-      _topPadding = pad;
-    });
-  }
-
-  /// Called when the keyboard is hidded
-  void _onKeyboardHide() {
-    setState(() {
-      _topPadding = 30.0;
-    });
-  }
-
-  /// Builds the [banner] to display temporary informations
-  void _configureBanner() {
-    if (widget.banner != null) {
-      _showBanner = true;
-      widget.banner.actions.add(
-        TextButton(
-          child: Text(
-            'Ok',
-          ),
-          onPressed: () {
-            setState(() {
-              _showBanner = false;
-            });
-          },
+  /// Displays the 'userjustcreated message'
+  void _displayTemporaryMessage() {
+    try {
+      Flushbar(
+        title: 'New user created',
+        message: 'The new user has been created. Use the credentials to log-in',
+        duration: Duration(
+          seconds: 8,
         ),
-      );
-    }
+        isDismissible: true,
+      )..show(context);
+    } catch (o) {}
   }
 
   /// Displays the login info page
@@ -113,46 +69,43 @@ class _LoginNormalState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Build the banner
-    _configureBanner();
-
     // Optimize device/application informations
     final theme = Theme.of(context);
-    final media = MediaQuery.of(context);
-
+/*     final media = MediaQuery.of(context);
+ */
     // build appbar to have it's height
     final appBar = _buildAppBar();
+
+    final showMsg = ModalRoute.of(context).settings.arguments as bool;
+
+    // Check if i have to display the message
+    if (showMsg) _displayTemporaryMessage();
 
     return Scaffold(
       backgroundColor: theme.backgroundColor,
       appBar: appBar,
       body: SingleChildScrollView(
-        child: Container(
-          width: media.size.width,
-          height: media.size.height - (appBar.preferredSize.height),
-          child: Column(
-            children: [
-              _buildMessageBanner(),
-              _buildHeading(),
-              _buildErrorMessage(),
-              _buildLoginCredentialsInput(),
-              _buildLoginButton(),
-            ],
-          ),
+        child: Column(
+          children: [
+            _buildHeading(),
+            _buildErrorMessage(),
+            _buildLoginCredentialsInput(),
+            _buildLoginButton(),
+            _buildAdditionalSpace(),
+          ],
         ),
       ),
     );
   }
 
-  /// Builds [widget.banner]. Requires that [_configureBanner] has configured this state
-  /// to display a banner.
-  /// TODO: FIXME: The ok button of the banner doesn't remove the banner.
-  Widget _buildMessageBanner() => _showBanner
-      ? widget.banner
-      : const SizedBox(
-          width: 0,
-          height: 0,
-        );
+  Widget _buildAdditionalSpace() {
+    final media = MediaQuery.of(context);
+    final height = media.viewInsets.top;
+    print(height);
+    return SizedBox(
+      height: height,
+    );
+  }
 
   /// Builds the password suffix icon
   IconData _buildPasswordSuffixIcon() {
@@ -165,12 +118,10 @@ class _LoginNormalState extends State<LoginPage> {
   /// Build the page heading
   Widget _buildHeading() {
     final theme = Theme.of(context);
+    final media = MediaQuery.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(
-        top: _topPadding,
-        bottom: _topPadding / 2,
-      ),
+      padding: EdgeInsets.only(top: media.size.height * 0.04),
       child: Text(
         'Insert login credentials',
         style: theme.textTheme.headline1,
@@ -181,7 +132,8 @@ class _LoginNormalState extends State<LoginPage> {
   /// Builds the login button
   Widget _buildLoginButton() {
     // Simplify
-    final theme = Theme.of(context);
+/*     final theme = Theme.of(context);
+ */
     final media = MediaQuery.of(context);
 
     final landscape = media.orientation == Orientation.landscape;
@@ -190,7 +142,7 @@ class _LoginNormalState extends State<LoginPage> {
       width: media.size.width * (landscape ? 0.20 : 0.30),
       height: media.size.height * (landscape ? 0.10 : 0.06),
       child: TextButton.icon(
-        onPressed: _onPressedHandler,
+        onPressed: !_loginBlocked ? () => _onLoginRequest() : null,
         icon: const Icon(
           Icons.login,
           size: 30,
@@ -257,25 +209,24 @@ class _LoginNormalState extends State<LoginPage> {
       ),
       child: Column(
         children: [
-          Theme(
-            child: TextField(
-              decoration: InputDecoration(
-                prefixIcon: const Icon(
-                  Icons.person,
-                ),
-                labelText: 'Username',
+          TextField(
+            decoration: InputDecoration(
+              prefixIcon: const Icon(
+                Icons.person,
               ),
-              controller: _userController,
+              labelText: 'Username',
             ),
-            data: theme.copyWith(primaryColor: theme.primaryColorDark),
+            controller: _userController,
+            enabled: !_loginBlocked,
           ),
           SizedBox(height: media.size.height * 0.05),
           TextField(
             controller: _passController,
             obscureText: _hidePassword,
+            enabled: !_loginBlocked,
             decoration: InputDecoration(
               prefixIcon: const Icon(
-                Icons.password,
+                Icons.lock,
               ),
               suffixIcon: Icon(
                 _buildPasswordSuffixIcon(),
@@ -297,23 +248,22 @@ class _LoginNormalState extends State<LoginPage> {
       name: _userController.text,
       password: _passController.text,
     );
-    
+
     final bool result = await UserFileManager.of(context).login(logUser);
 
     if (result) {
       // Start loading the safe-zone-files
       SafeFileManager man = await SafeFileManager.readConfigurationFile(
           'safe-dir', 'rc&MEuFiMoZBB8Ru*Sa8');
-          
+
       // Check if the two users are equal
       MyOlderUser usr = man.allowedUser;
 
       if (logUser.equals(usr)) {
-        // print('VERY GOOD, LOGIN SUPER SUCCESSFUL');
         setState(
           () {
             _errorString = '';
-            _onPressedHandler = _onLoginRequest;
+            _loginBlocked = false;
             // Start the login
             Navigator.of(context).pushReplacementNamed(
               SafeZoneHome.routeName,
@@ -325,7 +275,7 @@ class _LoginNormalState extends State<LoginPage> {
         setState(
           () {
             _errorString = 'Problems during login. Login aborted. ';
-            _onPressedHandler = _onLoginRequest;
+            _loginBlocked = false;
           },
         );
       }
@@ -335,7 +285,7 @@ class _LoginNormalState extends State<LoginPage> {
           _failedLogins++;
           _errorString =
               'Invalid user name or password. Retry or see the login info page for more details.';
-          _onPressedHandler = _onLoginRequest;
+          _loginBlocked = false;
         },
       );
     }
@@ -352,7 +302,7 @@ class _LoginNormalState extends State<LoginPage> {
     // Disable login button
     setState(
       () {
-        _onPressedHandler = null;
+        _loginBlocked = true;
         _errorString = '';
       },
     );

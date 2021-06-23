@@ -80,25 +80,6 @@ class _SafeZoneHomeBody extends State<SafeZoneHomeBody> {
     print('Search by name not yet implemented. File name: $search_text');
   }
 
-  /// Deletes a [file] from the safezone
-  void _deleteSafeFile(SafeFile file) {
-    try {
-      // Search for the file
-      final fileIndex = SafeFileManager.of(context).searchSafeFile(file);
-
-      // Set the new state
-      setState(() {
-        SafeFileManager.of(context).removeSafeFile(fileIndex);
-      });
-    } on ElementNotFoundException catch (exc) {
-      print(
-          'Element not found exception. Exception during removing file $file');
-      print(exc);
-    }
-  }
-
-  
-
   /// Called when the user accepts the [ClearAllSafeFilesDialog]
   void _onClearSafeZoneAccepted() {
     SafeFileManager.of(context).clearAllSafeFiles();
