@@ -223,7 +223,7 @@ class SafeFile with ChangeNotifier {
         print('The file is big, it can take a little for decrypting it. ');
         try {
           var f = Flushbar(
-            title: 'Decrypting info',
+            title: 'Decrypting file',
             message:
                 'The file is big, it can take a little for decrypting it. ',
             showProgressIndicator: true,
