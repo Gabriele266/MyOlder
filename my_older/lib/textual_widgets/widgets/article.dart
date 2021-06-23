@@ -196,6 +196,8 @@ class Article extends StatelessWidget {
         return Alignment.topLeft;
       case ParagraphPosition.center:
         return Alignment.center;
+      default:
+        return null;
     }
   }
 
