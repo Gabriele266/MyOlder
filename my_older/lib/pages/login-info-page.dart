@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/textual/text-section.dart';
+import 'package:myolder/textual_widgets/textual_widgets.dart';
 
 class LoginInfoPage extends StatelessWidget {
   /// The name of this page

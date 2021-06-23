@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:myolder/textual_widgets/textual_widgets.dart';
 
 import '../constructs/safe-file.dart';
-import '../widgets/textual/infoproperty-line.dart';
 
 class SafeFileInfoModal extends StatelessWidget {
   // The safe file to display informations about
