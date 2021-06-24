@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myolder/pages/newuser-info-page.dart';
 
 import '../constructs/myolder-user.dart';
@@ -33,36 +32,13 @@ class _RootCreatePageState extends State<RootCreatePage> {
   // The internal message
   StatusTextIndicator _internalMessage;
 
-  /// Called when the keyboard is shown
-  void _onKeyboardShow() {
-    setState(() {
-      spaceBetween = 5;
-    });
-  }
-
-  /// Called when the keyboard is hidden
-  void _onKeyboardHide() {
-    setState(() {
-      spaceBetween = 30;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    // Keyboard listeners
-    KeyboardVisibilityNotification().addNewListener(
-      onShow: _onKeyboardShow,
-      onHide: _onKeyboardHide,
-    );
 
-    _userController.addListener(() {
-      _checkNewUserCredentials();
-    });
+    _userController.addListener(() {});
 
-    _passController.addListener(() {
-      _checkNewUserCredentials();
-    });
+    _passController.addListener(() {});
   }
 
   @override
@@ -82,17 +58,13 @@ class _RootCreatePageState extends State<RootCreatePage> {
       backgroundColor: theme.backgroundColor,
       appBar: appBar,
       body: SingleChildScrollView(
-        child: Expanded(
-          // width: media.size.width,
-          // height: media.size.height - (appBar.preferredSize.height),
-          child: Column(
-            children: [
-              _buildHeader(),
-              _buildConditionalMessage(),
-              _buildRootCredentialsInput(),
-              _buildCreateRootButton(),
-            ],
-          ),
+        child: Column(
+          children: [
+            _buildHeader(),
+            _buildConditionalMessage(),
+            _buildRootCredentialsInput(),
+            _buildCreateRootButton(),
+          ],
         ),
       ),
     );
@@ -102,14 +74,16 @@ class _RootCreatePageState extends State<RootCreatePage> {
   /// error message or information message
   Widget _buildConditionalMessage() {
     final theme = Theme.of(context);
+    final media = MediaQuery.of(context);
 
     return _internalMessage.getText().isNotEmpty
-        ? FittedBox(
+        ? Padding(
+            padding: EdgeInsets.symmetric(horizontal: media.size.width * 0.05),
             child: Text(
               _internalMessage.getText(),
               textAlign: TextAlign.center,
               style: (_internalMessage.isSuccessMessage())
-                  ? theme.textTheme.headline2
+                  ? theme.textTheme.headline6
                   : theme.textTheme.overline,
             ),
           )
@@ -144,6 +118,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
     );
   }
 
+  /// Builds the button to actually create the user
   Widget _buildCreateRootButton() {
     final media = MediaQuery.of(context);
     final landscape = media.orientation == Orientation.landscape;
@@ -153,7 +128,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
       width: media.size.width * (landscape ? 0.20 : 0.30),
       height: media.size.height * (landscape ? 0.10 : 0.06),
       child: TextButton.icon(
-        onPressed: _onCreateRequest,
+        onPressed: () => _onCreateRequest(),
         icon: const Icon(
           Icons.edit,
         ),
@@ -234,31 +209,62 @@ class _RootCreatePageState extends State<RootCreatePage> {
     );
   }
 
-  /// Checks the new user credentials added into the boxes and shows state
-  void _checkNewUserCredentials() {}
-
   /// Performs the operations for creating the new user
   Future<void> _onCreateRequest() async {
-    // Show the alert dialog
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) {
-          return SaveInformationsDialog(
-            content: 'The new user will be created. Do you wish to continue? ',
-            title: 'New user creation',
-            onDialogAccepted: _onNewUserAccepted,
-            onDialogCanceled: _onNewUserCanceled,
-          );
-        },
-      ),
-    );
-    // Switch to the login page
-    Navigator.of(context).pushReplacementNamed(
-      LoginPage.routeName,
-      arguments: true,
-    );
+    final name = _userController.text;
+    final pass = _passController.text;
+
+    if (name == null || pass == null)
+      _onNoCredentialsWritten();
+    else if (name.isEmpty || pass.isEmpty)
+      _onNoCredentialsWritten();
+    else if (name.contains(' '))
+      _onNameContainsSpaces();
+    else if (pass.contains(' '))
+      _onPasswordContainsSpaces();
+    else {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return SaveInformationsDialog(
+              content:
+                  'The new user will be created. Do you wish to continue? ',
+              title: 'New user creation',
+              onDialogAccepted: _onNewUserAccepted,
+              onDialogCanceled: _onNewUserCanceled,
+            );
+          },
+        ),
+      );
+      // Switch to the login page
+      Navigator.of(context).pushReplacementNamed(
+        LoginPage.routeName,
+        arguments: true,
+      );
+    }
   }
+
+  /// Executed when there aren't the user credentials
+  void _onNoCredentialsWritten() => setState(() {
+        _internalMessage.changeText(
+            'No credentials written! The user can\'t be with an empty name or password. ',
+            status: StatusType.Error);
+      });
+
+  /// Executed when the username contains some spaces
+  void _onNameContainsSpaces() => setState(() {
+        _internalMessage.changeText(
+            'The username can\'t contain spaces. Try removing them or using _',
+            status: StatusType.Error);
+      });
+
+  /// Executed when the username contains some spaces
+  void _onPasswordContainsSpaces() => setState(() {
+        _internalMessage.changeText(
+            'The password can\'t contain spaces. Try removing them or using _',
+            status: StatusType.Error);
+      });
 
   /// Called when the user cancels the [SaveInformationsDialog]
   void _onNewUserCanceled() {

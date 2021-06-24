@@ -63,7 +63,7 @@ class _LoginNormalState extends State<LoginPage> {
         title: 'New user created',
         message: 'The new user has been created. Use the credentials to log-in',
         duration: Duration(
-          seconds: 8,
+          seconds: 5,
         ),
         isDismissible: true,
       )..show(context);
@@ -306,17 +306,17 @@ class _LoginNormalState extends State<LoginPage> {
   ///
   /// [man] The created [SafeFileManager]
   void _onLoginSuccess(SafeFileManager man) {
-    setState(
-      () {
-        _errorString = '';
-        _loginBlocked = false;
-        // Start the login
-        Navigator.of(context).pushReplacementNamed(
-          SafeZoneHome.routeName,
-          arguments: ProvidersCouple(man, UserFileManager.of(context)),
-        );
-      },
+    // setState(
+    //   () {
+    //     _errorString = '';
+    //     _loginBlocked = false;
+    // Start the login
+    Navigator.of(context).pushReplacementNamed(
+      SafeZoneHome.routeName,
+      arguments: ProvidersCouple(man, UserFileManager.of(context)),
     );
+    //   },
+    // );
   }
 
   /// Executed when there are problems during the login
