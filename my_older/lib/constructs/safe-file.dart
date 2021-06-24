@@ -219,7 +219,7 @@ class SafeFile with ChangeNotifier {
       final resultPath = '${(await getTemporaryDirectory()).path}/$name';
 
       // Check the file dimension
-      if (dimension > 20000) {
+      if (dimension > 200000) {
         print('The file is big, it can take a little for decrypting it. ');
         try {
           var f = Flushbar(
