@@ -7,3 +7,4 @@ export './null-data-exception.dart';
 export './null-file-exception.dart';
 export './root-file-null-content-exception.dart';
 export './user-not-defined-exception.dart';
+export './root-file-wrong-encoding.dart';
