@@ -39,6 +39,8 @@ class _LoginNormalState extends State<LoginPage> {
   // This string contains eventual errors during the login phase
   String _errorString = '';
 
+  bool _keepLogged = false;
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +48,12 @@ class _LoginNormalState extends State<LoginPage> {
     // Add listeners to the keyboard to see when it is shown
     _userController.addListener(() {});
     _passController.addListener(() {});
+
+    // Check if the login should be kept
+    UserFileManager.of(context).isLoginKept().then((value) {
+      _keepLogged = value;
+      _onLoginRequest();
+    });
   }
 
   /// Displays the 'userjustcreated message'
@@ -90,6 +98,7 @@ class _LoginNormalState extends State<LoginPage> {
             _buildHeading(),
             _buildErrorMessage(),
             _buildLoginCredentialsInput(),
+            _buildKeepLoggedSwitch(),
             _buildLoginButton(),
             _buildAdditionalSpace(),
           ],
@@ -98,6 +107,7 @@ class _LoginNormalState extends State<LoginPage> {
     );
   }
 
+  /// Builds the additional space based on the keyboard insets
   Widget _buildAdditionalSpace() {
     final media = MediaQuery.of(context);
     final height = media.viewInsets.top;
@@ -150,6 +160,25 @@ class _LoginNormalState extends State<LoginPage> {
         label: const Text(
           'Login',
         ),
+      ),
+    );
+  }
+
+  Widget _buildKeepLoggedSwitch() {
+    final media = MediaQuery.of(context);
+    final theme = Theme.of(context);
+
+    return Container(
+      width: media.size.width * 0.5,
+      padding: EdgeInsets.only(bottom: media.size.height * 0.01),
+      child: SwitchListTile(
+        title: Text('Keep logged', style: theme.textTheme.headline3),
+        value: _keepLogged,
+        onChanged: (final val) {
+          setState(() {
+            _keepLogged = val;
+          });
+        },
       ),
     );
   }
@@ -249,38 +278,57 @@ class _LoginNormalState extends State<LoginPage> {
       password: _passController.text,
     );
 
-    final bool result = await UserFileManager.of(context).login(logUser);
+    // Check the result of the loging
+    final bool result =
+        await UserFileManager.of(context).login(logUser, _keepLogged);
 
     if (result) {
       // Start loading the safe-zone-files
-      SafeFileManager man = await SafeFileManager.readConfigurationFile(
+      final man = await SafeFileManager.readConfigurationFile(
           'safe-dir', 'rc&MEuFiMoZBB8Ru*Sa8');
 
       // Check if the two users are equal
-      MyOlderUser usr = man.allowedUser;
+      final usr = man.allowedUser;
 
-      if (logUser.equals(usr)) {
-        setState(
-          () {
-            _errorString = '';
-            _loginBlocked = false;
-            // Start the login
-            Navigator.of(context).pushReplacementNamed(
-              SafeZoneHome.routeName,
-              arguments: ProvidersCouple(man, UserFileManager.of(context)),
-            );
-          },
+      // Do inverted control
+      if (!_keepLogged) {
+        if (logUser.equals(usr))
+          _onLoginSuccess(man);
+        else
+          _onLoginProblems();
+      } else
+        _onLoginSuccess(man);
+    } else
+      _onLoginFail();
+  }
+
+  /// Executed when the login is successful
+  ///
+  /// [man] The created [SafeFileManager]
+  void _onLoginSuccess(SafeFileManager man) {
+    setState(
+      () {
+        _errorString = '';
+        _loginBlocked = false;
+        // Start the login
+        Navigator.of(context).pushReplacementNamed(
+          SafeZoneHome.routeName,
+          arguments: ProvidersCouple(man, UserFileManager.of(context)),
         );
-      } else {
-        setState(
-          () {
-            _errorString = 'Problems during login. Login aborted. ';
-            _loginBlocked = false;
-          },
-        );
-      }
-    } else {
-      setState(
+      },
+    );
+  }
+
+  /// Executed when there are problems during the login
+  void _onLoginProblems() => setState(
+        () {
+          _errorString = 'Problems during login. Login aborted. ';
+          _loginBlocked = false;
+        },
+      );
+
+  /// Executed when the login fails
+  void _onLoginFail() => setState(
         () {
           _failedLogins++;
           _errorString =
@@ -288,8 +336,6 @@ class _LoginNormalState extends State<LoginPage> {
           _loginBlocked = false;
         },
       );
-    }
-  }
 
   /// Handles the button pression
   Future<void> _onLoginRequest() async {

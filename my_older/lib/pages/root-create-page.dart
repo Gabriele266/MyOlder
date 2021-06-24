@@ -280,7 +280,7 @@ class _RootCreatePageState extends State<RootCreatePage> {
         UserFileManager(rootFile: 'root.cfg', safeFolder: 'safe-dir');
     manager.user = createUser;
 
-    manager.writeFile();
+    manager.writeFile(false);
 
     // Configure the safe directory and the configuration file
     var configurator = SafeFileManager(

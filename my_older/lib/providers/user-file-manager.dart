@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:aes_crypt/aes_crypt.dart';
+import 'package:xml/xml.dart';
 
 import '../constructs/myolder-user.dart';
 import '../exceptions/exceptions.dart';
@@ -36,8 +37,8 @@ class UserFileManager with ChangeNotifier {
   /// If the configuration file doesn't exists, a [FileNotFoundException] is thrown
   /// If the [rootFile] is empty, then a [NullDataException] is thrown
   /// [logUser] The user informations
-  /// TODO: Implement use of xml for the root file
-  Future<bool> login(MyOlderUser logUser) async {
+  /// [keepLogin] Indicates if the login should be kept
+  Future<bool> login(MyOlderUser logUser, bool keepLogin) async {
     if (rootFile.isNotEmpty) {
       // Get the file object
       var oFile =
@@ -50,41 +51,44 @@ class UserFileManager with ChangeNotifier {
           '%#^363#&3696^&^543&5335&73&55&2@6%232!^432!^6%&842427@!7%98^@824#969#836^@2889!862^@77#2!72355%',
         );
 
-        // Get the file lines
-        final fileLines =
-            (await decr.decryptTextFromFile(oFile.path)).split('\n');
+        final value = await decr.decryptTextFromFile(oFile.path);
 
-        // Nome utente
-        var usr = '';
-        // Password
-        var password = '';
+        try {
+          final doc = XmlDocument.parse(value);
 
-        // Read credentials
-        for (var line in fileLines) {
-          if (!line.startsWith('#')) {
-            // Controllo se si tratta di una riga che definisce il nome utente per l'accesso
-            if (line.startsWith('user-name')) {
-              usr = line.split(':')[1];
-            } else if (line.startsWith('password')) {
-              password = line.split(':')[1];
-              break;
-            }
+          // The root element
+          final root = doc.findAllElements('credentials').single;
+
+          // Check errors
+          if (root == null) {
+            return false;
           }
+
+          final bool fKeep =
+              root.findAllElements('keep-login').single.text == 'true';
+
+          // Load the user informations
+          user = MyOlderUser(
+            name: root.findAllElements('username').first.text,
+            password: root.findAllElements('password').first.text,
+          );
+
+          final logged =
+              (logUser.name == user.name && logUser.password == user.password);
+
+          notifyListeners();
+
+          if (fKeep)
+            return true;
+          else if (fKeep != keepLogin) {
+            writeFile(keepLogin);
+          }
+
+          // return the result of the check
+          return logged;
+        } on XmlParserException catch (_) {
+          throw RootFileWrongEncodingException();
         }
-
-        // Load the user informations
-        user = MyOlderUser(
-          name: usr,
-          password: password,
-        );
-
-        userLogged =
-            (logUser.name == user.name && logUser.password == user.password);
-
-        notifyListeners();
-
-        // return the result of the check
-        return userLogged;
       } else
         throw FileNotFoundException(
           file: rootFile,
@@ -103,6 +107,57 @@ class UserFileManager with ChangeNotifier {
   void logout() {
     userLogged = false;
     notifyListeners();
+  }
+
+  /// Checks if the login is kept or not
+  Future<bool> isLoginKept() async {
+    if (rootFile.isNotEmpty) {
+      // Get the file object
+      var oFile =
+          File('${(await getApplicationDocumentsDirectory()).path}/$rootFile');
+
+      // Check if file exists
+      if (oFile.existsSync()) {
+        // Leggo le righe del file
+        final decr = AesCrypt(
+          '%#^363#&3696^&^543&5335&73&55&2@6%232!^432!^6%&842427@!7%98^@824#969#836^@2889!862^@77#2!72355%',
+        );
+
+        final value = await decr.decryptTextFromFile(oFile.path);
+
+        try {
+          // Parse the document and get
+          final doc = XmlDocument.parse(value);
+
+          // The root element
+          final root = doc.findAllElements('credentials').single;
+
+          // Check errors
+          if (root == null) {
+            return false;
+          }
+
+          final bool fKeep =
+              root.findAllElements('keep-login').single.text == 'true';
+
+          return fKeep;
+        } on XmlParserException catch (_) {
+          throw RootFileWrongEncodingException();
+        }
+      } else {
+        throw FileNotFoundException(
+          file: rootFile,
+          path: oFile.path,
+        );
+      }
+    } else {
+      throw NullDataException(
+        data: 'file',
+        operationDescription:
+            'Executing the first control step for the credentials.',
+        function: 'doControl',
+      );
+    }
   }
 
   /// Checks if the configuration file for the application exists
@@ -149,7 +204,7 @@ class UserFileManager with ChangeNotifier {
   ///
   /// Needs that the member file and user of this class are set.
   /// TODO: Implement password generation
-  Future<void> writeFile() async {
+  Future<void> writeFile(bool keepLogged) async {
     // Formatto il percorso del file da creare
     if (rootFile.isNotEmpty) {
       // Check if the user informations are set
@@ -162,11 +217,29 @@ class UserFileManager with ChangeNotifier {
           '%#^363#&3696^&^543&5335&73&55&2@6%232!^432!^6%&842427@!7%98^@824#969#836^@2889!862^@77#2!72355%',
         );
 
+        // Enable overwrite
+        crt.setOverwriteMode(AesCryptOwMode.on);
+
+        // Format the document
+        var builder = XmlBuilder();
+        builder.processing('xml', 'version="1.0"');
+        builder.element('credentials', nest: () {
+          builder.element('keep-login', nest: () {
+            builder.text(keepLogged.toString());
+          });
+          builder.element('username', nest: () {
+            builder.text(user.name);
+          });
+          builder.element('password', nest: () {
+            builder.text(user.password);
+          });
+          builder.element('datetime', nest: () {
+            builder.text(DateTime.now().toString());
+          });
+        });
+
         crt.encryptTextToFile(
-          '# user informations. \n'
-          'creation-time:${DateTime.now().toString()}\n'
-          'user-name:${user.name}\n'
-          'password:${user.password}\n',
+          builder.buildDocument().toXmlString(),
           filePath,
         );
       } else
