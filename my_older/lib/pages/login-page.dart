@@ -71,9 +71,8 @@ class _LoginNormalState extends State<LoginPage> {
   }
 
   /// Displays the login info page
-  void _displayLoginInfo() {
-    Navigator.pushNamed(context, LoginInfoPage.routeName);
-  }
+  void _displayLoginInfo() =>
+      Navigator.pushNamed(context, LoginInfoPage.routeName);
 
   @override
   Widget build(BuildContext context) {
@@ -120,9 +119,9 @@ class _LoginNormalState extends State<LoginPage> {
   /// Builds the password suffix icon
   IconData _buildPasswordSuffixIcon() {
     if (_hidePassword) {
-      return Icons.search;
+      return Icons.remove_red_eye;
     }
-    return Icons.search_off_rounded;
+    return Icons.security;
   }
 
   /// Build the page heading
@@ -257,11 +256,17 @@ class _LoginNormalState extends State<LoginPage> {
               prefixIcon: const Icon(
                 Icons.lock,
               ),
-              suffixIcon: Icon(
-                _buildPasswordSuffixIcon(),
-                size: theme.primaryIconTheme.size,
-                color: theme.primaryIconTheme.color,
-              ),
+              suffixIcon: IconButton(
+                  icon: Icon(
+                    _buildPasswordSuffixIcon(),
+                    size: theme.iconTheme.size,
+                    color: theme.iconTheme.color,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _hidePassword = !_hidePassword;
+                    });
+                  }),
               labelText: 'Password',
             ),
           ),
