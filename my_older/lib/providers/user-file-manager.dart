@@ -78,14 +78,16 @@ class UserFileManager with ChangeNotifier {
 
           notifyListeners();
 
-          if (fKeep)
-            return true;
-          else if (fKeep != keepLogin) {
+
+          if (logged && fKeep != keepLogin) {
             writeFile(keepLogin);
           }
 
-          // return the result of the check
-          return logged;
+          if (fKeep)
+            return true;
+          else
+            // return the result of the check
+            return logged;
         } on XmlParserException catch (_) {
           throw RootFileWrongEncodingException();
         }
