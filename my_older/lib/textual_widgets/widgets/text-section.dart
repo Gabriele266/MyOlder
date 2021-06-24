@@ -70,11 +70,13 @@ class TextSection extends StatelessWidget {
                       ),
                 Align(
                   alignment: _geometryFromTextAlign(textAlign),
-                  child: Text(
-                    title,
-                    style: theme.textTheme.headline1,
-                    textAlign: textAlign,
-                    overflow: TextOverflow.ellipsis,
+                  child: FittedBox(
+                    child: Text(
+                      title,
+                      style: theme.textTheme.headline1,
+                      textAlign: textAlign,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 )
               ],

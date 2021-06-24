@@ -156,8 +156,10 @@ class _LoginNormalState extends State<LoginPage> {
           Icons.login,
           size: 30,
         ),
-        label: const Text(
-          'Login',
+        label: const FittedBox(
+          child: const Text(
+            'Login',
+          ),
         ),
       ),
     );
