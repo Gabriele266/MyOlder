@@ -58,7 +58,8 @@ class HomeDrawer extends StatelessWidget {
                 text: 'Clear safe zone',
                 icon: Icons.delete,
                 callBack: () {
-                  SafeFileManager.of(context, listen: false).clearAllSafeFiles();
+                  SafeFileManager.of(context, listen: false)
+                      .clearAllSafeFiles();
                   Navigator.of(context).pop();
                 },
               ),
@@ -70,23 +71,10 @@ class HomeDrawer extends StatelessWidget {
                 },
               ),
               DrawerListTileButton(
-                text: 'Delete user',
-                icon: Icons.delete,
-                callBack: () {
-                  UserFileManager.of(context).removeRootFile();
-                  UserFileManager.of(context).removeConfigurationFolder();
-                  // Restart this app
-                  FlutterRestart.restartApp();
-                },
-              ),
-              DrawerListTileButton(
                 text: 'Logout',
                 icon: Icons.logout,
                 callBack: () {
                   UserFileManager.of(context).logout();
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushReplacementNamed(LoginPage.routeName,
-                      arguments: false);
                 },
               ),
             ],
