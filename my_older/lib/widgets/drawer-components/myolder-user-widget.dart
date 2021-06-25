@@ -11,12 +11,15 @@ class MyOlderUserWidget extends StatelessWidget {
 
   /// Creates a new instance of a [MyOlderUserWidget]
   ///
-  ///[enabled] Specifies if this widget should redirect the user to the 
-  ///[UserToolsPage]. 
+  ///[enabled] Specifies if this widget should redirect the user to the
+  ///[UserToolsPage].
   MyOlderUserWidget({
     Key key,
     this.enabled = true,
   }) : super(key: key);
+
+  /// Creates a disabled [MyOlderUserWidget] (not clickable)
+  MyOlderUserWidget.disabled() : this.enabled = false;
 
   @override
   Widget build(BuildContext context) {
