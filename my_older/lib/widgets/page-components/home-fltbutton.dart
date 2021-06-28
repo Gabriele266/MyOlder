@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import '../../providers/safe-file-manager.dart';
 
 class HomeFloatingActionButton extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return FloatingActionButton(
       onPressed: () {
-        SafeFileManager.of(context, listen: false).importNewFile();
+        SafeFileManager.of(context, listen: false).importNewFile(context);
       },
       backgroundColor: theme.floatingActionButtonTheme.backgroundColor,
       child: Icon(
