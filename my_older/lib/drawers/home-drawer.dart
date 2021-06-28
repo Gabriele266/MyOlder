@@ -50,7 +50,7 @@ class HomeDrawer extends StatelessWidget {
                 text: 'Add new safe file',
                 icon: Icons.add,
                 callBack: () {
-                  SafeFileManager.of(context, listen: false).importNewFile();
+                  SafeFileManager.of(context, listen: false).importNewFile(context);
                   Navigator.of(context).pop();
                 },
               ),
