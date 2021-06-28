@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:aes_crypt/aes_crypt.dart';
 import 'package:flutter/material.dart';
+import 'package:myolder/isolates/encrypt-isolate-data.dart';
+import 'package:myolder/isolates/encrypt-isolate.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:crypto/crypto.dart';
 import 'package:xml/xml.dart';
@@ -18,6 +20,9 @@ import '../exceptions/exceptions.dart';
 class SafeFileManager with ChangeNotifier {
   static SafeFileManager of(BuildContext context, {bool listen = true}) =>
       Provider.of<SafeFileManager>(context, listen: listen);
+
+  /// The number of bytes that represent a little file (10 MB)
+  static const int littleFileSoil = 10485760;
 
   // List of safe files
   List<SafeFile> _safeFiles = [];
@@ -35,6 +40,8 @@ class SafeFileManager with ChangeNotifier {
   /// The number of safe files
   int get safeFilesCount => _safeFiles.length;
 
+  EncryptIsolate _encryptIsolate;
+
   /// Initializes a new instance of a safefilemanager
   ///
   /// This instance represents a manager for a list of safe files in the application <br>
@@ -46,73 +53,7 @@ class SafeFileManager with ChangeNotifier {
     @required this.allowedUser,
   });
 
-  /// Adds a new safe file to the safe zone
-  ///
-  /// [file] The object retreived from the file picker that stores all the info
-  /// about the file
-  /// [context] The build context to use for retreiving informations about the user, etc...
-  Future<void> addSafeFile(
-    PlatformFile file,
-  ) async {
-    // Check if list isn't null
-    if (_safeFiles == null) throw ManagerAddToListException(file, 'safeFiles');
-
-    // Run the method to configure it
-    // Generate a file ID from it's path to use for encryption
-    // Get file path
-    final String filePath =
-        '${(await getApplicationDocumentsDirectory()).path}/${safeDirectory}/${_safeFiles.length}.file';
-
-    // Get the bytes of the string to hash and hash it
-    var bytes = utf8.encode(filePath);
-    final String password = sha256.convert(bytes).toString();
-
-    // Crete the file object
-    final safeFile = SafeFile(
-      name: file.name,
-      password: password,
-      path: filePath,
-      suffix: file.extension,
-      color: Colors.blue,
-      dateTime: DateTime.now(),
-      dimension: file.bytes.length,
-    );
-
-    _safeFiles.add(safeFile);
-    notifyListeners();
-
-    // Use it as file encrypt password
-    final crypt = AesCrypt(password);
-    crypt.setOverwriteMode(AesCryptOwMode.on);
-
-    // Start file encrypt
-    crypt.encryptDataToFile(file.bytes, filePath).then((value) => saveInformations());
-  }
-
-  /// Removes the given file index from the list
-  ///
-  /// [index] The index of the file to remove
-  void removeSafeFileByIndex(int index) {
-    try {
-      // Delete the file from the disk
-      final file = File(_safeFiles[index].path);
-      file.deleteSync();
-    } on IOException catch (exc) {
-      print(
-          'Unable to delete the safefile at index $index. \nSafeFile informations: ${_safeFiles[index]}\n');
-      print('The file to delete was: $exc');
-    }
-    // Remove the object
-    _safeFiles.removeAt(index);
-    notifyListeners();
-  }
-
-  /// Removes a safefile
-  void removeSafeFile(SafeFile file) {
-    _safeFiles.removeWhere((f) => f.isEqual(file));
-    notifyListeners();
-    saveInformations();
-  }
+  void onEncryptExit(EncryptIsolateData data) {}
 
   /// Search a specific safe file into this manager
   ///
@@ -143,7 +84,7 @@ class SafeFileManager with ChangeNotifier {
   }
 
   /// Adds a new file to the safe zone
-  Future<void> importNewFile() async {
+  Future<void> importNewFile(BuildContext context) async {
     // Get a file from the default file-picker
     FilePickerResult file = await FilePicker.platform
         .pickFiles(withData: true, withReadStream: true);
@@ -151,11 +92,88 @@ class SafeFileManager with ChangeNotifier {
     if (file != null) {
       // The the single file to add
       PlatformFile object = file.files.first;
-      print('File suffix: ${object.extension}');
 
-      // Add the file and encrypt it
-      addSafeFile(object);
+      final theme = Theme.of(context);
+
+      // Check size
+      if (object.size > littleFileSoil) {
+        final snack = SnackBar(
+          content: ListTile(
+            leading: Icon(
+              Icons.info,
+              color: theme.iconTheme.color,
+              size: theme.iconTheme.size,
+            ),
+            title: Text('The file is big', style: theme.textTheme.headline4),
+            subtitle: Text(
+              'The file you are trying to add is big, it can take a litte to encrypt it. ',
+              style: theme.textTheme.headline4
+                  .copyWith(fontSize: theme.textTheme.headline4.fontSize - 3),
+            ),
+          ),
+          // duration: const Duration(seconds: 5),
+        );
+
+        // Show the snackbar
+        ScaffoldMessenger.of(context).showSnackBar(snack);
+
+        // Add the safe file by starting his thread
+        addSafeFile(object);
+
+        // addSafeFile(object);
+      } else {
+        addSafeFile(object);
+      }
     }
+  }
+
+  /// Adds a new safe file to the safe zone
+  ///
+  /// [file] The object retreived from the file picker that stores all the info
+  /// about the file
+  Future<void> addSafeFile(PlatformFile file) async {
+    // Check if list isn't null
+    if (_safeFiles == null) throw ManagerAddToListException(file, 'safeFiles');
+
+    // Run the method to configure it
+    // Generate a file ID from it's path to use for encryption
+    // Get file path
+    final String filePath =
+        '${(await getApplicationDocumentsDirectory()).path}/${safeDirectory}/${_safeFiles.length}.file';
+
+    // Get the bytes of the string to hash and hash it
+    var bytes = utf8.encode(filePath);
+    final String password = sha256.convert(bytes).toString();
+
+    // Crete the file object
+    final safeFile = SafeFile(
+      name: file.name,
+      password: password,
+      path: filePath,
+      suffix: file.extension,
+      color: Colors.blue,
+      dateTime: DateTime.now(),
+      dimension: file.bytes.length,
+    );
+
+    // Make the widget for the safefile visible by adding the object to the list
+    // and notifying all the listeners
+    _safeFiles.add(safeFile);
+    notifyListeners();
+
+    // When the isolate ends the app should save all the informations
+    _encryptIsolate = EncryptIsolate((result) {
+      saveInformations();
+    });
+
+    // Init the isolate
+    _encryptIsolate.initIsolate(
+      EncryptIsolateData(
+        bytes: file.bytes,
+        filePath: filePath,
+        password: password,
+      ),
+    );
   }
 
   /// Starts the process for saving all the safe files informations into the encrypted file.
@@ -207,12 +225,41 @@ class SafeFileManager with ChangeNotifier {
   /// Removes all the safe files from the safe zone
   ///
   Future<void> clearAllSafeFiles() async {
-    if (_safeFiles.length > 0) {
+    final int fCount = _safeFiles.length;
+
+    if (fCount > 0) {
       _safeFiles.clear();
       notifyListeners();
+
+      // Remove all the files
+      final Directory sDirPath = Directory(
+          '${(await getApplicationDocumentsDirectory()).path}/$safeDirectory');
+
+      // Get all the entries
+      var entries = await sDirPath.list().toList();
+
+      // Remove all files that aren't .file
+      entries.removeWhere((element) => element.path.split('.').last != 'file');
+
+      // Remove all
+      entries.forEach((element) {
+        element.delete();
+      });
+
       // Save the informations again
       saveInformations();
     }
+  }
+
+  /// Removes a safefile
+  void removeSafeFile(SafeFile file) {
+    _safeFiles.removeWhere((f) => f.isEqual(file));
+    // Remove his file
+    final fObj = File(file.path);
+    fObj.deleteSync();
+
+    notifyListeners();
+    saveInformations();
   }
 
   /// Reads the configuration file into his path and returns a safefilemanager object

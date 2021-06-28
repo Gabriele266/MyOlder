@@ -16,7 +16,7 @@ class AppTheme {
         errorColor: Colors.red[800],
 
         buttonColor: CustomColors.redAccent,
-        buttonTheme:  ButtonThemeData(
+        buttonTheme: ButtonThemeData(
           buttonColor: CustomColors.redAccent,
           textTheme: ButtonTextTheme.normal,
           shape: RoundedRectangleBorder(
@@ -33,7 +33,7 @@ class AppTheme {
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(CustomColors.redAccent),
             foregroundColor: MaterialStateProperty.all(CustomColors.brown),
-            elevation:  MaterialStateProperty.all(2),
+            elevation: MaterialStateProperty.all(2),
             shape: MaterialStateProperty.all(
               const RoundedRectangleBorder(
                 side: BorderSide(
@@ -91,7 +91,6 @@ class AppTheme {
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
-          
           overline: TextStyle(
             color: Colors.red[800],
             fontSize: 15,
@@ -131,8 +130,14 @@ class AppTheme {
 
         // Icon themes
         primaryIconTheme: const IconThemeData(
-          size: 20,
+          size: 25,
           color: CustomColors.lightYellow,
+        ),
+
+        /// Theme for the snackbar
+        iconTheme: IconThemeData(
+          size: 30,
+          color: Colors.white,
         ),
 
         accentIconTheme: const IconThemeData(

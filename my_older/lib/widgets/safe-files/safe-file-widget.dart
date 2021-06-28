@@ -41,7 +41,10 @@ class _SafeFileWidgetState extends State<SafeFileWidget> {
         vertical: media.size.height * 0.01,
       ),
       child: ListTile(
-        leading: const Icon(Icons.file_present),
+        leading: Icon(
+          Icons.file_present,
+          size: theme.primaryIconTheme.size,
+        ),
         onTap: _onWidgetPressed,
         onLongPress: () => _showInfo(file),
         title: Text(

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_restart/flutter_restart.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:aes_crypt/aes_crypt.dart';
@@ -78,7 +79,6 @@ class UserFileManager with ChangeNotifier {
 
           notifyListeners();
 
-
           if (logged && fKeep != keepLogin) {
             writeFile(keepLogin);
           }
@@ -105,10 +105,19 @@ class UserFileManager with ChangeNotifier {
       );
   }
 
+  /// Completely removes this user and all his credentials
+  void removeUser() {
+    removeRootFile();
+    removeConfigurationFolder();
+    // Restart this app
+    FlutterRestart.restartApp();
+  }
+
   /// Executes the logout
   void logout() {
     userLogged = false;
     notifyListeners();
+    FlutterRestart.restartApp();
   }
 
   /// Checks if the login is kept or not

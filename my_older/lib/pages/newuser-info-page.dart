@@ -54,8 +54,10 @@ class NewUserInfoPage extends StatelessWidget {
                 Center(
                   child: TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      'Understood',
+                    child: const FittedBox(
+                      child: const Text(
+                        'Understood',
+                      ),
                     ),
                   ),
                 ),

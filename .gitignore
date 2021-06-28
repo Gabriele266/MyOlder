@@ -48,3 +48,5 @@ app.*.map.json
 /ios/
 
 my_older/android/
+
+my_older/test/

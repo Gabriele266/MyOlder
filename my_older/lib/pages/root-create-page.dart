@@ -132,8 +132,10 @@ class _RootCreatePageState extends State<RootCreatePage> {
         icon: const Icon(
           Icons.edit,
         ),
-        label: const Text(
-          'Create user',
+        label: const FittedBox(
+          child: const Text(
+            'Create user',
+          ),
         ),
       ),
     );
