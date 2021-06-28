@@ -21,6 +21,9 @@ class SafeFileManager with ChangeNotifier {
   static SafeFileManager of(BuildContext context, {bool listen = true}) =>
       Provider.of<SafeFileManager>(context, listen: listen);
 
+  /// The number of bytes that represent a little file (10 MB)
+  static const int littleFileSoil = 10485760;
+
   // List of safe files
   List<SafeFile> _safeFiles = [];
 
@@ -93,16 +96,22 @@ class SafeFileManager with ChangeNotifier {
       final theme = Theme.of(context);
 
       // Check size
-      if (object.size > 200000) {
+      if (object.size > littleFileSoil) {
         final snack = SnackBar(
           content: ListTile(
+            leading: Icon(
+              Icons.info,
+              color: theme.iconTheme.color,
+              size: theme.iconTheme.size,
+            ),
             title: Text('The file is big', style: theme.textTheme.headline4),
             subtitle: Text(
               'The file you are trying to add is big, it can take a litte to encrypt it. ',
-              style: theme.textTheme.headline4,
+              style: theme.textTheme.headline4
+                  .copyWith(fontSize: theme.textTheme.headline4.fontSize - 3),
             ),
           ),
-          duration: const Duration(seconds: 5),
+          // duration: const Duration(seconds: 5),
         );
 
         // Show the snackbar
