@@ -1,11 +1,12 @@
+import 'package:myolder/isolates/decrypt-isolate-data.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:xml/xml.dart';
 import 'package:flutter/material.dart';
-import 'package:aes_crypt/aes_crypt.dart';
-import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:flushbar/flushbar.dart';
 
+import '../isolates/decrypt-isolate.dart';
+import '../providers/safe-file-manager.dart';
 import '../formatters/rgb-color-formatter.dart';
 import '../formatters/date-time-formatter.dart';
 
@@ -40,6 +41,8 @@ class SafeFile with ChangeNotifier {
 
   // File dimension in bytes
   final int dimension;
+
+  DecryptIsolate _decryptIsolate;
 
   /// Creates a new instance of a safe file
   ///
@@ -212,47 +215,50 @@ class SafeFile with ChangeNotifier {
   ///  path and opens it with the default app.
   Future<void> unlockAndOpen(BuildContext context) async {
     try {
-      // Configure various paths and decrypt it
-      final crt = AesCrypt(password);
-      crt.setOverwriteMode(AesCryptOwMode.on);
-      // Get the temporary path
-      final resultPath = '${(await getTemporaryDirectory()).path}/$name';
-
       // Check the file dimension
-      if (dimension > 200000) {
-        print('The file is big, it can take a little for decrypting it. ');
-        try {
-          var f = Flushbar(
-            title: 'Decrypting file',
-            message:
-                'The file is big, it can take a little for decrypting it. ',
-            showProgressIndicator: true,
-            icon: const Icon(
+      if (dimension > SafeFileManager.littleFileSoil) {
+        final theme = Theme.of(context);
+
+        // Format a snackbar to display a notification
+        final snack = SnackBar(
+          content: ListTile(
+            leading: Icon(
               Icons.info,
-              color: Colors.white,
+              color: theme.iconTheme.color,
+              size: theme.iconTheme.size,
             ),
-          );
+            title: Text('The file is big', style: theme.textTheme.headline4),
+            subtitle: Text(
+              'The file you are trying to add is big, it can take a litte to decrypt it. ',
+              style: theme.textTheme.headline4
+                  .copyWith(fontSize: theme.textTheme.headline4.fontSize - 3),
+            ),
+          ),
+          // duration: const Duration(seconds: 5),
+        );
 
-          f..show(context);
+        ScaffoldMessenger.of(context).showSnackBar(snack);
 
-          // Decrypt all
-          crt.decryptFile(path, resultPath).then((value) {
-            Future.delayed(Duration(seconds: 5), () {
-              f..dismiss();
-              // Launch default viewer
-              OpenFile.open(resultPath);
-            });
-          });
-        } catch (i) {}
+        _decryptAndOpen();
       } else {
-        crt.decryptFile(path, resultPath).then((value) {
-          // Launch default viewer
-          OpenFile.open(resultPath);
-        });
+        _decryptAndOpen();
       }
     } catch (i) {
       print('Exception during unlocking file $name');
     }
+  }
+
+  Future<void> _decryptAndOpen() async {
+    _decryptIsolate = DecryptIsolate((data) {
+      print('File ${data.fileName} end');
+      OpenFile.open(data.destinationPath);
+    });
+
+    _decryptIsolate.initIsolate(DecryptIsolateData(
+        originalPath: path,
+        fileName: name,
+        password: password,
+        destinationPath: ('${(await getTemporaryDirectory()).path}/$name')));
   }
 
   /// Checks if [file] has the same properties as this current object

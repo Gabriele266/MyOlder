@@ -163,6 +163,7 @@ class SafeFileManager with ChangeNotifier {
 
     // When the isolate ends the app should save all the informations
     _encryptIsolate = EncryptIsolate((result) {
+      print('File ${result.filePath} end');
       saveInformations();
     });
 
