@@ -3,6 +3,7 @@ import 'package:myolder/pages/safe-zone-home.dart';
 import 'package:myolder/pages/user-tools-page.dart';
 import 'package:provider/provider.dart';
 
+import './pages/application-informations-page.dart';
 import './pages/login-page.dart';
 import './pages/root-create-page.dart';
 import './pages/splash-page.dart';
@@ -32,6 +33,8 @@ class MyOlderApp extends StatelessWidget {
           SafeZoneHome.routeName: (context) => SafeZoneHome(),
           LoginInfoPage.routeName: (context) => LoginInfoPage(),
           UserToolsPage.routeName: (context) => UserToolsPage(),
+          ApplicationInformationsPage.routeName: (context) =>
+              ApplicationInformationsPage(),
         },
       ),
     );
