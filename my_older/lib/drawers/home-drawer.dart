@@ -6,7 +6,6 @@ import '../widgets/drawer-components/myolder-user-widget.dart';
 import '../providers/safe-file-manager.dart';
 import '../pages/application-informations-page.dart';
 
-// TODO: Implement settings page
 // TODO: Implement application faq
 // TODO: Implement application settings
 class HomeDrawer extends StatelessWidget {
@@ -57,9 +56,7 @@ class HomeDrawer extends StatelessWidget {
                 text: 'Clear safe zone',
                 icon: Icons.delete,
                 callBack: () {
-                  SafeFileManager.of(context, listen: false)
-                      .clearAllSafeFiles();
-                  Navigator.of(context).pop();
+                  _clearSafeZone(context);
                 },
               ),
               DrawerListTileButton(
@@ -81,6 +78,36 @@ class HomeDrawer extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Clears the safe zone
+  Future<void> _clearSafeZone(BuildContext context) async {
+    // Check if there are files to remove
+    if (SafeFileManager.of(context, listen: false).safeFilesCount > 0) {
+      final dial = AlertDialog(
+        title: const Text('This operation will remove all your files'),
+        content: const Text(
+            'By clicking on \'Continue\' you will loose all your files. Do you agree?'),
+        actions: [
+          TextButton(
+            child: const Text('Deny'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Continue'),
+            onPressed: () {
+              SafeFileManager.of(context, listen: false).clearAllSafeFiles();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+
+      showDialog(context: context, builder: (_) => dial);
+    }
   }
 
   /// Shows the application faq
