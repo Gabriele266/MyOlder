@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../exceptions/element-not-found-exception.dart';
-import '../../constructs/safe-file.dart';
 import '../../providers/safe-file-manager.dart';
 import '../safe-files/safe-file-list-viewer.dart';
 import '../../dialogs/clear-all-files-dialog.dart';
@@ -31,11 +29,19 @@ class _SafeZoneHomeBody extends State<SafeZoneHomeBody> {
   /// folder
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildSearchBox(),
-        SafeFileListViewer(),
-      ],
+    final media = MediaQuery.of(context);
+
+    return SafeArea(
+      child: Column(
+        children: [
+          _buildSearchBox(),
+          Container(
+            width: media.size.width,
+            height: media.size.height * 0.75,
+            child: SafeFileListViewer(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -44,30 +50,29 @@ class _SafeZoneHomeBody extends State<SafeZoneHomeBody> {
     final theme = Theme.of(context);
     final media = MediaQuery.of(context);
 
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: media.size.width * 0.08,
-          vertical: media.size.height * 0.025,
-        ),
-        child: TextField(
-          controller: _searchController,
-          maxLines: 1,
-          decoration: InputDecoration(
-            prefixIcon: Icon(
-              Icons.text_format,
+    return Container(
+      height: media.size.height * 0.1,
+      padding: EdgeInsets.symmetric(
+        horizontal: media.size.width * 0.08,
+        vertical: media.size.height * 0.025,
+      ),
+      child: TextField(
+        controller: _searchController,
+        maxLines: 1,
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.text_format,
+            size: theme.primaryIconTheme.size,
+          ),
+          suffix: IconButton(
+            icon: Icon(
+              Icons.search,
               size: theme.primaryIconTheme.size,
+              color: theme.primaryIconTheme.color,
             ),
-            suffix: IconButton(
-              icon: Icon(
-                Icons.search,
-                size: theme.primaryIconTheme.size,
-                color: theme.primaryIconTheme.color,
-              ),
-              onPressed: () =>
-                  // Start research for files with this name
-                  _startSearch(_searchController.text),
-            ),
+            onPressed: () =>
+                // Start research for files with this name
+                _startSearch(_searchController.text),
           ),
         ),
       ),
@@ -88,7 +93,6 @@ class _SafeZoneHomeBody extends State<SafeZoneHomeBody> {
     setState(() {});
   }
 
-  
   /// Disposes all the resources used by this main page
   @override
   void dispose() {
