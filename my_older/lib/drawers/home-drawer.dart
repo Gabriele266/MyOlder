@@ -5,9 +5,9 @@ import '../widgets/drawer-components/drawer-list-tile-button.dart';
 import '../widgets/drawer-components/myolder-user-widget.dart';
 import '../providers/safe-file-manager.dart';
 import '../pages/application-informations-page.dart';
+import '../pages/settings-page.dart';
 
 // TODO: Implement application faq
-// TODO: Implement application settings
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({Key key}) : super(key: key);
 
@@ -32,26 +32,13 @@ class HomeDrawer extends StatelessWidget {
               DrawerListTileButton(
                 text: 'Application informations',
                 icon: Icons.info,
-                callBack: () {
-                  _showApplicationInformations(context);
-                },
+                callBack: () => _showApplicationInformations(context),
               ),
               DrawerListTileButton(
                 text: 'Settings',
                 icon: Icons.settings,
-                callBack: () {
-                  _showApplicationSettings();
-                },
+                callBack: () => _showApplicationSettings(context),
               ),
-              // DrawerListTileButton(
-              //   text: 'Add new safe file',
-              //   icon: Icons.add,
-              //   callBack: () {
-              //     SafeFileManager.of(context, listen: false)
-              //         .importNewFile(context);
-              //     Navigator.of(context).pop();
-              //   },
-              // ),
               DrawerListTileButton(
                 text: 'Clear safe zone',
                 icon: Icons.delete,
@@ -62,9 +49,7 @@ class HomeDrawer extends StatelessWidget {
               DrawerListTileButton(
                 text: 'MyOlder FAQ',
                 icon: Icons.question_answer,
-                callBack: () {
-                  _showApplicationFAQ();
-                },
+                callBack: () => _showApplicationFAQ(),
               ),
               DrawerListTileButton(
                 text: 'Logout',
@@ -113,13 +98,11 @@ class HomeDrawer extends StatelessWidget {
   /// Shows the application faq
   Future<void> _showApplicationFAQ() async {}
 
-  /// Shows the user settings page
-  Future<void> _showUserSettings() async {}
-
   /// Shows the application informations
   Future<void> _showApplicationInformations(BuildContext context) async =>
       Navigator.of(context).pushNamed(ApplicationInformationsPage.routeName);
 
   /// Shows the application settings
-  Future<void> _showApplicationSettings() async {}
+  Future<void> _showApplicationSettings(BuildContext context) async =>
+      Navigator.of(context).pushNamed(SettingsPage.routeName);
 }
