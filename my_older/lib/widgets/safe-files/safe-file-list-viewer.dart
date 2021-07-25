@@ -7,32 +7,28 @@ import 'safe-file-widget.dart';
 class SafeFileListViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 7,
-      child: (SafeFileManager.of(context).safeFiles != null &&
-              SafeFileManager.of(context).safeFiles.length > 0)
-          ? _buildListView(context)
-          : _buildNoFilesView(context),
-    );
+    return (SafeFileManager.of(context).safeFiles != null &&
+            SafeFileManager.of(context).safeFiles.length > 0)
+        ? _buildListView(context)
+        : _buildNoFilesView(context);
   }
 
   /// Builds the list view, when there are items to display
   Widget _buildListView(BuildContext context) {
     final manager = SafeFileManager.of(context);
+    final media = MediaQuery.of(context);
 
-    return Scrollbar(
-      child: ListView.builder(
-        physics: ClampingScrollPhysics(),
-        itemCount: manager.safeFiles.length,
-        itemBuilder: (context, index) {
-          return ChangeNotifierProvider.value(
-            value: manager.safeFiles[index],
-            child: SafeFileWidget(
-              showByTag: (String tag) {},
-            ),
-          );
-        },
-      ),
+    return ListView.builder(
+      physics: ClampingScrollPhysics(),
+      itemCount: manager.safeFiles.length,
+      itemBuilder: (context, index) {
+        return ChangeNotifierProvider.value(
+          value: manager.safeFiles[index],
+          child: SafeFileWidget(
+            showByTag: (String tag) {},
+          ),
+        );
+      },
     );
   }
 
@@ -59,6 +55,4 @@ class SafeFileListViewer extends StatelessWidget {
       ],
     );
   }
-
-  
 }
