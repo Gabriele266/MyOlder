@@ -60,23 +60,31 @@ class UserToolsPage extends StatelessWidget {
             title: 'Delete user',
             backgroundColor: theme.primaryColorLight,
             onPressed: () => _onDeleteUser(context),
+            icon: Icons.delete,
           ),
           ToolAction(
             title: 'Logout',
             backgroundColor: theme.primaryColorLight.withBlue(100),
-            onPressed: () => UserFileManager.of(context).logout(),
+            onPressed: () => _onUserLogout(context),
+            icon: Icons.logout,
           ),
           ToolAction(
             title: 'Change password',
             backgroundColor: theme.primaryColorLight.withRed(20),
+            onPressed: () => _onChangePassword(context),
+            icon: Icons.edit,
           ),
           ToolAction(
             title: 'Change username',
             backgroundColor: theme.primaryColorLight.withGreen(110),
+            onPressed: () => _onChangeUserName(context),
+            icon: Icons.edit,
           ),
           ToolAction(
             title: 'User details',
             backgroundColor: theme.primaryColorLight.withBlue(20),
+            onPressed: () => _onUserDetails(context),
+            icon: Icons.details,
           ),
         ],
       ),
@@ -84,13 +92,35 @@ class UserToolsPage extends StatelessWidget {
   }
 
   // TODO: Implement _onUserDetails
-  void _onUserDetails() {}
+  void _onUserDetails(BuildContext context) =>
+      _showUnimplementedFeature('User details', context);
+
+  /// Shows a snackbar giving informations about a feature that isn't yet implemented.
+  void _showUnimplementedFeature(String featureName, BuildContext context) {
+    final theme = Theme.of(context);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: ListTile(
+          title: Text(
+            'The feature $featureName is not yet implemented. It will be ready in a moment!',
+            style: theme.textTheme.headline4,
+          ),
+          trailing: const Icon(
+            Icons.info,
+          ),
+        ),
+      ),
+    );
+  }
 
   // TODO: Implement _onChangeUserName
-  void _onChangeUserName() {}
+  void _onChangeUserName(BuildContext context) =>
+      _showUnimplementedFeature('Change username', context);
 
   // TODO: Implement _onChangePassword
-  void _onChangePassword() {}
+  void _onChangePassword(BuildContext context) =>
+      _showUnimplementedFeature('Change password', context);
 
   /// Deletes the current user
   void _onDeleteUser(BuildContext context) {
@@ -109,6 +139,27 @@ class UserToolsPage extends StatelessWidget {
           TextButton(
             child: const Text('Continue'),
             onPressed: () => UserFileManager.of(context).removeUser(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Handles the logout of the user
+  void _onUserLogout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Logout user ${UserFileManager.of(context).user.name}?'),
+        content: const Text('By logging out, you will need to re-login...'),
+        actions: [
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            onPressed: () => UserFileManager.of(context).logout(),
+            child: const Text('Logout'),
           ),
         ],
       ),

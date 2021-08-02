@@ -13,14 +13,18 @@ class ToolAction extends StatelessWidget {
   /// The text color for this widget
   final Color foregroundColor;
 
+  /// The icon to display at the end of the widget
+  final IconData icon;
+
   /// Creates a new [ToolAction] widget
-  const ToolAction(
-      {Key key,
-      @required this.title,
-      this.foregroundColor,
-      this.backgroundColor,
-      this.onPressed})
-      : super(key: key);
+  const ToolAction({
+    Key key,
+    @required this.title,
+    this.foregroundColor,
+    this.backgroundColor,
+    this.onPressed,
+    this.icon,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +61,7 @@ class ToolAction extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(media.size.width * 0.02),
               child: Icon(
-                Icons.delete,
+                icon,
                 color: theme.errorColor,
                 size: 20,
               ),
