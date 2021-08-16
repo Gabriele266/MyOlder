@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myolder/pages/faq-page.dart';
 import 'package:myolder/pages/safe-zone-home.dart';
 import 'package:myolder/pages/user-tools-page.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,7 @@ class MyOlderApp extends StatelessWidget {
           SettingsPage.routeName: (context) => SettingsPage(),
           ApplicationInformationsPage.routeName: (context) =>
               ApplicationInformationsPage(),
+          FaqPage.routeName: (context) => FaqPage(),
         },
       ),
     );

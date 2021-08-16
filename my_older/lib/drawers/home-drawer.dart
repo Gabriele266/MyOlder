@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myolder/pages/faq-page.dart';
 
 import '../providers/user-file-manager.dart';
 import '../widgets/drawer-components/drawer-list-tile-button.dart';
@@ -6,6 +7,7 @@ import '../widgets/drawer-components/myolder-user-widget.dart';
 import '../providers/safe-file-manager.dart';
 import '../pages/application-informations-page.dart';
 import '../pages/settings-page.dart';
+import 'package:animations/animations.dart';
 
 // TODO: Implement application faq
 class HomeDrawer extends StatelessWidget {
@@ -49,7 +51,7 @@ class HomeDrawer extends StatelessWidget {
               DrawerListTileButton(
                 text: 'MyOlder FAQ',
                 icon: Icons.question_answer,
-                callBack: () => _showApplicationFAQ(),
+                callBack: () => _showApplicationFAQ(context),
               ),
               DrawerListTileButton(
                 text: 'Logout',
@@ -96,7 +98,9 @@ class HomeDrawer extends StatelessWidget {
   }
 
   /// Shows the application faq
-  Future<void> _showApplicationFAQ() async {}
+  Future<void> _showApplicationFAQ(BuildContext context) async {
+    Navigator.of(context).pushNamed(FaqPage.routeName);
+  }
 
   /// Shows the application informations
   Future<void> _showApplicationInformations(BuildContext context) async =>
