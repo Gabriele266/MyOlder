@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:myolder/pages/faq-page.dart';
 
+import '../pages/faq-page.dart';
+import '../widgets/dialogs/continue-cancel-dialog.dart';
 import '../providers/user-file-manager.dart';
 import '../widgets/drawer-components/drawer-list-tile-button.dart';
 import '../widgets/drawer-components/myolder-user-widget.dart';
 import '../providers/safe-file-manager.dart';
 import '../pages/application-informations-page.dart';
 import '../pages/settings-page.dart';
-import 'package:animations/animations.dart';
 
-// TODO: Implement application faq
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({Key key}) : super(key: key);
 
@@ -44,9 +43,7 @@ class HomeDrawer extends StatelessWidget {
               DrawerListTileButton(
                 text: 'Clear safe zone',
                 icon: Icons.delete,
-                callBack: () {
-                  _clearSafeZone(context);
-                },
+                callBack: () => _clearSafeZone(context),
               ),
               DrawerListTileButton(
                 text: 'MyOlder FAQ',
@@ -56,9 +53,7 @@ class HomeDrawer extends StatelessWidget {
               DrawerListTileButton(
                 text: 'Logout',
                 icon: Icons.logout,
-                callBack: () {
-                  UserFileManager.of(context).logout();
-                },
+                callBack: () => _showLogout(context),
               ),
             ],
           ),
@@ -67,40 +62,46 @@ class HomeDrawer extends StatelessWidget {
     );
   }
 
+  /// Shows the logout
+  Future<void> _showLogout(BuildContext context) async {
+    // Show the dialog to check if the user is shure
+    showDialog(
+      context: context,
+      builder: (context) => ContinueCancelDialog(
+        title: 'Are you shure?',
+        icon: Icons.question_answer,
+        content:
+            'If you log out, the application will request you the password another time. ',
+        onAccept: () {
+          UserFileManager.of(context).logout();
+          Navigator.of(context).pop();
+        },
+        onDismiss: () {},
+      ),
+    );
+  }
+
   /// Clears the safe zone
   Future<void> _clearSafeZone(BuildContext context) async {
     // Check if there are files to remove
     if (SafeFileManager.of(context, listen: false).safeFilesCount > 0) {
-      final dial = AlertDialog(
-        title: const Text('This operation will remove all your files'),
-        content: const Text(
-            'By clicking on \'Continue\' you will loose all your files. Do you agree?'),
-        actions: [
-          TextButton(
-            child: const Text('Deny'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Continue'),
-            onPressed: () {
-              SafeFileManager.of(context, listen: false).clearAllSafeFiles();
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
+      showDialog(
+        context: context,
+        builder: (_) => ContinueCancelDialog(
+          title: 'This operation will remove all your files',
+          content:
+              'By clicking on \'Continue\' you will loose all your files. Do you agree?',
+          onAccept: () {
+            SafeFileManager.of(context, listen: false).clearAllSafeFiles();
+            Navigator.of(context).pop();
+          },
+        ),
       );
-
-      showDialog(context: context, builder: (_) => dial);
     }
   }
 
   /// Shows the application faq
-  Future<void> _showApplicationFAQ(BuildContext context) async {
-    Navigator.of(context).pushNamed(FaqPage.routeName);
-  }
+  Future<void> _showApplicationFAQ(BuildContext context) async => Navigator.of(context).pushNamed(FaqPage.routeName);
 
   /// Shows the application informations
   Future<void> _showApplicationInformations(BuildContext context) async =>
