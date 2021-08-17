@@ -12,7 +12,7 @@ import '../constructs/faq-answer.dart';
 import '../constructs/faq-question.dart';
 
 class Questions with ChangeNotifier {
-  static Questions of(BuildContext context, {bool listen = true}) =>
+  static Questions of(BuildContext context, {bool listen = false}) =>
       Provider.of<Questions>(context, listen: listen);
 
   List<FaqQuestion> _questions;
@@ -30,7 +30,7 @@ class Questions with ChangeNotifier {
   /// Loads the questions from a specific file path
   ///
   /// [file] The file path starting from the app documents.
-  Future<void> loadQuestions(String file) async {
+  Future<List<FaqQuestion>> loadQuestions(String file) async {
     // Check exceptions
     if (file.isEmpty)
       throw NullFileException('The file given to loadQuestions is empty');
@@ -44,18 +44,15 @@ class Questions with ChangeNotifier {
 
     final questions = result['questions'] as List;
 
-    _questions = [];
+    List<FaqQuestion> temp = [];
 
     // Load every question into the list
     questions.forEach((element) {
       // Read current question and add it to list
       final qs = FaqQuestion.fromJsonString(json.encode(element));
-      _questions.add(qs);
+      temp.add(qs);
     });
 
-    print('End loading questions list. Success. ');
-    print('Loaded ${_questions.length} questions. ');
-
-    notifyListeners();
+    return temp;
   }
 }

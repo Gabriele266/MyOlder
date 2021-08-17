@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myolder/constructs/faq-question.dart';
+import 'package:myolder/widgets/faq/question.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/questions.dart';
@@ -43,6 +45,7 @@ class __FaqPageBodyState extends State<_FaqPageBody> {
       physics: BouncingScrollPhysics(),
       children: [
         _buildPageHeading(context),
+        _buildPageQuestions(context),
       ],
     );
   }
@@ -56,9 +59,11 @@ class __FaqPageBodyState extends State<_FaqPageBody> {
         Padding(
           padding: EdgeInsets.all(media.size.width * 0.05),
           child: Center(
-            child: Text(
-              'Faq',
-              style: theme.textTheme.bodyText2,
+            child: FittedBox(
+              child: Text(
+                'Frequent asked questions',
+                style: theme.textTheme.bodyText2,
+              ),
             ),
           ),
         ),
@@ -74,13 +79,45 @@ class __FaqPageBodyState extends State<_FaqPageBody> {
     );
   }
 
-  void _loadPageQuestions(BuildContext context) {
+  /// Builds the page questions
+  Widget _buildPageQuestions(BuildContext context) {
     // Ask for loading
-    final questions = Questions.of(context).loadQuestions('questions.json');
+    final media = MediaQuery.of(context);
+    final theme = Theme.of(context);
+
+    return FutureBuilder<List<FaqQuestion>>(
+      future: Questions.of(context).loadQuestions('questions.json'),
+      builder: (context, snapshot) {
+        if(snapshot.hasData) {
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: media.size.width * 0.05,
+              vertical: media.size.height * 0.02,
+            ),
+            child: Column(
+              children: [
+                ...snapshot.data.map((e) => Question(
+                  title: e.title,
+                  body: e.body,
+                  imageUrl: e.imageUrl,
+                  leadingIcon: Icons.question_answer,
+                )).toList(),
+              ],
+            ),
+          );
+        } else if(snapshot.hasError) return _buildLoadingError(context);
+        else return _buildLoadingProgress(context);
+      },
+    );
   }
 
-  Widget _buildPageQuestions(BuildContext context) {
+  Widget _buildLoadingProgress(BuildContext context) {
+    return CircularProgressIndicator(
 
+    );
+  }
+
+  Widget _buildLoadingError(BuildContext context) {
+    return const Text('Error during load');
   }
 }
-
