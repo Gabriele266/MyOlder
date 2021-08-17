@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myolder/widgets/dialogs/continue-cancel-dialog.dart';
 
 import '../providers/user-file-manager.dart';
 import '../widgets/drawer-components/myolder-user-widget.dart';
@@ -124,44 +125,36 @@ class UserToolsPage extends StatelessWidget {
 
   /// Deletes the current user
   void _onDeleteUser(BuildContext context) {
-    // Check if user agrees
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Remove ${UserFileManager.of(context).user.name}?'),
-        content: const Text(
-            'The user will be completely removed. He won\'t be able to access this data and all the files will be lost. \nAre you shure?'),
-        actions: [
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () => Navigator.of(context).pop(),
+      builder: (context) =>
+          ContinueCancelDialog(
+            icon: Icons.delete,
+            title: 'Remove ${UserFileManager
+                .of(context)
+                .user
+                .name}?',
+            content: 'The user will be completely removed. He won\'t be able to access this data and all the files will be lost. \nAre you shure?',
+            onAccept: () => UserFileManager.of(context).removeUser(),
           ),
-          TextButton(
-            child: const Text('Continue'),
-            onPressed: () => UserFileManager.of(context).removeUser(),
-          ),
-        ],
-      ),
     );
   }
 
   /// Handles the logout of the user
   void _onUserLogout(BuildContext context) {
+    // Show the dialog to check if the user is shure
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Logout user ${UserFileManager.of(context).user.name}?'),
-        content: const Text('By logging out, you will need to re-login...'),
-        actions: [
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            onPressed: () => UserFileManager.of(context).logout(),
-            child: const Text('Logout'),
-          ),
-        ],
+      builder: (context) => ContinueCancelDialog(
+        title: 'Are you shure?',
+        icon: Icons.question_answer,
+        content:
+        'If you log out, the application will request you the password another time. ',
+        onAccept: () {
+          UserFileManager.of(context).logout();
+          Navigator.of(context).pop();
+        },
+        onDismiss: () {},
       ),
     );
   }
