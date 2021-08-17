@@ -61,7 +61,7 @@ class __FaqPageBodyState extends State<_FaqPageBody> {
           child: Center(
             child: FittedBox(
               child: Text(
-                'Frequent asked questions',
+                'Frequently asked questions',
                 style: theme.textTheme.bodyText2,
               ),
             ),
@@ -98,9 +98,9 @@ class __FaqPageBodyState extends State<_FaqPageBody> {
               children: [
                 ...snapshot.data.map((e) => Question(
                   title: e.title,
-                  body: e.body,
                   imageUrl: e.imageUrl,
                   leadingIcon: Icons.question_answer,
+                  answer: e.answer.body,
                 )).toList(),
               ],
             ),

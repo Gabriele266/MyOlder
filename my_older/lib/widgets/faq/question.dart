@@ -7,17 +7,22 @@ class Question extends StatelessWidget {
   /// Question title
   final String title;
 
-  /// Question body
-  final String body;
-
   /// Question image url
   final String imageUrl;
 
   /// The leading icon
   final IconData leadingIcon;
 
+  /// The answer body (complete answer)
+  final String answer;
+
   /// A widget to display a FaqQuestion
-  Question({@required this.title, @required this.body, this.imageUrl, this.leadingIcon});
+  Question({
+    @required this.title,
+    this.imageUrl,
+    @required this.answer,
+    this.leadingIcon,
+  }) : assert(title != null), assert(answer != null);
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +43,23 @@ class Question extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderRadius: BorderRadius.all(Radius.circular(media.size.width * 0.04)),
               child: Image(
                 image: NetworkImage(imageUrl),
-                width: media.size.width * 0.1,
-                height: media.size.width * 0.1,
+                width: media.size.width * 0.15,
+                height: media.size.width * 0.15,
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: media.size.width * 0.02),
-              child: Text(this.body, style: theme.textTheme.bodyText2.copyWith(fontSize: 15)),
+              padding:
+                  EdgeInsets.symmetric(horizontal: media.size.width * 0.03),
+              child: Container(
+                width: media.size.width * 0.6,
+                child: Text(
+                  this.answer,
+                  style: theme.textTheme.bodyText2.copyWith(fontSize: 15),
+                ),
+              ),
             ),
           ],
         ),
