@@ -154,7 +154,6 @@ class UserToolsPage extends StatelessWidget {
           UserFileManager.of(context).logout();
           Navigator.of(context).pop();
         },
-        onDismiss: () {},
       ),
     );
   }
