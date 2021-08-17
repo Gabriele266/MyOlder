@@ -106,21 +106,21 @@ class _ContinueCancelDialogState extends State<ContinueCancelDialog>
 
   /// Builds the dialog actions
   List<Widget> _buildActions(BuildContext context) => [
-    TextButton(
-      child: const Text('Cancel'),
-      onPressed: () => dismiss(),
-    ),
-    TextButton(
-      child: const Text('Continue'),
-      onPressed: () => accept(),
-    ),
-  ];
+        TextButton(
+          child: const Text('Cancel'),
+          onPressed: () => dismiss(),
+        ),
+        TextButton(
+          child: const Text('Continue'),
+          onPressed: () => accept(),
+        ),
+      ];
 
   /// Dismisses this dialog
   void dismiss() {
     Navigator.of(context).pop();
-    assert(widget.onDismiss != null);
-    widget.onDismiss();
+    // assert(widget.onDismiss != null);
+    if (widget.onDismiss != null) widget.onDismiss();
   }
 
   /// Accepts the dialog
